@@ -261,11 +261,12 @@ td .det{font-family:var(--body)}
 .side-disc{font-size:13px;color:var(--muted);margin:6px 4px 0}
 /* Avisos */
 .disc-top{display:flex;gap:12px;align-items:flex-start;background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:12px 16px;margin-bottom:18px}
-.disc-top p{margin:0;font-size:15px;color:var(--ink);max-width:110ch}
+.disc-top p{margin:0;font-size:15px;color:var(--ink);max-width:110ch;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 .disc-ic{flex:none;width:24px;height:24px;border-radius:50%;background:var(--warn);color:var(--panel);font:700 15px/24px var(--body);text-align:center}
 .disc-full{margin-top:18px;background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:14px 18px;max-width:80ch}
 .disc-full h2{font-family:var(--display);font-size:19px;margin:0 0 6px}
-.disc-full p{font-size:15px;margin:6px 0;color:var(--ink)}
+.disc-full p{font-size:15px;margin:6px 0;color:var(--ink);text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.side-disc{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 @media (max-width:1180px){
   .shell{grid-template-columns:minmax(0,1fr);gap:14px}
   .side{z-index:15;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--bg);padding-block:8px;top:env(safe-area-inset-top,0px)}
