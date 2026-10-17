@@ -105,6 +105,9 @@ table.cmp td{overflow-wrap:anywhere}
 .reset.danger.armed{background:var(--warn);color:var(--panel)}
 .exp-msg{flex-basis:100%;text-align:right;font-size:13.5px;color:var(--muted);min-height:1em}
 p,li,.notes>div,.sub,.legal p,.legal li,.win .s,.disc-top p,.disc-full p,.side-disc{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.add-tit{width:100%;padding:12px;font-size:15px;margin:0 0 16px}
+.pc-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rm-tit{border:0;background:transparent;color:var(--warn);font:600 13px var(--body);cursor:pointer;text-transform:none;letter-spacing:0;padding:2px 0}
 .legal-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .legal-h h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0}
 table.mini{min-width:0;width:auto;margin-top:8px}
@@ -326,10 +329,7 @@ td .det{font-family:var(--body)}
 <div class="grid">
 <form class="panel" id="form" autocomplete="off">
   <h2 class="step">1 · Quem investe</h2>
-  <fieldset><legend>Agregado</legend>
-    <div class="f"><label for="casal">Casado ou em união de facto?</label><select id="casal"><option value="sim">Sim</option><option value="nao">Não, invisto sozinho</option></select></div>
-    <div class="f" id="row-tribut"><label for="tribut">Tributação do IRS do casal<small>Conjunta só se ambos forem residentes em Portugal</small></label><select id="tribut"><option value="separada">Separada</option><option value="conjunta">Conjunta</option></select></div>
-  </fieldset>
+  <select id="casal" hidden aria-hidden="true" tabindex="-1"><option value="nao">nao</option><option value="sim">sim</option></select>
   <div class="pcards">
   <div class="pcard" id="card-A">
     <div class="pc-h">Pessoa 1</div>
@@ -340,7 +340,7 @@ td .det{font-family:var(--body)}
     <div class="f"><label for="rnhA">Estatuto RNH ou IFICI?<small>Não altera os impostos sobre imóveis portugueses</small></label><select id="rnhA"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
   </div>
   <div class="pcard" id="card-B">
-    <div class="pc-h">Pessoa 2</div>
+    <div class="pc-h pc-row"><span>Pessoa 2</span><button type="button" class="rm-tit" id="rm-tit">Remover titular</button></div>
     <div class="f"><label for="nB">Nome</label><input id="nB" type="text" maxlength="30" placeholder="Titular 2"></div>
     <div class="f"><label for="resB">Residência fiscal em Portugal<small><a href="#nota-res">o que muda?</a></small></label><select id="resB"><option value="pt">Residente</option><option value="nr">Não residente</option></select></div>
     <div class="f"><label for="brB">Residente fiscal no Brasil?<small>Inclui quem a Receita Federal ainda trata como residente</small></label><select id="brB"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
@@ -348,6 +348,12 @@ td .det{font-family:var(--body)}
     <div class="f"><label for="rnhB">Estatuto RNH ou IFICI?<small>Não altera os impostos sobre imóveis portugueses</small></label><select id="rnhB"><option value="nao">Não</option><option value="sim">Sim</option></select></div>
   </div>
   </div>
+  <button type="button" class="add add-tit" id="add-tit">+ Acrescentar titular</button>
+  <fieldset id="rel-box"><legend>Relação entre os titulares</legend>
+    <div class="f"><label for="rel">Relação da pessoa 2 com a pessoa 1</label><select id="rel"><option value="conjuge">Cônjuge ou unido de facto</option><option value="reta">Filho, pai ou mãe</option><option value="outro">Outro familiar ou terceiro</option></select></div>
+    <div class="f" id="row-quota"><label for="quota">Quota da pessoa 2 na compropriedade (%)<small>A pessoa 1 fica com o restante</small></label><input id="quota" type="number" min="0" max="100" step="5"></div>
+    <div class="f" id="row-tribut"><label for="tribut">Tributação do IRS do casal<small>Conjunta só se ambos forem residentes em Portugal</small></label><select id="tribut"><option value="separada">Separada</option><option value="conjunta">Conjunta</option></select></div>
+  </fieldset>
   <h2 class="step" id="op-title">2 · Comprar e vender</h2>
 
   <div id="flip">
@@ -645,13 +651,13 @@ td .det{font-family:var(--body)}
 <a class="mbar" id="mbar" href="#res"><span class="mb-k">Melhor cenário</span><span class="mb-n" id="mbn">—</span><span class="mb-v" id="mbv">—</span></a>
 <script>
 const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"0.23",venda:360000,com:4,meses:10,imi:400,
-  cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"B",
-  casal:"sim",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
+  cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"A",rel:"conjuge",quota:50,
+  casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:"2026-09-01",
   rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
   pagas:[{d:"2026-03-02",desc:"Sinal",v:25000},{d:"2026-06-15",desc:"Reforço do sinal",v:10000},{d:"2026-12-15",desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
   recebidas:[{d:"2026-09-01",desc:"Assinatura da cedência",v:20000},{d:"2026-11-30",desc:"Na escritura",v:45000}]};
-const KEY="sim-imob-pt-v7";
+const KEY="sim-imob-pt-v8";
 const LISTS=["pagas","recebidas"];
 const ids=Object.keys(DEF).filter(k=>k!=="mode"&&!LISTS.includes(k));
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -725,7 +731,8 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   // Notas sobre as pessoas
   const ppl=casal?[A,B]:[A];
   notes.push("<b>Taxa marginal de IRS antes da operação:</b> "+ppl.map(p=>p.nr?`${p.name}, não residente em Portugal`:`${p.name}, ${pct(RT[LIM.findIndex(l=>p.base<l)])}`).join("; ")+(joint?" (tributação conjunta do casal)":"")+". O mínimo de existência e as deduções à coleta não estão incluídos.");
-  if(casal&&S.tribut==="conjunta"&&!canJoint) notes.push(`<span class="warn"><b>Tributação conjunta indisponível:</b> exige que ambos sejam residentes em Portugal. O simulador usa a tributação separada.</span>`);
+  if(casal&&S.rel!=="conjuge") notes.push(`<b>Titulares sem relação conjugal:</b> não há bem comum nem tributação conjunta; cada titular declara a sua quota do imóvel e dos rendimentos. Se um titular pagar a parte do outro, isso pode ser uma doação: ${S.rel==="reta"?"entre pais e filhos está isenta de Imposto do Selo (art. 6.º do Código do Imposto do Selo), mas deve ser declarada":"tributada em Imposto do Selo a 10% (verba 1.2 da Tabela Geral)"}.`);
+  if(casal&&S.tribut==="conjunta"&&!canJoint&&S.rel==="conjuge") notes.push(`<span class="warn"><b>Tributação conjunta indisponível:</b> exige que ambos sejam residentes em Portugal. O simulador usa a tributação separada.</span>`);
   const nrs=ppl.filter(p=>p.nr); if(nrs.length) notes.push(`<b>Não residente em Portugal (${nrs.map(p=>p.name).join(", ")}):</b> IMT fixo de 7,5% na compra de habitação em nome próprio, mais-valias a 28% sobre 50% do ganho e dividendos a 25% (15% se residente no Brasil). Ver <a href="#nota-res">nota 13</a>.`);
   const brs=ppl.filter(p=>p.br); if(brs.length) notes.push(`<b>Residente fiscal no Brasil (${brs.map(p=>p.name).join(", ")}):</b> o simulador soma o imposto brasileiro que exceda o português (crédito pela Convenção Brasil–Portugal). Valores estimados em euros; o Brasil apura em reais. Ver <a href="#nota-res">nota 13</a>.`);
   const nbr=ppl.filter(p=>!p.br); if(brs.length&&nbr.length) notes.push(`<b>Dica:</b> ${nbr.map(p=>p.name).join(", ")} não é residente no Brasil; os cenários em seu nome, ou com ${nbr.length>1?"eles":"essa pessoa"} como sócio, evitam o imposto brasileiro.`);
@@ -736,7 +743,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
 
 // ======== Comprar para arrendar ========
 function aimiInd(v,ded){ const x=v-ded; if(x<=0) return 0; return Math.min(x,1000000-600000)*.007+Math.max(0,Math.min(x,2000000-600000)-(1000000-600000))*.01+Math.max(0,x-(2000000-600000))*.015; }
-function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
+function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}){
   const notes=[], L=(l,v,c="")=>({l,v,c}), hd=t=>({h:t}), sc=[];
   const base=Math.max(S.rcompra,S.rvpt), vptEst=!S.rvpt, vpt=S.rvpt||S.rcompra*.5;
   const imtN=imt(base), is=base*.008;
@@ -788,7 +795,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   };
   if(joint) sc.push(ps("a2","Pessoa singular, casal (tributação conjunta)",[{p:A,share:.5},{p:B,share:.5}]));
   else { sc.push(ps("a1",`Pessoa singular, em nome de ${A.name}`,[{p:A,share:1}]));
-    if(casal){ sc.push(ps("a2","Pessoa singular, bem comum 50/50",[{p:A,share:.5},{p:B,share:.5}])); sc.push(ps("a3",`Pessoa singular, em nome de ${B.name}`,[{p:B,share:1}])); } }
+    if(casal){ sc.push(ps("a2",spouse?"Pessoa singular, bem comum 50/50":`Pessoa singular, compropriedade ${qLbl}`,[{p:A,share:qA},{p:B,share:qB}])); sc.push(ps("a3",`Pessoa singular, em nome de ${B.name}`,[{p:B,share:1}])); } }
   // ----- Sociedade -----
   const imtCo=imtN, aimiCo=vpt*.004;
   const deprCo=((S.rcompra+S.resc+imtCo+is)*.75+(benef?obrasT:0))*.02;
@@ -797,7 +804,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   const ircV=irc(taxable,geral), derV=Math.max(0,taxable)*der;
   const cashCo=preTax-imi-aimiCo-fixed-ircV-derV;
   const netAcc=profitAcc-ircV-derV, D=Math.max(0,netAcc);
-  const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:.5},{p:B,share:.5}];
+  const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:qA},{p:B,share:qB}];
   const shName=sh.map(o=>o.p.name).join(" e ");
   let brCo=0; const brCoL=[]; sh.forEach(o=>{const inc_=Math.max(0,profitAcc)*o.share, t=Math.max(0,.15*inc_-(ircV+derV)*o.share); if(o.p.br){brCo+=t; brCoL.push(L(`Imposto no Brasil de ${o.p.name}: 15% sobre ${eur(inc_)} de lucro (Lei 14.754/2023) − crédito do IRC`,-t,"tax"));}});
   const coLines=[hd("Lucro tributável (IRC)"),...opexLines(),...(juros?[L("− Juros do crédito",-juros)]:[]),L("− AIMI (0,4% do VPT)",-aimiCo),L("− Custos fixos da sociedade",-fixed),
@@ -860,14 +867,15 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
 function calc(){
   const S=state, geral=parseFloat(S.ano), der=S.derrama/100;
   const mk=(k,n)=>{const nm=String(S["n"+k]||"").trim()||("Titular "+n); return {k,name:esc(nm),nr:S["res"+k]==="nr",br:S["br"+k]==="sim",base:S["base"+k]||0,rnh:S["rnh"+k]==="sim"};};
-  const A=mk("A",1), B=mk("B",2), casal=S.casal==="sim";
-  const canJoint=casal&&!A.nr&&!B.nr, joint=canJoint&&S.tribut==="conjunta";
+  const A=mk("A",1), B=mk("B",2), casal=S.casal==="sim", spouse=casal&&S.rel==="conjuge";
+  const qB=spouse?.5:Math.min(1,Math.max(0,(S.quota||0)/100)), qA=1-qB, qLbl=`${Math.round(qA*100)}/${Math.round(qB*100)}`;
+  const canJoint=spouse&&!A.nr&&!B.nr, joint=canJoint&&S.tribut==="conjunta";
   // Interface dependente das pessoas
-  $("card-B").hidden=!casal; $("row-tribut").hidden=!canJoint;
-  const so=$("socio"); so.options[0].text=A.name.replace(/&amp;/g,"&"); so.options[1].text=B.name.replace(/&amp;/g,"&"); so.options[2].text="Ambos, 50/50";
+  $("card-B").hidden=!casal; $("row-tribut").hidden=!canJoint; $("add-tit").hidden=casal; $("rel-box").hidden=!casal; $("row-quota").hidden=!casal||spouse;
+  const so=$("socio"); so.options[0].text=A.name.replace(/&amp;/g,"&"); so.options[1].text=B.name.replace(/&amp;/g,"&"); so.options[2].text=spouse?"Ambos, 50/50":`Ambos (${qLbl})`;
   [1,2].forEach(i=>{so.options[i].disabled=!casal; so.options[i].hidden=!casal;});
   const socio=casal?S.socio:"A"; if(!casal&&so.value!=="A") so.value="A";
-  if(S.mode==="rent"){ calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}); return; }
+  if(S.mode==="rent"){ calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}); return; }
   let imtBase, imtNormal, isPS, imiPS, coExempt, real, items, preTax, notes=[];
   const flip=S.mode==="flip";
   if(flip){
@@ -934,7 +942,7 @@ function calc(){
   const dPS=p=>p.nr?"Não residente: 28% sobre 50% do ganho":"Mais-valia: 50% englobada";
   if(joint) sc.push(ps("a2","Pessoa singular, casal (tributação conjunta)","Mais-valia: 50% englobada no IRS do casal",[{p:A,share:.5},{p:B,share:.5}]));
   else { sc.push(ps("a1",`Pessoa singular, em nome de ${A.name}`,dPS(A),[{p:A,share:1}]));
-    if(casal){ sc.push(ps("a2","Pessoa singular, bem comum 50/50","Tributação separada",[{p:A,share:.5},{p:B,share:.5}]));
+    if(casal){ sc.push(ps("a2",spouse?"Pessoa singular, bem comum 50/50":`Pessoa singular, compropriedade ${qLbl}`,spouse?"Tributação separada":"Cada titular declara a sua quota",[{p:A,share:qA},{p:B,share:qB}]));
       sc.push(ps("a3",`Pessoa singular, em nome de ${B.name}`,dPS(B),[{p:B,share:1}])); } }
   // ----- Sociedade (IRC) -----
   const fixed=S.contab, imtCo=coExempt?0:imtNormal;
@@ -942,7 +950,7 @@ function calc(){
   const ircV=irc(profit,geral), derV=Math.max(0,profit)*der, netCo=profit-ircV-derV, D=Math.max(0,netCo);
   const coBase=imtCo+isPS+ircV+derV;
   const ircA=Math.min(Math.max(profit,0),50000)*.15, ircB=Math.max(0,profit-50000)*geral;
-  const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:.5},{p:B,share:.5}];
+  const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:qA},{p:B,share:qB}];
   const shName=sh.map(o=>o.p.name).join(" e ");
   const coLines=[hd("Lucro tributável (IRC)"),L(flip?"Venda (proveito)":real[0],real[1]),...minus(items),
     L(imtCo?"− IMT":"− IMT (isento: compra para revenda)",-imtCo),L("− Custos fixos da sociedade",-fixed),L("= Lucro tributável",profit,"tot"),
@@ -1127,6 +1135,8 @@ async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textCo
   const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui o aconselhamento de contabilista, advogado, consultor imobiliário e mediador de crédito · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
   msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`,doc.output("blob"));
 }
+$("add-tit").addEventListener("click",()=>{ $("casal").value="sim"; read(); calc(); const n=$("nB"); n&&n.focus(); });
+$("rm-tit").addEventListener("click",()=>{ $("casal").value="nao"; if(state.socio!=="A"){ $("socio").value="A"; } read(); calc(); });
 $("exp-xlsx").addEventListener("click",exportXlsx);
 $("exp-pdf").addEventListener("click",exportPdf);
 fill();
