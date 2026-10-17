@@ -1212,7 +1212,7 @@ $("reset").addEventListener("click",()=>{ const b=$("reset");
   $("exp-msg").textContent="Valores repostos a zero.";
 });
 // ======== Exportação ========
-const LIBS={xlsx:["https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"],
+const LIBS={xlsx:["https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"],
   pdf:["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"]};
 const loaded={};
 function loadScript(u){ return loaded[u]||(loaded[u]=new Promise((res,rej)=>{const sc=document.createElement("script"); sc.src=u; sc.onload=res; sc.onerror=()=>{delete loaded[u]; rej(new Error("load"));}; document.head.appendChild(sc);})); }
@@ -1224,7 +1224,7 @@ function inputsRows(){ const rows=[];
   $("form").querySelectorAll("h2.step, legend, .pc-h, .f").forEach(el=>{
     if(el.closest("[hidden]")) return;
     if(el.matches("h2.step")) rows.push([el.textContent.trim(),"","h"]);
-    else if(el.matches("legend,.pc-h")) rows.push([el.textContent.trim(),"","s"]);
+    else if(el.matches("legend,.pc-h")) rows.push([((el.matches(".pc-h")&&el.querySelector("span"))||el).textContent.trim(),"","s"]);
     else { const lab=el.querySelector("label"); if(!lab) return;
       const name=[...lab.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim(); const c=el.querySelector("input,select"); let v="";
       if(c) v=c.tagName==="SELECT"?c.options[c.selectedIndex].text:(c.dataset.num?parseNum(c.value):c.type==="number"?(parseFloat(c.value)||0):c.value);
@@ -1245,26 +1245,75 @@ async function saveFile(filename,blob){
 }
 async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o Excel…";
   try{ await loadLibs("xlsx"); }catch(e){ msg.textContent="Não foi possível carregar o gerador de Excel. Verifique a ligação à internet."; return; }
-  const X=window.XLSX, st=stamp(), unit=LAST.unit?" por ano":"", R=resultsRows(), EUR='#,##0 "€";-#,##0 "€"', PCT="0.0%";
-  const cellFmt=(ws,r,c,z)=>{const a=X.utils.encode_cell({r,c}); if(ws[a]&&typeof ws[a].v==="number") ws[a].z=z;};
-  const wb=X.utils.book_new();
-  // Resumo
-  const res=[["QuantoFica · Simulador fiscal imobiliário PT·BR"],["Operação",OPN[state.mode]],["Data da simulação",st.human],[],["Aviso",DISC],[],
-    ["Melhor cenário",txt(LAST.best1.name),r2(LAST.best1.net)],["Melhor a levantar",txt(LAST.best2.name),r2(LAST.best2.net)],[],["Resumo da operação",LAST.sum]];
-  const wsR=X.utils.aoa_to_sheet(res); cellFmt(wsR,6,2,EUR); cellFmt(wsR,7,2,EUR); wsR["!cols"]=[{wch:24},{wch:70},{wch:16}]; X.utils.book_append_sheet(wb,wsR,"Resumo");
-  // Premissas
-  const P=inputsRows(), wsP=X.utils.aoa_to_sheet([["Premissas e dados de entrada","Valor"],...P.map(r=>[r[0],r[1]])]);
-  P.forEach((r,i)=>{ if(typeof r[1]==="number"&&!/meses|anos|Prazo|%/.test(r[0])) cellFmt(wsP,i+1,1,EUR); }); wsP["!cols"]=[{wch:58},{wch:28}]; X.utils.book_append_sheet(wb,wsP,"Premissas");
-  // Cenários
-  const wsC=X.utils.aoa_to_sheet([["Posição","Cenário","Destaque","Impostos"+(LAST.unit?" anuais":" totais"),"Taxa efetiva","Líquido"+unit,"Observação"],
-    ...R.map((r,i)=>[i+1,r.name,r.tag,r.taxes,r.eff,r.net,(r.retido?"Fica na sociedade. ":"")+r.det])]);
-  R.forEach((r,i)=>{cellFmt(wsC,i+1,3,EUR); cellFmt(wsC,i+1,4,PCT); cellFmt(wsC,i+1,5,EUR);}); wsC["!cols"]=[{wch:8},{wch:48},{wch:18},{wch:16},{wch:12},{wch:16},{wch:60}]; X.utils.book_append_sheet(wb,wsC,"Cenários");
-  // Cálculos
-  const D=[["Cenário","Linha de cálculo","Valor (€)"]]; R.forEach(r=>{ D.push([r.name,"",""]); r.lines.forEach(x=>D.push(x.h?["",txt(x.h).toUpperCase(),""]:["",txt(x.l),x.v])); D.push(["","",""]); });
-  const wsD=X.utils.aoa_to_sheet(D); D.forEach((row,i)=>{ if(typeof row[2]==="number") cellFmt(wsD,i,2,EUR); }); wsD["!cols"]=[{wch:40},{wch:80},{wch:16}]; X.utils.book_append_sheet(wb,wsD,"Cálculos");
-  // Notas
-  const wsN=X.utils.aoa_to_sheet([["Notas da simulação"],...LAST.notes.map(n=>[txt(n)]),[],["Aviso"],[DISC]]); wsN["!cols"]=[{wch:140}]; X.utils.book_append_sheet(wb,wsN,"Notas");
-  const buf=X.write(wb,{bookType:"xlsx",type:"array"});
+  const EX=window.ExcelJS, wb=new EX.Workbook(), st=stamp(), R=resultsRows(), u=LAST.unit?" por ano":"";
+  wb.creator="QuantoFica"; wb.created=new Date();
+  const C={blue:"FF164A8F",blueSoft:"FFDAE5F4",ink:"FF0D1520",muted:"FF5B6678",line:"FFC9D1DC",bg:"FFF3F5F8",green:"FF0E8A49",greenSoft:"FFE2F2E9",amber:"FF9A5B00",amberSoft:"FFFFF3DC",red:"FFC62828",white:"FFFFFFFF"};
+  const EUR='#,##0 "€";[Red]-#,##0 "€"', PCT="0.0%", F="Calibri";
+  const border={top:{style:"thin",color:{argb:C.line}},bottom:{style:"thin",color:{argb:C.line}},left:{style:"thin",color:{argb:C.line}},right:{style:"thin",color:{argb:C.line}}};
+  const fill=c=>({type:"pattern",pattern:"solid",fgColor:{argb:c}});
+  const sty=(cell,o={})=>{ cell.font={name:F,size:o.size||11,bold:!!o.bold,italic:!!o.italic,color:{argb:o.color||C.ink}}; if(o.fill) cell.fill=fill(o.fill); if(o.border) cell.border=border;
+    cell.alignment={vertical:o.v||"middle",horizontal:o.h||"left",wrapText:!!o.wrap,indent:o.indent||0}; if(o.fmt) cell.numFmt=o.fmt; };
+  const title=(ws,cols,sub)=>{ ws.mergeCells(1,1,1,cols); const t=ws.getCell(1,1); t.value="QuantoFica"; sty(t,{size:20,bold:true,color:C.white,fill:C.blue}); t.alignment={vertical:"middle",indent:1}; ws.getRow(1).height=34;
+    ws.mergeCells(2,1,2,cols); const s2=ws.getCell(2,1); s2.value=`Simulador fiscal imobiliário PT·BR · ${OPN[state.mode]} · ${st.human}`+(sub?` · ${sub}`:""); sty(s2,{size:10.5,color:C.white,fill:C.blue}); s2.alignment={vertical:"middle",indent:1}; ws.getRow(2).height=20; return 4; };
+  const band=(ws,r,cols,text,color=C.blue,soft=C.blueSoft)=>{ ws.mergeCells(r,1,r,cols); const c=ws.getCell(r,1); c.value=text; sty(c,{bold:true,size:12,color,fill:soft}); c.alignment={vertical:"middle",indent:1}; ws.getRow(r).height=22; return r+1; };
+  const disc=(ws,r,cols)=>{ ws.mergeCells(r,1,r+2,cols); const c=ws.getCell(r,1); c.value="Aviso: "+DISC; sty(c,{size:10.5,color:"FF3C2800",fill:C.amberSoft,wrap:true,h:"justify",v:"top"}); c.border={top:{style:"thin",color:{argb:C.amber}},bottom:{style:"thin",color:{argb:C.amber}},left:{style:"thin",color:{argb:C.amber}},right:{style:"thin",color:{argb:C.amber}}}; return r+4; };
+  const pageSetup=(ws,land)=>{ ws.pageSetup={paperSize:9,orientation:land?"landscape":"portrait",fitToPage:true,fitToWidth:1,fitToHeight:0,margins:{left:.5,right:.5,top:.6,bottom:.6,header:.3,footer:.3}}; ws.headerFooter={oddFooter:"&8QuantoFica · simulação indicativa · página &P de &N"}; ws.views=[{showGridLines:false}]; };
+  // ---------- Resumo ----------
+  { const ws=wb.addWorksheet("Resumo",{properties:{tabColor:{argb:C.blue}}}); ws.columns=[{width:44},{width:20},{width:30},{width:20}]; pageSetup(ws);
+    let r=title(ws,4); r=disc(ws,r,4);
+    r=band(ws,r,4,"Melhor cenário",C.green,C.greenSoft);
+    const card=(row,lab,sc)=>{ const a=ws.getCell(row,1); a.value=lab; sty(a,{color:C.muted,size:10,border:true});
+      ws.mergeCells(row,2,row,3); const n=ws.getCell(row,2); n.value=txt(sc.name); sty(n,{bold:true,border:true,wrap:true});
+      const v=ws.getCell(row,4); v.value=Math.round(sc.net); sty(v,{bold:true,size:14,color:C.green,h:"right",fmt:EUR,border:true}); ws.getRow(row).height=26; };
+    card(r++,"Resultado líquido"+u,LAST.best1); if(LAST.best2!==LAST.best1) card(r++,"Melhor se levantar o dinheiro",LAST.best2); else { ws.mergeCells(r,1,r,4); const c=ws.getCell(r,1); c.value="É também o melhor cenário para levantar o dinheiro."; sty(c,{italic:true,color:C.muted,size:10}); r++; }
+    r++; r=band(ws,r,4,"Resumo da operação");
+    const SP=LAST.sumPairs||[]; for(let i=0;i<SP.length;i+=2){ [SP[i],SP[i+1]].forEach((pp,k)=>{ if(!pp) return; const l=ws.getCell(r,1+k*2), v=ws.getCell(r,2+k*2); l.value=pp[0]; sty(l,{color:C.muted,border:true,wrap:true}); v.value=pp[1].replace(/[  ]/g," "); sty(v,{bold:true,h:"right",border:true}); }); ws.getRow(r).height=20; r++; }
+    r++; r=band(ws,r,4,"Ranking dos cenários");
+    ["Cenário","Destaque","Impostos"+(LAST.unit?" anuais":""),"Líquido"+u].forEach((h,k)=>{ const c=ws.getCell(r,k+1); c.value=h; sty(c,{bold:true,color:C.white,fill:C.blue,h:k>=2?"right":"left",border:true}); }); r++;
+    R.forEach((x,i)=>{ const best=i===0; const vals=[`${i+1}. ${x.name}`,x.tag||"",x.taxes,x.net];
+      vals.forEach((v,k)=>{ const c=ws.getCell(r,k+1); c.value=v; sty(c,{border:true,bold:best||k===3,fill:best?C.greenSoft:(i%2?C.bg:undefined),h:k>=2?"right":"left",fmt:k>=2?EUR:undefined,color:(best&&k===3)||(k===1&&v)?C.green:C.ink,wrap:k===0}); });
+      ws.getRow(r).height=x.name.length>34?32:20; r++; });
+  }
+  // ---------- Cenários ----------
+  { const ws=wb.addWorksheet("Cenários",{properties:{tabColor:{argb:C.green}}}); ws.columns=[{width:6},{width:46},{width:18},{width:18},{width:13},{width:18},{width:56}]; pageSetup(ws,true);
+    let r=title(ws,7);
+    const H=["#","Cenário","Destaque","Impostos"+(LAST.unit?" anuais":" totais"),"Taxa efetiva","Líquido"+u,"Observações"];
+    H.forEach((h,k)=>{ const c=ws.getCell(r,k+1); c.value=h; sty(c,{bold:true,color:C.white,fill:C.blue,h:[3,4,5].includes(k)?"right":k===0?"center":"left",border:true,wrap:true}); }); ws.getRow(r).height=24; const hr=r; r++;
+    R.forEach((x,i)=>{ const best=i===0, vals=[i+1,x.name,x.tag,x.taxes,x.eff,x.net,(x.retido?"Fica na sociedade. ":"")+x.det];
+      vals.forEach((v,k)=>{ const c=ws.getCell(r,k+1); c.value=v==null?"—":v; sty(c,{border:true,wrap:k===1||k===6,fill:best?C.greenSoft:(i%2?C.bg:undefined),bold:best&&k!==6||k===5,
+        h:k===0?"center":[3,4,5].includes(k)?"right":k===6?"justify":"left",fmt:k===3||k===5?EUR:k===4?PCT:undefined,color:k===2&&v?C.green:(k===6?C.muted:C.ink),size:k===6?10:11}); }); ws.getRow(r).height=32; r++; });
+    ws.views=[{state:"frozen",ySplit:hr,showGridLines:false}]; ws.autoFilter={from:{row:hr,column:1},to:{row:r-1,column:7}};
+  }
+  // ---------- Premissas ----------
+  { const ws=wb.addWorksheet("Premissas",{properties:{tabColor:{argb:"FF7A3FD0"}}}); ws.columns=[{width:46},{width:22},{width:22}]; pageSetup(ws);
+    let r=title(ws,3); const P=inputsRows(); const fmtV=(lab,v)=>typeof v==="number"?v:v;
+    const groups=[]; let cur=null; P.forEach(x=>{ if(x[2]==="h"){ groups.push({h:x[0]}); cur=null; } else if(x[2]==="s"){ cur={title:x[0],items:[]}; groups.push(cur); } else { if(!cur){ cur={title:"",items:[]}; groups.push(cur); } cur.items.push([x[0],x[1]]); } });
+    const p1=groups.find(g=>g.title==="Pessoa 1"), p2=groups.find(g=>g.title==="Pessoa 2");
+    const valCell=(c,lab,v)=>{ c.value=v; const isNum=typeof v==="number", pctLike=/%|meses|anos|Prazo|Meses/.test(lab); sty(c,{bold:true,border:true,h:"right",fmt:isNum&&!pctLike?EUR:(isNum?"#,##0.##":undefined)}); };
+    groups.forEach(g=>{ if(g.h){ r++; ws.mergeCells(r,1,r,3); const c=ws.getCell(r,1); c.value=g.h; sty(c,{bold:true,size:12.5,color:C.white,fill:C.blue}); c.alignment={vertical:"middle",indent:1}; ws.getRow(r).height=24; r++; return; }
+      if(g===p2) return;
+      if(g===p1){ ["",  "Pessoa 1", p2?"Pessoa 2":""].forEach((h,k)=>{ const c=ws.getCell(r,k+1); c.value=h; sty(c,{bold:true,color:C.blue,fill:C.blueSoft,h:k?"right":"left",border:true}); }); r++;
+        p1.items.forEach((it,i)=>{ const l=ws.getCell(r,1); l.value=it[0]; sty(l,{color:C.muted,border:true,wrap:true}); valCell(ws.getCell(r,2),it[0],it[1]); if(p2) valCell(ws.getCell(r,3),it[0],(p2.items[i]||["",""])[1]); else sty(ws.getCell(r,3),{border:true}); r++; }); return; }
+      if(!g.items.length) return;
+      if(g.title){ ws.mergeCells(r,1,r,3); const c=ws.getCell(r,1); c.value=g.title; sty(c,{bold:true,color:C.blue,fill:C.bg,border:true}); r++; }
+      g.items.forEach(it=>{ const l=ws.getCell(r,1); l.value=it[0]; sty(l,{color:C.muted,border:true,wrap:true}); ws.mergeCells(r,2,r,3); valCell(ws.getCell(r,2),it[0],it[1]); r++; }); });
+  }
+  // ---------- Cálculos ----------
+  { const ws=wb.addWorksheet("Cálculos",{properties:{tabColor:{argb:C.amber}}}); ws.columns=[{width:70},{width:20}]; pageSetup(ws);
+    let r=title(ws,2);
+    R.forEach((x,i)=>{ r++; ws.getCell(r,1).value=`${i+1}. ${x.name}`; ws.getCell(r,2).value=x.net; sty(ws.getCell(r,1),{bold:true,size:12,color:C.white,fill:i===0?C.green:"FF3C4655"}); sty(ws.getCell(r,2),{bold:true,size:12,color:C.white,fill:i===0?C.green:"FF3C4655",h:"right",fmt:EUR}); ws.getRow(r).height=24; r++;
+      x.lines.forEach(l=>{ if(l.h){ ws.mergeCells(r,1,r,2); const c=ws.getCell(r,1); c.value=txt(l.h).toUpperCase(); sty(c,{bold:true,size:9.5,color:C.muted,fill:C.bg}); r++; return; }
+        const a=ws.getCell(r,1), b=ws.getCell(r,2); a.value=txt(l.l); b.value=l.v; const tot=l.c==="tot", sub=l.c==="sub";
+        sty(a,{bold:tot,italic:sub,color:sub?C.muted:C.ink,wrap:true,indent:tot?0:1}); sty(b,{bold:tot,italic:sub,h:"right",fmt:EUR,color:l.c==="tax"?C.amber:(sub?C.muted:C.ink)});
+        if(tot){ a.border={top:{style:"thin",color:{argb:C.line}}}; b.border={top:{style:"thin",color:{argb:C.line}}}; } r++; }); });
+  }
+  // ---------- Notas ----------
+  { const ws=wb.addWorksheet("Notas",{properties:{tabColor:{argb:C.muted}}}); ws.columns=[{width:110}]; pageSetup(ws);
+    let r=title(ws,1); r=band(ws,r,1,"Notas da simulação");
+    LAST.notes.forEach(n=>{ const c=ws.getCell(r,1); const t=txt(n); c.value=t; sty(c,{wrap:true,h:"justify",v:"top",border:true}); ws.getRow(r).height=Math.max(20,Math.ceil(t.length/120)*15+6); r++; });
+    r++; const c=ws.getCell(r,1); c.value="Aviso: "+DISC; sty(c,{wrap:true,h:"justify",v:"top",fill:C.amberSoft,color:"FF3C2800",bold:true}); ws.getRow(r).height=48;
+  }
+  const buf=await wb.xlsx.writeBuffer();
   msg.textContent=await saveFile(`quantofica-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
 }
 const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
