@@ -104,6 +104,7 @@ table.cmp td{overflow-wrap:anywhere}
 .reset.danger{border-color:var(--warn);color:var(--warn)}
 .reset.danger.armed{background:var(--warn);color:var(--panel)}
 .exp-msg{flex-basis:100%;text-align:right;font-size:13.5px;color:var(--muted);min-height:1em}
+p,li,.notes>div,.sub,.legal p,.legal li,.win .s,.disc-top p,.disc-full p,.side-disc{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 .legal-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .legal-h h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0}
 table.mini{min-width:0;width:auto;margin-top:8px}
@@ -312,7 +313,7 @@ td .det{font-family:var(--body)}
     <span class="exp-msg" id="exp-msg" role="status" aria-live="polite"></span>
   </div>
 </header>
-<div class="disc-top" role="note"><span class="disc-ic" aria-hidden="true">!</span><p><b>Apenas uma simulação.</b> Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado ou consultor fiscal.</p></div>
+<div class="disc-top" role="note"><span class="disc-ic" aria-hidden="true">!</span><p><b>Apenas uma simulação.</b> Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito.</p></div>
 
 <div class="shell">
 <nav class="side" aria-label="Tipo de operação">
@@ -320,7 +321,7 @@ td .det{font-family:var(--body)}
   <button type="button" id="m-flip" aria-pressed="true"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 15h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Comprar e vender</b><small>Compra, obras e revenda</small></span></button>
   <button type="button" id="m-ced" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Cedência de posição</b><small>Venda do contrato-promessa</small></span></button>
   <button type="button" id="m-rent" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9"/><path d="M17 6l3 3"/><path d="M15 8l2 2"/></svg></span><span class="nt"><b>Comprar para arrendar</b><small>Rendas, obras e crédito</small></span></button>
-  <p class="side-disc">Simulação indicativa. Consulte sempre um profissional antes de decidir.</p>
+  <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
 </nav>
 <div class="grid">
 <form class="panel" id="form" autocomplete="off">
@@ -451,7 +452,7 @@ td .det{font-family:var(--body)}
   <div class="disc-full" role="note">
     <h2>Aviso importante</h2>
     <p>Este simulador é uma ferramenta de apoio e produz <b>apenas estimativas</b>, com base na legislação portuguesa e brasileira conhecida em outubro de 2026 e em pressupostos simplificados. Não constitui aconselhamento fiscal, jurídico ou financeiro, nem dispensa a análise do caso concreto.</p>
-    <p>A lei, as taxas e a interpretação da Autoridade Tributária e da Receita Federal mudam com frequência, e situações particulares podem alterar por completo o resultado. <b>O aconselhamento de um contabilista certificado, advogado ou consultor fiscal é imprescindível</b> antes de comprar, vender, arrendar, constituir uma sociedade ou assinar qualquer contrato.</p>
+    <p>A lei, as taxas e a interpretação da Autoridade Tributária e da Receita Federal mudam com frequência, e situações particulares podem alterar por completo o resultado. <b>O aconselhamento de um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito é imprescindível</b> antes de comprar, vender, arrendar, constituir uma sociedade ou assinar qualquer contrato.</p>
   </div>
   <div class="legal" id="legal">
     <div class="legal-h"><h2>Notas explicativas</h2><button type="button" class="reset" id="openall">Abrir todas</button></div>
@@ -703,7 +704,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   const fmt=v=>(v<0?"− ":"")+eur(Math.abs(v));
   // Mantém os dois cenários de empresário em nome individual juntos, na posição do mais bem classificado
   const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
-  if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), mv=order.splice(Math.max(iB,iB2),1)[0]; order.splice(first+1,0,mv);}
+  if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), eb=order[iB], eb2=order[iB2]; order.splice(Math.max(iB,iB2),1); order.splice(Math.min(iB,iB2),1); order.splice(first,0,eb,eb2);}
   LAST={order,best1,best2,preTax,notes,unit,sum:$("sum").textContent};
   $("rows").innerHTML=order.map(s=>{
     const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
@@ -729,7 +730,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   const brs=ppl.filter(p=>p.br); if(brs.length) notes.push(`<b>Residente fiscal no Brasil (${brs.map(p=>p.name).join(", ")}):</b> o simulador soma o imposto brasileiro que exceda o português (crédito pela Convenção Brasil–Portugal). Valores estimados em euros; o Brasil apura em reais. Ver <a href="#nota-res">nota 13</a>.`);
   const nbr=ppl.filter(p=>!p.br); if(brs.length&&nbr.length) notes.push(`<b>Dica:</b> ${nbr.map(p=>p.name).join(", ")} não é residente no Brasil; os cenários em seu nome, ou com ${nbr.length>1?"eles":"essa pessoa"} como sócio, evitam o imposto brasileiro.`);
   const rnh=ppl.filter(p=>p.rnh); if(rnh.length) notes.push(`<b>RNH ou IFICI (${rnh.map(p=>p.name).join(", ")}):</b> não reduz nenhum dos impostos simulados, porque os rendimentos são de fonte portuguesa.`);
-  notes.push(`<b>Pressupostos:</b> ${assume}. Simulação indicativa: valide com contabilista certificado antes de decidir.`);
+  notes.push(`<b>Pressupostos:</b> ${assume}. Simulação indicativa: valide com contabilista certificado, consultor imobiliário e mediador de crédito antes de decidir.`);
   $("notes").innerHTML=notes.map(n=>`<div>${n}</div>`).join("");
 }
 
@@ -1013,7 +1014,7 @@ function loadScript(u){ return loaded[u]||(loaded[u]=new Promise((res,rej)=>{con
 async function loadLibs(k){ for(const u of LIBS[k]) await loadScript(u); }
 const txt=h=>{const d=document.createElement("div"); d.innerHTML=String(h??""); return d.textContent.replace(/\s+/g," ").trim();};
 const OPN={flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"};
-const DISC="Apenas uma simulação. Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado ou consultor fiscal.";
+const DISC="Apenas uma simulação. Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito.";
 function inputsRows(){ const rows=[];
   $("form").querySelectorAll("h2.step, legend, .pc-h, .f").forEach(el=>{
     if(el.closest("[hidden]")) return;
@@ -1069,23 +1070,44 @@ async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textCo
   doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...blue); doc.text("Simulador Imobiliário PT",M,50);
   doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40); doc.text(pdfTxt(`${OPN[state.mode]} · simulação de ${st.human}`),M,68);
   doc.setDrawColor(...amber); doc.setFillColor(255,243,220); const dl=doc.splitTextToSize(pdfTxt(DISC),W-2*M-20); doc.roundedRect(M,80,W-2*M,dl.length*13+16,4,4,"FD");
-  doc.setTextColor(60,40,0); doc.setFontSize(10); doc.text(dl,M+10,96);
+  doc.setTextColor(60,40,0); doc.setFontSize(10); doc.text(pdfTxt(DISC),M+10,96,{maxWidth:W-2*M-20,align:"justify"});
   let y=80+dl.length*13+32;
   doc.setTextColor(20); doc.setFont("helvetica","bold"); doc.setFontSize(12.5); doc.text(pdfTxt(`Melhor cenário: ${txt(LAST.best1.name)} (${eur(LAST.best1.net)}${LAST.unit})`),M,y);
   doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.text(pdfTxt(`Melhor a levantar: ${txt(LAST.best2.name)} (${eur(LAST.best2.net)}${LAST.unit})`),M,y+16);
-  const sumL=doc.splitTextToSize(pdfTxt(LAST.sum),W-2*M); doc.setTextColor(70); doc.text(sumL,M,y+34); y+=34+sumL.length*13+8;
+  const sumL=doc.splitTextToSize(pdfTxt(LAST.sum),W-2*M); doc.setTextColor(70); doc.text(pdfTxt(LAST.sum),M,y+34,{maxWidth:W-2*M,align:"justify"}); y+=34+sumL.length*13+8;
   doc.autoTable({startY:y,head:[["#","Cenário","Impostos"+(LAST.unit?" /ano":""),"Taxa efetiva","Líquido"+LAST.unit]],
     body:R.map((r,i)=>[i+1,pdfTxt(r.name+(r.tag?`  [${r.tag}]`:"")+(r.retido?" (fica na sociedade)":"")),pdfTxt(eur(r.taxes)),pdfTxt(r.eff==null?"-":pct(r.eff)),pdfTxt(eur(r.net))]),
     styles:{fontSize:9.5,cellPadding:5},headStyles:{fillColor:blue},columnStyles:{0:{cellWidth:22},2:{halign:"right"},3:{halign:"right"},4:{halign:"right",fontStyle:"bold"}},margin:{left:M,right:M}});
-  doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Premissas e dados de entrada","Valor"]],
-    body:inputsRows().map(r=>r[2]?[{content:pdfTxt(r[0]),colSpan:2,styles:{fontStyle:"bold",fillColor:r[2]==="h"?[218,229,244]:[240,243,247]}}]:[pdfTxt(r[0]),pdfTxt(typeof r[1]==="number"?(/meses|anos|Prazo|%/.test(r[0])?r[1].toLocaleString("pt-PT"):eur(r[1])):r[1])]),
-    styles:{fontSize:9,cellPadding:4},headStyles:{fillColor:blue},columnStyles:{1:{halign:"right",cellWidth:150}},margin:{left:M,right:M}});
+  // Premissas: agrupadas por secção; pessoas lado a lado; restantes em duas colunas de pares
+  const fmtV=(lab,v)=>pdfTxt(typeof v==="number"?(/meses|anos|Prazo|%|Meses/.test(lab)?v.toLocaleString("pt-PT"):eur(v)):String(v));
+  const groups=[]; let cur=null, step="";
+  inputsRows().forEach(r=>{ if(r[2]==="h"){ step=r[0]; cur=null; groups.push({title:r[0],step:true,items:[]}); }
+    else if(r[2]==="s"){ cur={title:r[0],items:[]}; groups.push(cur); }
+    else { if(!cur){ cur={title:"",items:[]}; groups.push(cur); } cur.items.push([r[0],r[1]]); } });
+  doc.setFont("helvetica","bold"); doc.setFontSize(13); doc.setTextColor(...blue);
+  let yy=doc.lastAutoTable.finalY+30; if(yy>doc.internal.pageSize.getHeight()-80){ doc.addPage(); yy=50; } doc.text("Premissas e dados de entrada",M,yy); yy+=8;
+  const lab={fontStyle:"normal",textColor:[70,80,95]}, val={fontStyle:"bold",halign:"right",textColor:[15,23,34]};
+  const p1=groups.find(g=>g.title==="Pessoa 1"), p2=groups.find(g=>g.title==="Pessoa 2");
+  const PH=doc.internal.pageSize.getHeight(), room=need=>{ if(yy+need>PH-60){ doc.addPage(); yy=34; } };
+  groups.forEach(g=>{
+    if(g!==p2&&(g.step||g.items.length)) room(g.step?90:70);
+    if(g.step){ doc.autoTable({startY:yy+10,body:[[{content:pdfTxt(g.title),styles:{fontStyle:"bold",fontSize:11,textColor:[255,255,255],fillColor:blue}}]],theme:"plain",styles:{cellPadding:6},margin:{left:M,right:M}}); yy=doc.lastAutoTable.finalY; return; }
+    if(g===p2) return;
+    if(g===p1){ const rows=p1.items.map((it,i)=>[{content:pdfTxt(it[0]),styles:lab},{content:fmtV(it[0],it[1]),styles:val},...(p2?[{content:fmtV(it[0],(p2.items[i]||["",""])[1]),styles:val}]:[])]);
+      doc.autoTable({startY:yy+6,head:[["",pdfTxt("Pessoa 1"),...(p2?[pdfTxt("Pessoa 2")]:[])]],body:rows,theme:"grid",styles:{fontSize:9.5,cellPadding:5,lineColor:[210,216,224]},
+        headStyles:{fillColor:[218,229,244],textColor:[22,74,143],halign:"right"},columnStyles:{0:{cellWidth:(W-2*M)*(p2?.46:.6)}},margin:{left:M,right:M}}); yy=doc.lastAutoTable.finalY; return; }
+    if(!g.items.length) return;
+    const body=[]; for(let i=0;i<g.items.length;i+=2){ const a=g.items[i], b=g.items[i+1];
+      body.push([{content:pdfTxt(a[0]),styles:lab},{content:fmtV(a[0],a[1]),styles:val},...(b?[{content:pdfTxt(b[0]),styles:lab},{content:fmtV(b[0],b[1]),styles:val}]:[{content:"",colSpan:2}])]); }
+    doc.autoTable({startY:yy+6,head:g.title?[[{content:pdfTxt(g.title),colSpan:4,styles:{fillColor:[240,243,247],textColor:[22,74,143],fontStyle:"bold"}}]]:undefined,body,theme:"grid",
+      styles:{fontSize:9.5,cellPadding:5,lineColor:[210,216,224],valign:"middle"},columnStyles:{0:{cellWidth:(W-2*M)*.30},1:{cellWidth:(W-2*M)*.20},2:{cellWidth:(W-2*M)*.30},3:{cellWidth:(W-2*M)*.20}},margin:{left:M,right:M}});
+    yy=doc.lastAutoTable.finalY; });
   R.forEach(r=>{ doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[[pdfTxt(r.name),pdfTxt(eur(r.net)+LAST.unit)]],
     body:r.lines.map(x=>x.h?[{content:pdfTxt(txt(x.h).toUpperCase()),colSpan:2,styles:{fontStyle:"bold",textColor:[60,70,85],fillColor:[240,243,247]}}]:[pdfTxt(txt(x.l)),{content:pdfTxt((x.v<0?"- ":"")+eur(Math.abs(x.v))),styles:{fontStyle:x.c==="tot"?"bold":"normal"}}]),
     styles:{fontSize:8.8,cellPadding:3.5},headStyles:{fillColor:[60,70,85]},columnStyles:{1:{halign:"right",cellWidth:110}},margin:{left:M,right:M},rowPageBreak:"avoid"}); });
   doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Notas da simulação"]],body:[...LAST.notes.map(n=>[pdfTxt(txt(n))]),[{content:pdfTxt("Aviso: "+DISC),styles:{fontStyle:"bold"}}]],
-    styles:{fontSize:9,cellPadding:5},headStyles:{fillColor:amber},margin:{left:M,right:M}});
-  const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui aconselhamento profissional · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
+    styles:{fontSize:9.5,cellPadding:6,halign:"justify"},headStyles:{fillColor:amber,halign:"left"},margin:{left:M,right:M}});
+  const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui o aconselhamento de contabilista, advogado, consultor imobiliário e mediador de crédito · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
   msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`,doc.output("blob"));
 }
 $("exp-xlsx").addEventListener("click",exportXlsx);
