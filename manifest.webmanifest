@@ -1,0 +1,18 @@
+{
+  "name": "Simulador Imobiliário PT",
+  "short_name": "Simulador PT",
+  "description": "Compara impostos de compra e venda ou cedência de posição de imóveis em Portugal: pessoa singular, empresário individual e sociedade.",
+  "lang": "pt-PT",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f3f5f8",
+  "theme_color": "#1d4f91",
+  "categories": ["finance", "business", "productivity"],
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
