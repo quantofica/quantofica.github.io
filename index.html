@@ -294,6 +294,13 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
     <div class="f"><label for="resc">Escritura e registos (€)</label><input id="resc" type="number" min="0" step="100"></div>
     <div class="f"><label>IMT + Imposto do Selo<small>Pagos uma vez, na compra · <a href="#nota-imt">regras</a></small></label><div class="calc" id="o-rimt">—</div></div>
   </fieldset>
+  <fieldset><legend>Financiamento</legend>
+    <div class="f"><label for="fin">Forma de pagamento</label><select id="fin"><option value="pronto">A pronto</option><option value="cred">Com crédito</option></select></div>
+    <div class="f rfin"><label for="fmont">Montante do empréstimo (€)</label><input id="fmont" type="number" min="0" step="1000"></div>
+    <div class="f rfin"><label for="ftaxa">Taxa de juro anual (%)<small>TAN: Euribor mais spread</small></label><input id="ftaxa" type="number" min="0" step="0.05"></div>
+    <div class="f rfin"><label for="fprazo">Prazo (anos)</label><input id="fprazo" type="number" min="1" max="40" step="1"></div>
+    <div class="f rfin"><label>Prestação mensal<small id="o-prest-note">Juros e capital no ano simulado</small></label><div class="calc" id="o-prest">—</div></div>
+  </fieldset>
   <fieldset><legend>Obras antes de arrendar</legend>
     <div class="f"><label for="robras">Faz obras antes de arrendar?</label><select id="robras"><option value="sim">Sim</option><option value="nao">Não</option></select></div>
     <div class="f rob"><label for="robv">Obras, sem IVA (€)</label><input id="robv" type="number" min="0" step="1000"></div>
@@ -313,7 +320,6 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
     <div class="f"><label for="manut">Manutenção corrente (€)</label><input id="manut" type="number" min="0" step="50"></div>
     <div class="f"><label for="gestao">Gestão do arrendamento (% da renda)<small>Acresce IVA de 23%</small></label><input id="gestao" type="number" min="0" step="0.5"></div>
     <div class="f"><label for="imitx">Taxa de IMI do município (%)<small>Entre 0,3% e 0,45%</small></label><input id="imitx" type="number" min="0.3" max="0.45" step="0.005"></div>
-    <div class="f"><label for="juros">Juros do crédito no ano (€)<small>Dedutíveis só na sociedade e no empresário</small></label><input id="juros" type="number" min="0" step="100"></div>
   </fieldset>
   </div>
 
@@ -481,7 +487,10 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
         <li><b>Sociedade e empresário:</b> deduzem juros e amortizam o edifício a 2% ao ano, excluindo 25% do valor, que corresponde ao terreno (Decreto Regulamentar 25/2009). A amortização reduz o imposto, mas não sai do bolso, por isso o líquido em dinheiro é maior do que o lucro.</li>
         <li><b>AIMI (art. 135.º-A e seguintes do CIMI):</b> a sociedade paga 0,4% do VPT de imóveis habitacionais, sem dedução. Pessoas singulares só pagam acima de 600.000 € de VPT (1.200.000 € em tributação conjunta), considerando apenas este imóvel.</li>
         <li><b>Residente no Brasil:</b> as rendas são tributadas em Portugal e de novo no Brasil, pela tabela progressiva até 27,5%, com crédito do imposto português. Uma sociedade portuguesa de arrendamento tem sobretudo rendimentos passivos; o sócio residente no Brasil é tributado lá todos os anos a 15% sobre o lucro, com crédito do IRC, mesmo sem distribuição (Lei 14.754/2023).</li>
-        <li><b>Não incluídos:</b> a venda futura do imóvel e a respetiva mais-valia, prejuízos fiscais reportáveis e o Imposto do Selo do crédito.</li>
+        <li><b>Crédito à habitação:</b> a prestação mensal é calculada pelo método francês (prestação constante). Divide-se em juros, que são custo, e capital, que reduz a dívida mas não é custo em nenhum cenário. Os juros só reduzem o imposto na sociedade e no empresário; em nome próprio não são dedutíveis às rendas (art. 41.º do CIRS). O capital amortizado sai do dinheiro do ano em todos os cenários.</li>
+        <li><b>Imposto do Selo do crédito:</b> 0,6% do montante em empréstimos de 5 ou mais anos (verba 17.1.1 da Tabela Geral), pago uma vez e somado ao investimento, e 4% sobre os juros (verba 17.3.1), incluído nos juros do ano.</li>
+        <li><b>Rentabilidade:</b> com crédito, o simulador mostra a rentabilidade sobre o investimento total e sobre o capital próprio, isto é, o dinheiro que o investidor pôs do seu bolso.</li>
+        <li><b>Não incluídos:</b> a venda futura do imóvel e a respetiva mais-valia, comissões bancárias, seguros de vida do crédito e a dedução de prejuízos de anos anteriores.</li>
       </ul>
     </details>
     <details id="nota-res">
@@ -528,10 +537,10 @@ const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"
   cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"B",
   casal:"sim",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:"2026-09-01",
-  rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,juros:0,
+  rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
   pagas:[{d:"2026-03-02",desc:"Sinal",v:25000},{d:"2026-06-15",desc:"Reforço do sinal",v:10000},{d:"2026-12-15",desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
   recebidas:[{d:"2026-09-01",desc:"Assinatura da cedência",v:20000},{d:"2026-11-30",desc:"Na escritura",v:45000}]};
-const KEY="sim-imob-pt-v6";
+const KEY="sim-imob-pt-v7";
 const LISTS=["pagas","recebidas"];
 const ids=Object.keys(DEF).filter(k=>k!=="mode"&&!LISTS.includes(k));
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -556,7 +565,7 @@ const after=(t,dc)=>!!(dc&&t.d&&t.d>dc);
 const sumL=L=>L.reduce((a,t)=>a+(parseFloat(t.v)||0),0);
 const $=id=>document.getElementById(id);
 const eur=v=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(Math.round(v));
-const pct=v=>isFinite(v)?(v*100).toLocaleString("pt-PT",{maximumFractionDigits:1})+"%":"—";
+const pct=v=>{ if(!isFinite(v)) return "—"; const r=Math.round(v*1000)/10; return (r===0?0:r).toLocaleString("pt-PT",{maximumFractionDigits:1})+"%"; };
 
 /* IRS 2026, art. 68.º CIRS (limites atualizados em 3,51%) + taxa adicional de solidariedade */
 const LIM=[8342,12587,17838,23089,29397,43090,46566,86634,Infinity];
@@ -623,9 +632,15 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   const obras=S.robras==="sim", obrasT=obras?S.robv*(1+parseFloat(S.riva)):0;
   document.querySelectorAll&&document.querySelectorAll(".rob").forEach(e=>e.hidden=!obras);
   const cons=obras&&S.rtipo==="cons", benef=obras&&S.rtipo==="benef", y1=S.rano==="1";
+  const fin=S.fin==="cred", M=fin?Math.max(0,S.fmont):0, rm=(S.ftaxa||0)/100/12, nm=Math.max(1,Math.round((S.fprazo||1)*12));
+  document.querySelectorAll&&document.querySelectorAll(".rfin").forEach(e=>e.hidden=!fin);
+  const pmt=M?(rm?M*rm/(1-Math.pow(1+rm,-nm)):M/nm):0, yr=S.rano==="1"?1:2;
+  let bal=M, jurosB=0, capK=0; for(let m=1;m<=yr*12&&m<=nm;m++){const i=bal*rm, k=pmt-i; if(m>(yr-1)*12){jurosB+=i; capK+=k;} bal-=k;}
+  const juros=jurosB*1.04, isCred=(M&&S.fprazo>=5)?M*.006:(M?M*.005:0);
+  if($("o-prest")){ $("o-prest").textContent=fin?eur(pmt):"—"; $("o-prest-note").textContent=fin?`No ${yr===1?"1.º ano":"2.º ano"}: juros ${eur(juros)} (com Selo de 4%), capital ${eur(capK)}`:"Juros e capital no ano simulado"; }
   const rendaA=S.renda*S.ocup, gest=rendaA*S.gestao/100*1.23, imi=vpt*S.imitx/100;
   const opex=S.cond+S.seguro+S.manut+gest;
-  const preTax=rendaA-opex-S.juros;                      // antes de IMI e impostos sobre o rendimento
+  const preTax=rendaA-opex-juros;                      // antes de IMI e impostos sobre o rendimento
   const consY1=(y1&&cons)?obrasT:0;
   const rateD={"0":.25,"5":.15,"10":.10,"20":.05}[S.dur]||.25;
   const rateF=acess?0:(moderate?Math.min(.10,rateD):rateD);
@@ -634,8 +649,8 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   const JB=A.base+B.base, incJ=add=>add<=0?0:2*irs((JB+add)/2)-2*irs(JB/2);
   const brTop=(p,income,ptTax,rate,what)=>{ if(!p.br||income<=0) return null; const cred=Math.min(ptTax,rate*income), t=Math.max(0,rate*income-ptTax);
     return {t,line:L(`Imposto no Brasil de ${p.name}: ${pct(rate)} sobre ${eur(income)} (${what}) − crédito de ${eur(cred)}`,-t,"tax")}; };
-  const invest=x=>S.rcompra+S.resc+obrasT+is+x;
-  const yieldL=(net,imtX)=>L(`Rentabilidade líquida: ${pct(net/invest(imtX))} sobre ${eur(invest(imtX))} investidos`,net,"sub");
+  const invest=x=>S.rcompra+S.resc+obrasT+is+isCred+x;
+  const yieldL=(net,imtX)=>({l:"__Y__",v:0,c:"sub",imtX});
   const opexLines=()=>[L("Rendas recebidas ("+S.ocup+" meses × "+eur(S.renda)+")",rendaA),...(S.cond?[L("− Condomínio",-S.cond)]:[]),...(S.seguro?[L("− Seguro",-S.seguro)]:[]),
     ...(S.manut?[L("− Manutenção corrente",-S.manut)]:[]),...(gest?[L("− Gestão do arrendamento com IVA",-gest)]:[]),L("− IMI",-imi)];
   // ----- Pessoa singular (categoria F) -----
@@ -652,7 +667,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
       const b=brTop(o.p,g,t,.275,"rendas"); if(b){brT+=b.t; tl.push(b.line);} });
     const annual=imi+aimi+irsT+brT, net=preTax-annual;
     const lines=[hd("Renda líquida para IRS (categoria F)"),...opexLines(),...(consY1?[L("− Obras de conservação antes do arrendamento",-consY1)]:[]),
-      ...(S.juros?[L("Juros do crédito: não dedutíveis em categoria F",0,"sub")]:[]),...(benef?[L("Obras de beneficiação: não dedutíveis às rendas",0,"sub")]:[]),
+      ...(juros?[L("Juros do crédito: não dedutíveis em categoria F",0,"sub")]:[]),...(benef?[L("Obras de beneficiação: não dedutíveis às rendas",0,"sub")]:[]),
       L("= Renda líquida tributável",netF,"tot"),...(netF<0?[L(`Perda de ${eur(-netF)}, dedutível às rendas dos 6 anos seguintes (art. 55.º do CIRS)`,0,"sub")]:[]),hd("Imposto"),...tl,...(aimi?[L("− AIMI",-aimi,"tax")]:[]),
       hd("Dinheiro no ano"),L("Rendas menos despesas, juros e IMI",preTax-imi),L("− IRS"+(brT?" e imposto no Brasil":"")+(aimi?" e AIMI":""),-(irsT+brT+aimi)),L("= Líquido por ano",net,"tot"),yieldL(net,imtX),
       hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtX+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",irsT),...(brT?[L("Imposto no Brasil",brT)]:[]),L("= Total anual",annual,"tot")];
@@ -664,7 +679,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   // ----- Sociedade -----
   const imtCo=imtN, aimiCo=vpt*.004;
   const deprCo=((S.rcompra+S.resc+imtCo+is)*.75+(benef?obrasT:0))*.02;
-  const profitAcc=rendaA-opex-imi-S.juros-aimiCo-fixed-deprCo-consY1;
+  const profitAcc=rendaA-opex-imi-juros-aimiCo-fixed-deprCo-consY1;
   const taxable=profitAcc-(rendaA-rentTax);
   const ircV=irc(taxable,geral), derV=Math.max(0,taxable)*der;
   const cashCo=preTax-imi-aimiCo-fixed-ircV-derV;
@@ -672,7 +687,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:.5},{p:B,share:.5}];
   const shName=sh.map(o=>o.p.name).join(" e ");
   let brCo=0; const brCoL=[]; sh.forEach(o=>{const inc_=Math.max(0,profitAcc)*o.share, t=Math.max(0,.15*inc_-(ircV+derV)*o.share); if(o.p.br){brCo+=t; brCoL.push(L(`Imposto no Brasil de ${o.p.name}: 15% sobre ${eur(inc_)} de lucro (Lei 14.754/2023) − crédito do IRC`,-t,"tax"));}});
-  const coLines=[hd("Lucro tributável (IRC)"),...opexLines(),...(S.juros?[L("− Juros do crédito",-S.juros)]:[]),L("− AIMI (0,4% do VPT)",-aimiCo),L("− Custos fixos da sociedade",-fixed),
+  const coLines=[hd("Lucro tributável (IRC)"),...opexLines(),...(juros?[L("− Juros do crédito",-juros)]:[]),L("− AIMI (0,4% do VPT)",-aimiCo),L("− Custos fixos da sociedade",-fixed),
     L("− Amortização do imóvel (2% sobre 75% do custo"+(benef?" e obras":"")+")",-deprCo),...(consY1?[L("− Obras de conservação (gasto do 1.º ano)",-consY1)]:[]),L("= Lucro contabilístico",profitAcc,"tot"),
     ...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),L("= Lucro tributável",taxable,"tot"),...(taxable<0?[L(`Prejuízo fiscal de ${eur(-taxable)}, dedutível aos lucros dos anos seguintes (art. 52.º do CIRC)`,0,"sub")]:[]),
     hd("IRC e derrama"),L(`− IRC (15% até 50.000 €, depois ${pct(geral)})`,-ircV,"tax"),L(`− Derrama municipal ${pct(der)}`,-derV,"tax"),...brCoL];
@@ -696,29 +711,37 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
   const eni=(key,p,name)=>{
     const imtE=imtOf(p), aimi=aimiInd(vpt,joint?1200000:600000);
     const depr=((S.rcompra+S.resc+imtE+is)*.75+(benef?obrasT:0))*.02;
-    const prof=rendaA-opex-imi-S.juros-aimi-fixed-depr-consY1, tx=Math.max(0,prof-(rendaA-rentTax));
+    const prof=rendaA-opex-imi-juros-aimi-fixed-depr-consY1, tx=Math.max(0,prof-(rendaA-rentTax));
     let t, line; if(joint){t=incJ(tx); line=L(`IRS do casal (conjunta): ${eur(JB)} → ${eur(JB+tx)}`,-t,"tax");} else if(p.nr){t=.25*tx; line=L(`IRS de ${p.name} (não residente): 25% sobre ${eur(tx)}`,-t,"tax");} else {t=inc(p.base,tx); line=L(`IRS de ${p.name}: ${eur(p.base)} → ${eur(p.base+tx)} de rendimento coletável`,-t,"tax");}
     const b=brTop(p,Math.max(0,prof),t,.275,"rendimento de atividade"), br=b?b.t:0;
     const net=preTax-imi-aimi-fixed-t-br;
     sc.push({key,name,det:`Na compra: IMT + Selo ${eur(imtE+is)} · lucro 100% englobado; sem Segurança Social`,taxes:imi+aimi+t+br,net,
-      lines:[hd("Lucro (categoria B, contabilidade organizada)"),...opexLines(),...(S.juros?[L("− Juros do crédito",-S.juros)]:[]),...(aimi?[L("− AIMI",-aimi)]:[]),L("− Contabilidade",-fixed),
+      lines:[hd("Lucro (categoria B, contabilidade organizada)"),...opexLines(),...(juros?[L("− Juros do crédito",-juros)]:[]),...(aimi?[L("− AIMI",-aimi)]:[]),L("− Contabilidade",-fixed),
         L("− Amortização do imóvel",-depr),...(consY1?[L("− Obras de conservação (1.º ano)",-consY1)]:[]),...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),
         L("= Lucro tributável (100% englobado)",tx,"tot"),hd("Imposto"),line,...(b?[b.line]:[]),
         hd("Dinheiro no ano"),L("= Líquido por ano (antes de Segurança Social)",net,"tot"),yieldL(net,imtE),
         hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtE+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),L("= Total anual",imi+aimi+t+br,"tot")]});};
   if(joint) eni("b",A,"Empresário em nome individual (casal, tributação conjunta)");
   else { eni("b",A,`Empresário em nome individual (${A.name})`); if(casal) eni("b2",B,`Empresário em nome individual (${B.name})`); }
+  // Capital do empréstimo e rentabilidade
+  sc.forEach(s=>{ const i=s.lines.findIndex(x=>x.c==="tot"&&/^= (Líquido|Fica)/.test(x.l));
+    if(capK>0&&i>-1){ s.lines.splice(i,0,L("− Capital do empréstimo amortizado no ano",-capK)); s.lines[i+1].v-=capK; s.net-=capK; }
+    const y=s.lines.find(x=>x.l==="__Y__"); if(y){ const inv=invest(y.imtX), eq=inv-M;
+      y.l=`Rentabilidade líquida: ${pct(s.net/inv)} sobre ${eur(inv)} de investimento total`+(M?`; ${eq>0?pct(s.net/eq):"—"} sobre ${eur(eq)} de capital próprio`:""); y.v=s.net; }
+    if(M){ s.lines.forEach(x=>{ if(/^IMT e Imposto do Selo \(na compra/.test(x.l)){ x.l="IMT, Imposto do Selo e Selo do crédito (na compra, uma vez)"; x.v+=isCred; } }); }
+  });
   // Resumo e notas
   $("o-rimt").textContent=eur(imtN)+" + "+eur(is);
-  $("sum").innerHTML=`Rendas por ano <b>${eur(rendaA)}</b> · Despesas e juros <b>${eur(opex+S.juros)}</b> · Resultado antes de IMI e impostos <b>${eur(preTax)}</b> · Investimento <b>${eur(invest(imtN))}</b>${obrasT?` (inclui obras de ${eur(obrasT)})`:""}`;
+  $("sum").innerHTML=`Rendas por ano <b>${eur(rendaA)}</b> · Despesas e juros <b>${eur(opex+juros)}</b> · Resultado antes de IMI e impostos <b>${eur(preTax)}</b> · Investimento <b>${eur(invest(imtN))}</b>${obrasT?` (inclui obras de ${eur(obrasT)})`:""}${M?` · Crédito <b>${eur(M)}</b>, prestação <b>${eur(pmt)}/mês</b> · Capital próprio <b>${eur(invest(imtN)-M)}</b>`:""}`;
   if(vptEst) notes.push(`<span class="warn"><b>VPT em falta:</b> o IMI e o AIMI foram estimados com um VPT de 50% do preço. Indique o VPT da caderneta predial para um valor correto.</span>`);
   if(S.regime!=="livre"&&S.renda>2300) notes.push(`<span class="warn"><b>Renda acima de 2.300 €/mês:</b> não cumpre o limite de renda moderada; o simulador aplica as regras da renda livre.</span>`);
   if(acess) notes.push(`<b>Arrendamento acessível:</b> só se aplica se a renda não ultrapassar o limite do concelho, cerca de 80% da mediana de rendas do INE, e o contrato for registado na plataforma do IHRU. Ver <a href="#nota-arr">nota 15</a>.`);
   if(moderate&&!acess) notes.push(`<b>Renda moderada:</b> taxa de IRS de 10% e 50% das rendas em IRC, para rendimentos de 2026 a 2029 (art. 45.º-C do EBF).`);
-  if(S.juros) notes.push(`<b>Crédito:</b> os juros (${eur(S.juros)}) reduzem o imposto na sociedade e no empresário, mas não em nome próprio (categoria F).`);
+  if(M) notes.push(`<b>Crédito de ${eur(M)} a ${S.ftaxa}% em ${S.fprazo} anos:</b> prestação de ${eur(pmt)} por mês (${eur(pmt*12)} por ano). No ano simulado, ${eur(juros)} são juros, incluindo o Selo de 4%, que reduzem o imposto só na sociedade e no empresário; ${eur(capK)} são capital, que não é custo mas sai do dinheiro em todos os cenários. O Selo do crédito (${eur(isCred)}) soma ao investimento.`);
+  if(M&&rendaA<pmt*12) notes.push(`<span class="warn"><b>Rendas abaixo das prestações:</b> as rendas do ano (${eur(rendaA)}) não cobrem as prestações (${eur(pmt*12)}).</span>`);
   if(obras) notes.push(cons?(y1?`<b>Obras de conservação:</b> deduzidas às rendas no 1.º ano em nome próprio (feitas nos 24 meses antes do contrato) e gasto do ano na sociedade. Mude para "Ano típico" para ver os anos seguintes.`:`<b>Obras de conservação:</b> já deduzidas no 1.º ano; no ano típico não têm efeito.`):`<b>Obras de beneficiação:</b> não se deduzem às rendas em nome próprio; na sociedade e no empresário somam ao custo do imóvel e são amortizadas a 2% ao ano.`);
   notes.push(`<b>Sociedade:</b> paga AIMI de 0,4% do VPT (${eur(aimiCo)} por ano), que as pessoas singulares só pagam acima de 600.000 € de VPT. A amortização do imóvel (${eur(deprCo)} por ano) reduz o IRC sem sair do bolso.`);
-  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"/ano",assume:"um ano de arrendamento; IMT e Imposto do Selo contados à parte, no investimento; amortização a 2% ao ano sobre 75% do custo; venda futura não incluída"});
+  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"/ano",assume:"um ano de arrendamento; IMT e Imposto do Selo contados à parte, no investimento; líquido depois de impostos e da prestação do crédito; amortização a 2% ao ano sobre 75% do custo; venda futura não incluída"});
 }
 
 function calc(){
