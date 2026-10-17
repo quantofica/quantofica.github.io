@@ -705,7 +705,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   // Mantém os dois cenários de empresário em nome individual juntos, na posição do mais bem classificado
   const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
   if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), eb=order[iB], eb2=order[iB2]; order.splice(Math.max(iB,iB2),1); order.splice(Math.min(iB,iB2),1); order.splice(first,0,eb,eb2);}
-  LAST={order,best1,best2,preTax,notes,unit,sum:$("sum").textContent};
+  LAST={order,best1,best2,preTax,notes,unit,sum:$("sum").textContent,sumPairs:$("sum").innerHTML.split(" · ").map(part=>{const d=document.createElement("div"); d.innerHTML=part; const bs=[...d.querySelectorAll("b")].map(b=>b.textContent); d.querySelectorAll("b").forEach(b=>b.remove()); return [d.textContent.replace(/\s+/g," ").replace(/[\s,]+$/,"").trim(), bs.join(" · ")];}).filter(x=>x[0]||x[1])};
   $("rows").innerHTML=order.map(s=>{
     const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
     const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
@@ -1062,7 +1062,7 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
   const buf=X.write(wb,{bookType:"xlsx",type:"array"});
   msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
 }
-const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
+const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
 async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o PDF…";
   try{ await loadLibs("pdf"); }catch(e){ msg.textContent="Não foi possível carregar o gerador de PDF. Verifique a ligação à internet."; return; }
   const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}), st=stamp(), R=resultsRows(), W=doc.internal.pageSize.getWidth(), M=40;
@@ -1071,10 +1071,27 @@ async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textCo
   doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40); doc.text(pdfTxt(`${OPN[state.mode]} · simulação de ${st.human}`),M,68);
   doc.setDrawColor(...amber); doc.setFillColor(255,243,220); const dl=doc.splitTextToSize(pdfTxt(DISC),W-2*M-20); doc.roundedRect(M,80,W-2*M,dl.length*13+16,4,4,"FD");
   doc.setTextColor(60,40,0); doc.setFontSize(10); doc.text(pdfTxt(DISC),M+10,96,{maxWidth:W-2*M-20,align:"justify"});
-  let y=80+dl.length*13+32;
-  doc.setTextColor(20); doc.setFont("helvetica","bold"); doc.setFontSize(12.5); doc.text(pdfTxt(`Melhor cenário: ${txt(LAST.best1.name)} (${eur(LAST.best1.net)}${LAST.unit})`),M,y);
-  doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.text(pdfTxt(`Melhor a levantar: ${txt(LAST.best2.name)} (${eur(LAST.best2.net)}${LAST.unit})`),M,y+16);
-  const sumL=doc.splitTextToSize(pdfTxt(LAST.sum),W-2*M); doc.setTextColor(70); doc.text(pdfTxt(LAST.sum),M,y+34,{maxWidth:W-2*M,align:"justify"}); y+=34+sumL.length*13+8;
+  let y=80+dl.length*13+30;
+  // Cartões do melhor cenário
+  const boxW=(W-2*M-12)/2, same=LAST.best1===LAST.best2;
+  const card=(x,w,label,sc,fill,stroke,extra)=>{ doc.setFont("helvetica","bold"); doc.setFontSize(13); const nm=doc.splitTextToSize(pdfTxt(txt(sc.name)),w-24); const h=34+nm.length*16+30+(extra?14:0);
+    doc.setFillColor(...fill); doc.setDrawColor(...stroke); doc.roundedRect(x,y,w,h,5,5,"FD");
+    doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.setTextColor(90,100,115); doc.text(pdfTxt(label.toUpperCase()),x+12,y+18);
+    doc.setFontSize(13); doc.setTextColor(15,23,34); doc.text(nm,x+12,y+36);
+    doc.setFontSize(18); doc.setTextColor(...stroke); doc.text(pdfTxt(eur(sc.net)+(LAST.unit?" por ano":"")),x+12,y+36+nm.length*16+16);
+    if(extra){ doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(90,100,115); doc.text(pdfTxt(extra),x+12,y+h-10); }
+    return h; };
+  const green=[14,138,73];
+  let hb;
+  if(same) hb=card(M,W-2*M,"Melhor cenário",LAST.best1,[226,242,233],green,"É também o melhor cenário para levantar o dinheiro.");
+  else hb=Math.max(card(M,boxW,"Melhor cenário",LAST.best1,[226,242,233],green,LAST.best1.retido?"O valor fica na sociedade.":""),card(M+boxW+12,boxW,"Melhor se levantar o dinheiro",LAST.best2,[255,255,255],blue,""));
+  y+=hb+18;
+  // Resumo da operação em pares campo/valor
+  const SP=LAST.sumPairs||[], sb=[]; for(let i=0;i<SP.length;i+=2){ const a=SP[i], b=SP[i+1];
+    sb.push([{content:pdfTxt(a[0]),styles:{textColor:[70,80,95]}},{content:pdfTxt(a[1]),styles:{fontStyle:"bold",halign:"right"}},...(b?[{content:pdfTxt(b[0]),styles:{textColor:[70,80,95]}},{content:pdfTxt(b[1]),styles:{fontStyle:"bold",halign:"right"}}]:[{content:"",colSpan:2}])]); }
+  doc.autoTable({startY:y,head:[[{content:"Resumo da operação",colSpan:4,styles:{fillColor:[240,243,247],textColor:blue,fontStyle:"bold"}}]],body:sb,theme:"grid",
+    styles:{fontSize:9.5,cellPadding:5,lineColor:[210,216,224],valign:"middle"},columnStyles:{0:{cellWidth:(W-2*M)*.30},1:{cellWidth:(W-2*M)*.20},2:{cellWidth:(W-2*M)*.30},3:{cellWidth:(W-2*M)*.20}},margin:{left:M,right:M}});
+  y=doc.lastAutoTable.finalY+16;
   doc.autoTable({startY:y,head:[["#","Cenário","Impostos"+(LAST.unit?" /ano":""),"Taxa efetiva","Líquido"+LAST.unit]],
     body:R.map((r,i)=>[i+1,pdfTxt(r.name+(r.tag?`  [${r.tag}]`:"")+(r.retido?" (fica na sociedade)":"")),pdfTxt(eur(r.taxes)),pdfTxt(r.eff==null?"-":pct(r.eff)),pdfTxt(eur(r.net))]),
     styles:{fontSize:9.5,cellPadding:5},headStyles:{fillColor:blue},columnStyles:{0:{cellWidth:22},2:{halign:"right"},3:{halign:"right"},4:{halign:"right",fontStyle:"bold"}},margin:{left:M,right:M}});
