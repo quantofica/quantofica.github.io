@@ -105,9 +105,22 @@ table.cmp td{overflow-wrap:anywhere}
 .reset.danger.armed{background:var(--warn);color:var(--panel)}
 .exp-msg{flex-basis:100%;text-align:right;font-size:13.5px;color:var(--muted);min-height:1em}
 p,li,.notes>div,.sub,.legal p,.legal li,.win .s,.disc-top p,.disc-full p,.side-disc{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
-.add-tit{width:100%;padding:12px;font-size:15px;margin:0 0 16px}
+.add.add-tit{width:100%;padding:12px;font-size:15px;margin:0 0 16px;border-radius:10px}
 .pc-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .rm-tit{border:0;background:transparent;color:var(--warn);font:600 13px var(--body);cursor:pointer;text-transform:none;letter-spacing:0;padding:2px 0}
+.share{position:relative}
+.icon-btn{width:44px;height:44px;display:grid;place-items:center;border-radius:12px;border:1px solid var(--accent);background:var(--panel);color:var(--accent);cursor:pointer}
+.icon-btn:hover,.icon-btn[aria-expanded="true"]{background:var(--accent);color:var(--on-accent)}
+.share-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:40;min-width:250px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 12px 32px rgba(10,20,40,.18);padding:8px;display:grid;gap:2px}
+.share-menu .sm-h{margin:6px 10px 2px;font:600 11.5px var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--muted);text-align:left}
+.share-menu button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;color:var(--ink);font:500 15px var(--body);padding:10px;border-radius:10px;cursor:pointer;text-align:left}
+.share-menu button:hover,.share-menu button:focus-visible{background:var(--accent-soft)}
+.sm-i{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font:700 10.5px var(--body);background:var(--bg);color:var(--ink)}
+@media (max-width:640px){.share-menu{position:fixed;left:0;right:0;bottom:0;top:auto;min-width:0;border-radius:18px 18px 0 0;z-index:60;box-shadow:0 -10px 40px rgba(10,20,40,.28);
+  padding-top:10px;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .share-menu::before{content:"";width:40px;height:4px;border-radius:2px;background:var(--line);justify-self:center;margin-bottom:4px}
+  .share-menu button{padding:12px 10px;font-size:16px}}
+.sm-pdf{background:#c62828;color:#fff}.sm-xls{background:#107c41;color:#fff}.sm-mail{background:#1e63c6;color:#fff}.sm-wa{background:#25d366;color:#fff}
 .legal-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .legal-h h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0}
 table.mini{min-width:0;width:auto;margin-top:8px}
@@ -298,20 +311,64 @@ td .det{font-family:var(--body)}
   .dl{font-size:13.5px}
   .f label{font-size:14.5px}
 }
+
+/* ===== Acabamento profissional (v3) ===== */
+.sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:0 0 14px}
+.sp{display:flex;flex-direction:column;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.sp span{font-size:12.5px;color:var(--muted);text-align:left}
+.sp b{font:600 15px var(--mono);color:var(--ink);text-align:left}
+@media (max-width:640px){.sum{grid-template-columns:1fr 1fr}}
+.win.primary{padding:18px;border-width:2px}
+.win .v.hero{font-size:38px;letter-spacing:-.02em;line-height:1.1;margin:4px 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.chip{display:inline-flex;align-items:center;font:600 13px var(--body);color:var(--good);background:var(--panel);border:1px solid color-mix(in srgb,var(--good) 40%,transparent);border-radius:99px;padding:3px 10px}
+.seg-src{display:none!important}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px;min-width:0}
+.seg button{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:500 14px var(--body);padding:8px 6px;border-radius:7px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seg button.on{background:var(--panel);color:var(--accent);font-weight:700;box-shadow:0 1px 3px rgba(10,20,40,.16)}
+.seg button:focus-visible{outline:2px solid var(--accent)}
+.inp{position:relative;display:block;min-width:0}
+.inp input{padding-right:calc(14px + var(--uw,1.2em))}
+.inp::after{content:attr(data-u);position:absolute;right:10px;top:50%;transform:translateY(-50%);font:500 14px var(--body);color:var(--muted);pointer-events:none}
+.inp[data-u="anos"],.inp[data-u="meses"]{--uw:3.4em}
+.comp{margin:0 0 10px;padding:0 0 10px;border-bottom:1px solid var(--line)}
+.comp-h{font:600 12px var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--ink);margin-bottom:6px}
+.comp-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px;background:var(--line)}
+.comp-bar span{min-width:3px}
+.comp-leg{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;color:var(--muted)}
+.comp-leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.comp-leg b{color:var(--ink);font-family:var(--mono);font-weight:600}
+.ios-hint{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:50;display:flex;gap:10px;align-items:center;background:var(--ink);color:var(--panel);border-radius:14px;padding:12px 14px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.ios-hint p{margin:0;font-size:14px;text-align:left}
+.ios-hint button{border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer}
+@media (max-width:640px){.win .v.hero{font-size:32px} .seg button{font-size:13.5px;padding:9px 4px}}
 </style>
 </head>
 <body>
 
 
-<div class="wrap">
+<div class="wrap" lang="pt-PT">
 <header>
   <div>
     <h1>Simulador Imobiliário PT</h1>
     <p class="sub">Indique quem investe e os valores da operação, e compare a carga fiscal em nome próprio, em nome do cônjuge, como empresário individual ou através de sociedade. Regras de 2026 em Portugal, com o efeito no Brasil para residentes fiscais brasileiros.</p>
   </div>
   <div class="actions">
-    <button class="reset" id="exp-xlsx" type="button">Exportar Excel</button>
-    <button class="reset" id="exp-pdf" type="button">Exportar PDF</button>
+    <div class="share">
+      <button class="icon-btn" id="share-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="share-menu" aria-label="Exportar e partilhar" title="Exportar e partilhar">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
+      </button>
+      <div class="share-menu" id="share-menu" role="menu" hidden>
+        <p class="sm-h">Exportar</p>
+        <button type="button" role="menuitem" data-act="pdf"><span class="sm-i sm-pdf">PDF</span>Relatório em PDF</button>
+        <button type="button" role="menuitem" data-act="xlsx"><span class="sm-i sm-xls">XLS</span>Folha de cálculo Excel</button>
+        <p class="sm-h">Partilhar</p>
+        <button type="button" role="menuitem" data-act="mail"><span class="sm-i sm-mail"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>E-mail</button>
+        <button type="button" role="menuitem" data-act="wa"><span class="sm-i sm-wa"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.2-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></span>WhatsApp</button>
+        <button type="button" role="menuitem" data-act="copy"><span class="sm-i"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span>Copiar resumo</button>
+        <button type="button" role="menuitem" data-act="native" id="act-native" hidden><span class="sm-i">…</span>Outras apps</button>
+      </div>
+    </div>
     <button class="reset danger" id="reset" type="button">Repor valores a zero</button>
     <span class="exp-msg" id="exp-msg" role="status" aria-live="polite"></span>
   </div>
@@ -444,7 +501,7 @@ td .det{font-family:var(--body)}
 
 <section aria-live="polite" id="res">
   <div class="best">
-    <div class="win primary"><div class="k">Melhor se reinvestir</div><div class="n" id="b1n">—</div><div class="v" id="b1v">—</div><div class="s" id="b1s"></div></div>
+    <div class="win primary"><div class="k">Resultado líquido · melhor cenário</div><div class="n" id="b1n">—</div><div class="v hero" id="b1v">—</div><div class="chips"><span class="chip" id="b1d"></span><span class="chip" id="b1d2" hidden>Também é o melhor para levantar o dinheiro</span></div><div class="s" id="b1s"></div></div>
     <div class="win"><div class="k">Melhor se levantar o dinheiro</div><div class="n" id="b2n">—</div><div class="v" id="b2v">—</div><div class="s" id="b2s"></div></div>
   </div>
   <div class="panel">
@@ -712,10 +769,15 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
   if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), eb=order[iB], eb2=order[iB2]; order.splice(Math.max(iB,iB2),1); order.splice(Math.min(iB,iB2),1); order.splice(first,0,eb,eb2);}
   LAST={order,best1,best2,preTax,notes,unit,sum:$("sum").textContent,sumPairs:$("sum").innerHTML.split(" · ").map(part=>{const d=document.createElement("div"); d.innerHTML=part; const bs=[...d.querySelectorAll("b")].map(b=>b.textContent); d.querySelectorAll("b").forEach(b=>b.remove()); return [d.textContent.replace(/\s+/g," ").replace(/[\s,]+$/,"").trim(), bs.join(" · ")];}).filter(x=>x[0]||x[1])};
+  if(LAST.sumPairs.length) $("sum").innerHTML=LAST.sumPairs.map(p=>`<span class="sp"><span>${p[0]}</span><b>${p[1]}</b></span>`).join("");
   $("rows").innerHTML=order.map(s=>{
     const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
     const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
-    const det=s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
+    const comp=(()=>{ const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)); if(i<0) return ""; const parts=[];
+      for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c==="tot"||x.c==="sub"||!(x.v>0)) continue; parts.push([txt(x.l),x.v]); }
+      const tot=parts.reduce((a,x)=>a+x[1],0); if(!tot) return ""; const pal=["#1e63c6","#d06800","#0e8a49","#7a3fd0","#c2185b","#00808c","#5d4037"];
+      return `<div class="comp"><div class="comp-h">Composição dos impostos${unit?" no ano":""} · ${eur(tot)}</div><div class="comp-bar">${parts.map((x,k)=>`<span style="flex:${x[1]};background:${pal[k%pal.length]}" title="${x[0]}: ${eur(x[1])}"></span>`).join("")}</div><div class="comp-leg">${parts.map((x,k)=>`<span><i style="background:${pal[k%pal.length]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/tot)}</span>`).join("")}</div></div>`; })();
+    const det=comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
       <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
@@ -723,6 +785,8 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
       <tr class="drow" style="--sc:var(--c-${s.key})" id="d-${s.key}" ${open?"":"hidden"}><td colspan="4"><div class="calcbox">${det}</div></td></tr>`;}).join("");
   const dot=k=>`<span class="dot" style="--sc:var(--c-${k})"></span>`;
   $("b1n").innerHTML=dot(best1.key)+best1.name; $("b1v").textContent=eur(best1.net)+unit;
+  { const s2=sorted[1], dif=s2?best1.net-s2.net:0; $("b1d").textContent=!s2?"":(dif>=1?`+${eur(dif)}${unit} face ao 2.º melhor cenário`:`Empatado com: ${txt(s2.name)}`); $("b1d").hidden=!s2;
+    const same=best1===best2; $("b2n").closest(".win").hidden=same; $("b1d2").hidden=!same; }
   $("b1s").textContent=best1.retido?(unit?"Fica na sociedade para reinvestir ou amortizar o crédito.":"Fica na sociedade para a próxima operação."):"Disponível em nome dos titulares.";
   $("th-net").textContent=unit?"Líquido por ano":"Líquido disponível";
   $("mbn").innerHTML=dot(best1.key)+best1.name; $("mbv").textContent=eur(best1.net)+unit;
@@ -852,7 +916,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
   });
   // Resumo e notas
   $("o-rimt").textContent=eur(imtN)+" + "+eur(is);
-  $("sum").innerHTML=`Rendas por ano <b>${eur(rendaA)}</b> · Despesas e juros <b>${eur(opex+juros)}</b> · Resultado antes de IMI e impostos <b>${eur(preTax)}</b> · Investimento <b>${eur(invest(imtN))}</b>${obrasT?` (inclui obras de ${eur(obrasT)})`:""}${M?` · Crédito <b>${eur(M)}</b>, prestação <b>${eur(pmt)}/mês</b> · Capital próprio <b>${eur(invest(imtN)-M)}</b>`:""}`;
+  $("sum").innerHTML=`Rendas por ano <b>${eur(rendaA)}</b> · Despesas e juros <b>${eur(opex+juros)}</b> · Resultado antes de IMI e impostos <b>${eur(preTax)}</b> · Investimento <b>${eur(invest(imtN))}</b>${obrasT?` (inclui obras de ${eur(obrasT)})`:""}${M?` · Crédito <b>${eur(M)}</b> · Prestação mensal <b>${eur(pmt)}</b> · Capital próprio <b>${eur(invest(imtN)-M)}</b>`:""}`;
   if(vptEst) notes.push(`<span class="warn"><b>VPT em falta:</b> o IMI e o AIMI foram estimados com um VPT de 50% do preço. Indique o VPT da caderneta predial para um valor correto.</span>`);
   if(S.regime!=="livre"&&S.renda>2300) notes.push(`<span class="warn"><b>Renda acima de 2.300 €/mês:</b> não cumpre o limite de renda moderada; o simulador aplica as regras da renda livre.</span>`);
   if(acess) notes.push(`<b>Arrendamento acessível:</b> só se aplica se a renda não ultrapassar o limite do concelho, cerca de 80% da mediana de rendas do INE, e o contrato for registado na plataforma do IHRU. Ver <a href="#nota-arr">nota 15</a>.`);
@@ -1071,8 +1135,7 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
   msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
 }
 const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
-async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o PDF…";
-  try{ await loadLibs("pdf"); }catch(e){ msg.textContent="Não foi possível carregar o gerador de PDF. Verifique a ligação à internet."; return; }
+async function buildPdf(){ await loadLibs("pdf");
   const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}), st=stamp(), R=resultsRows(), W=doc.internal.pageSize.getWidth(), M=40;
   const blue=[22,74,143], amber=[154,91,0];
   doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...blue); doc.text("Simulador Imobiliário PT",M,50);
@@ -1133,13 +1196,59 @@ async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textCo
   doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Notas da simulação"]],body:[...LAST.notes.map(n=>[pdfTxt(txt(n))]),[{content:pdfTxt("Aviso: "+DISC),styles:{fontStyle:"bold"}}]],
     styles:{fontSize:9.5,cellPadding:6,halign:"justify"},headStyles:{fillColor:amber,halign:"left"},margin:{left:M,right:M}});
   const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui o aconselhamento de contabilista, advogado, consultor imobiliário e mediador de crédito · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
-  msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`,doc.output("blob"));
+  return {blob:doc.output("blob"),filename:`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`};
 }
+async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o PDF…";
+  let r; try{ r=await buildPdf(); }catch(e){ msg.textContent="Não foi possível criar o PDF. Verifique a ligação à internet."; return; }
+  msg.textContent=await saveFile(r.filename,r.blob); }
+function summaryText(){ if(!LAST) return ""; const st=stamp(), u=LAST.unit?" por ano":"";
+  const L=[`Simulação imobiliária – ${OPN[state.mode]} (${st.human})`,"",`Melhor cenário: ${txt(LAST.best1.name)} – ${eur(LAST.best1.net)}${u}`];
+  if(LAST.best2!==LAST.best1) L.push(`Melhor se levantar o dinheiro: ${txt(LAST.best2.name)} – ${eur(LAST.best2.net)}${u}`);
+  L.push("","Cenários (líquido | impostos):"); LAST.order.forEach((s,i)=>L.push(`${i+1}. ${txt(s.name)}: ${eur(s.net)}${u} | ${eur(s.taxes)}`));
+  if(LAST.sumPairs&&LAST.sumPairs.length){ L.push("","Resumo:"); LAST.sumPairs.forEach(p=>L.push(`• ${p[0]}: ${p[1]}`)); }
+  L.push("","Aviso: "+DISC); return L.join("\n").replace(/[\u202F\u00A0]/g," "); }
+function openLink(href){ const a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove(); }
+async function sharePdfNative(text){ if(!navigator.share||!navigator.canShare) return false;
+  try{ const r=await buildPdf(), f=new File([r.blob],r.filename,{type:"application/pdf"}); if(!navigator.canShare({files:[f]})) return false;
+    await navigator.share({files:[f],title:"Simulação imobiliária",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
+async function shareAct(act){ const msg=$("exp-msg"); closeMenu();
+  if(act==="pdf") return exportPdf(); if(act==="xlsx") return exportXlsx();
+  const text=summaryText();
+  if(act==="copy"){ try{ await navigator.clipboard.writeText(text); msg.textContent="Resumo copiado. Pode colá-lo em qualquer app."; }catch(e){ msg.textContent="Não foi possível copiar automaticamente nesta vista."; } return; }
+  if(act==="native"){ msg.textContent="A preparar o PDF…"; const ok=await sharePdfNative(text); msg.textContent=ok?"":"A partilha não está disponível neste dispositivo."; return; }
+  if(act==="mail"){ msg.textContent="A preparar o e-mail…"; if(await sharePdfNative(text)){ msg.textContent="Escolha a app de e-mail para enviar o PDF."; return; }
+    openLink("mailto:?subject="+encodeURIComponent("Simulação imobiliária – "+OPN[state.mode])+"&body="+encodeURIComponent(text+"\n\n(Exporte o PDF para o anexar.)"));
+    msg.textContent="Se o e-mail não abrir, use Copiar resumo."; return; }
+  if(act==="wa"){ openLink("https://wa.me/?text="+encodeURIComponent(text)); msg.textContent="A abrir o WhatsApp…"; return; } }
+function closeMenu(){ $("share-menu").hidden=true; $("share-btn").setAttribute("aria-expanded","false"); }
 $("add-tit").addEventListener("click",()=>{ $("casal").value="sim"; read(); calc(); const n=$("nB"); n&&n.focus(); });
 $("rm-tit").addEventListener("click",()=>{ $("casal").value="nao"; if(state.socio!=="A"){ $("socio").value="A"; } read(); calc(); });
-$("exp-xlsx").addEventListener("click",exportXlsx);
-$("exp-pdf").addEventListener("click",exportPdf);
+$("share-btn").addEventListener("click",e=>{ e.stopPropagation(); const m=$("share-menu"), open=m.hidden; m.hidden=!open; $("share-btn").setAttribute("aria-expanded",String(open));
+  $("act-native").hidden=!(navigator.share&&navigator.canShare); if(open){ const f=m.querySelector("button:not([hidden])"); f&&f.focus(); } });
+$("share-menu").addEventListener("click",e=>{ const b=e.target.closest("[data-act]"); if(b) shareAct(b.dataset.act); });
+document.addEventListener("click",e=>{ if(!e.target.closest(".share")) closeMenu(); });
+document.addEventListener("keydown",e=>{ if(e.key==="Escape"&&!$("share-menu").hidden){ closeMenu(); $("share-btn").focus(); } });
+// Controlos segmentados para escolhas curtas e sufixos de unidade nos campos
+function enhance(){
+  document.querySelectorAll("#form .f select").forEach(sel=>{ if(sel.id==="casal"||sel.dataset.seg) return; const opts=[...sel.options];
+    if(opts.length>3||opts.some(o=>o.text.length>(opts.length>2?8:10))) return; sel.dataset.seg="1";
+    const box=document.createElement("div"); box.className="seg"; box.setAttribute("role","radiogroup"); const lab=sel.closest(".f").querySelector("label"); if(lab) box.setAttribute("aria-label",lab.firstChild.textContent.trim());
+    opts.forEach(o=>{ const b=document.createElement("button"); b.type="button"; b.textContent=o.text; b.dataset.v=o.value; b.setAttribute("role","radio");
+      b.addEventListener("click",()=>{ sel.value=o.value; sel.dispatchEvent(new Event("input",{bubbles:true})); syncSeg(); }); box.appendChild(b); });
+    sel.classList.add("seg-src"); sel.tabIndex=-1; sel.setAttribute("aria-hidden","true"); sel.after(box); });
+  document.querySelectorAll("#form .f input[type=number]").forEach(inp=>{ if(inp.parentElement.classList.contains("inp")) return; const t=(inp.closest(".f").querySelector("label")||{}).textContent||"";
+    const u=/\(%|%\)|\(% /.test(t)?"%":/\(€\)/.test(t)?"€":/anos\)?$|Prazo/.test(t)?"anos":/[Mm]eses/.test(t)?"meses":""; if(!u) return;
+    const w=document.createElement("span"); w.className="inp"; w.dataset.u=u; inp.replaceWith(w); w.appendChild(inp); inp.setAttribute("inputmode","decimal"); });
+}
+function syncSeg(){ document.querySelectorAll("#form .seg").forEach(box=>{ const sel=box.previousElementSibling; [...box.children].forEach(b=>{ const on=b.dataset.v===sel.value; b.setAttribute("aria-checked",String(on)); b.classList.toggle("on",on); }); }); }
+enhance();
+const _calc=calc; calc=function(){ _calc(); syncSeg(); };
 fill();
+// Dica de instalação no iPhone (só fora da app instalada)
+(function(){ try{ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent), standalone=navigator.standalone||matchMedia("(display-mode: standalone)").matches;
+  if(!ios||standalone||window.claude||localStorage.getItem("hint-ios")) return;
+  const d=document.createElement("div"); d.className="ios-hint"; d.innerHTML='<p><b>Instale a app:</b> toque em Partilhar e depois em <b>Adicionar ao ecrã principal</b>.</p><button type="button" aria-label="Fechar">×</button>';
+  d.querySelector("button").onclick=()=>{ d.remove(); try{localStorage.setItem("hint-ios","1");}catch(e){} }; document.body.appendChild(d); }catch(e){} })();
 </script>
 
 <script>
