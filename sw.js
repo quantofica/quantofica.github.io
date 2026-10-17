@@ -1,6 +1,6 @@
 // Simulador Imobiliário PT: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "simulador-2026-10-17f";
+const VERSION = "simulador-2026-10-17g";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
@@ -27,7 +27,7 @@ self.addEventListener("fetch", e => {
   }
   // Ficheiros da app e tipos de letra: usa a cópia guardada e atualiza em segundo plano.
   const sameOrigin = url.origin === location.origin;
-  const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com";
+  const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com";
   if (!sameOrigin && !fonts) return;
   e.respondWith(caches.match(req).then(hit => {
     const net = fetch(req).then(r => { if (r && (r.ok || r.type === "opaque")) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); } return r; }).catch(() => hit);

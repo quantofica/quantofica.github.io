@@ -98,6 +98,12 @@ table.cmp th:first-child,table.cmp td:first-child{width:26%}
 table.cmp td,table.cmp th{text-align:left!important;vertical-align:top;font-family:var(--body);padding:6px 10px 6px 0;border-bottom:1px solid var(--line)}
 table.cmp td:first-child{font-weight:600}
 table.cmp td{overflow-wrap:anywhere}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.actions .reset{font-size:14px;padding:9px 14px;font-weight:600}
+#exp-xlsx,#exp-pdf{border-color:var(--accent);color:var(--accent)}
+.reset.danger{border-color:var(--warn);color:var(--warn)}
+.reset.danger.armed{background:var(--warn);color:var(--panel)}
+.exp-msg{flex-basis:100%;text-align:right;font-size:13.5px;color:var(--muted);min-height:1em}
 .legal-h{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .legal-h h2{font-family:var(--display);font-weight:600;font-size:20px;margin:0}
 table.mini{min-width:0;width:auto;margin-top:8px}
@@ -299,7 +305,12 @@ td .det{font-family:var(--body)}
     <h1>Simulador Imobiliário PT</h1>
     <p class="sub">Indique quem investe e os valores da operação, e compare a carga fiscal em nome próprio, em nome do cônjuge, como empresário individual ou através de sociedade. Regras de 2026 em Portugal, com o efeito no Brasil para residentes fiscais brasileiros.</p>
   </div>
-  <button class="reset" id="reset" type="button">Repor exemplo</button>
+  <div class="actions">
+    <button class="reset" id="exp-xlsx" type="button">Exportar Excel</button>
+    <button class="reset" id="exp-pdf" type="button">Exportar PDF</button>
+    <button class="reset danger" id="reset" type="button">Repor valores a zero</button>
+    <span class="exp-msg" id="exp-msg" role="status" aria-live="polite"></span>
+  </div>
 </header>
 <div class="disc-top" role="note"><span class="disc-ic" aria-hidden="true">!</span><p><b>Apenas uma simulação.</b> Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado ou consultor fiscal.</p></div>
 
@@ -684,6 +695,7 @@ function read(){ ids.forEach(k=>{const el=$(k); state[k]= (el.tagName==="SELECT"
 function fill(){ ids.forEach(k=>{$(k).value=state[k];}); LISTS.forEach(renderList); setMode(state.mode,false); }
 function setMode(m,save=true){ state.mode=m; if($("op-title")) $("op-title").textContent="2 · "+({flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"}[m]); ["flip","ced","rent"].forEach(k=>{$("m-"+k).setAttribute("aria-pressed",m===k); $(k).hidden=m!==k;}); if(save){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}} calc(); }
 
+let LAST=null;
 function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   const sorted=[...sc].sort((a,b)=>b.net-a.net);
   const best1=sorted[0], best2=sorted.find(s=>!s.retido);
@@ -692,6 +704,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
   // Mantém os dois cenários de empresário em nome individual juntos, na posição do mais bem classificado
   const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
   if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), mv=order.splice(Math.max(iB,iB2),1)[0]; order.splice(first+1,0,mv);}
+  LAST={order,best1,best2,preTax,notes,unit,sum:$("sum").textContent};
   $("rows").innerHTML=order.map(s=>{
     const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
     const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
@@ -984,7 +997,99 @@ $("form").addEventListener("submit",e=>e.preventDefault());
 $("m-flip").addEventListener("click",()=>setMode("flip"));
 $("m-ced").addEventListener("click",()=>setMode("ced"));
 $("m-rent").addEventListener("click",()=>setMode("rent"));
-$("reset").addEventListener("click",()=>{state=clone(DEF);try{localStorage.removeItem(KEY);}catch(e){} fill();});
+let armT=null;
+$("reset").addEventListener("click",()=>{ const b=$("reset");
+  if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Tocar de novo para confirmar"; clearTimeout(armT); armT=setTimeout(()=>{b.classList.remove("armed"); b.textContent="Repor valores a zero";},4000); return; }
+  clearTimeout(armT); b.classList.remove("armed"); b.textContent="Repor valores a zero";
+  const z=clone(DEF); Object.keys(z).forEach(k=>{ if(typeof z[k]==="number") z[k]=0; });
+  z.pagas=[]; z.recebidas=[]; z.nA=""; z.nB=""; z.dced=""; z.mode=state.mode; state=z; save(); fill();
+  $("exp-msg").textContent="Valores repostos a zero.";
+});
+// ======== Exportação ========
+const LIBS={xlsx:["https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"],
+  pdf:["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"]};
+const loaded={};
+function loadScript(u){ return loaded[u]||(loaded[u]=new Promise((res,rej)=>{const sc=document.createElement("script"); sc.src=u; sc.onload=res; sc.onerror=()=>{delete loaded[u]; rej(new Error("load"));}; document.head.appendChild(sc);})); }
+async function loadLibs(k){ for(const u of LIBS[k]) await loadScript(u); }
+const txt=h=>{const d=document.createElement("div"); d.innerHTML=String(h??""); return d.textContent.replace(/\s+/g," ").trim();};
+const OPN={flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"};
+const DISC="Apenas uma simulação. Os resultados são estimativas indicativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Antes de qualquer decisão, é imprescindível consultar um contabilista certificado, advogado ou consultor fiscal.";
+function inputsRows(){ const rows=[];
+  $("form").querySelectorAll("h2.step, legend, .pc-h, .f").forEach(el=>{
+    if(el.closest("[hidden]")) return;
+    if(el.matches("h2.step")) rows.push([el.textContent.trim(),"","h"]);
+    else if(el.matches("legend,.pc-h")) rows.push([el.textContent.trim(),"","s"]);
+    else { const lab=el.querySelector("label"); if(!lab) return;
+      const name=[...lab.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim(); const c=el.querySelector("input,select"); let v="";
+      if(c) v=c.tagName==="SELECT"?c.options[c.selectedIndex].text:(c.type==="number"?(parseFloat(c.value)||0):c.value);
+      else { const k=el.querySelector(".calc"); v=k?k.textContent.trim():""; }
+      rows.push([name,v,""]); }
+  });
+  if(state.mode==="ced"){ rows.push(["Tranches pagas ao vendedor","","s"]); state.pagas.forEach(t=>rows.push([`${t.d||"sem data"} · ${t.desc||"tranche"}${after(t,state.dced)?" (posterior à cedência: não conta)":""}`,+t.v||0,""]));
+    rows.push(["Tranches recebidas do cessionário","","s"]); state.recebidas.forEach(t=>rows.push([`${t.d||"sem data"} · ${t.desc||"tranche"}`,+t.v||0,""])); }
+  return rows; }
+const r2=v=>Math.round(v*100)/100;
+function resultsRows(){ return LAST.order.map(s=>({name:txt(s.name),tag:s===LAST.best1?"Melhor":(s===LAST.best2?"Melhor a levantar":""),det:txt(s.det),taxes:r2(s.taxes),eff:LAST.preTax>0?Math.round(s.taxes/LAST.preTax*10000)/10000:null,net:r2(s.net),retido:!!s.retido,lines:s.lines.map(x=>x.h?x:{...x,v:r2(x.v)})})); }
+const stamp=()=>{const d=new Date(), z=n=>String(n).padStart(2,"0"); return {file:`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`, human:`${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`};};
+async function saveFile(filename,blob){
+  const api=window.claude&&typeof window.claude.use==="function"?await window.claude.use("downloads").catch(()=>null):null;
+  if(api){ try{ await api.save({filename,data:blob}); return "Ficheiro guardado."; } catch(e){ return e&&e.code==="declined"?"Exportação cancelada.":"Não foi possível guardar o ficheiro nesta vista. Use a app instalada."; } }
+  if(window.claude) return "A exportação não está disponível nesta vista. Use a app instalada.";
+  const url=URL.createObjectURL(blob), a=document.createElement("a"); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000); return "Ficheiro descarregado.";
+}
+async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o Excel…";
+  try{ await loadLibs("xlsx"); }catch(e){ msg.textContent="Não foi possível carregar o gerador de Excel. Verifique a ligação à internet."; return; }
+  const X=window.XLSX, st=stamp(), unit=LAST.unit?" por ano":"", R=resultsRows(), EUR='#,##0 "€";-#,##0 "€"', PCT="0.0%";
+  const cellFmt=(ws,r,c,z)=>{const a=X.utils.encode_cell({r,c}); if(ws[a]&&typeof ws[a].v==="number") ws[a].z=z;};
+  const wb=X.utils.book_new();
+  // Resumo
+  const res=[["Simulador Imobiliário PT"],["Operação",OPN[state.mode]],["Data da simulação",st.human],[],["Aviso",DISC],[],
+    ["Melhor cenário",txt(LAST.best1.name),r2(LAST.best1.net)],["Melhor a levantar",txt(LAST.best2.name),r2(LAST.best2.net)],[],["Resumo da operação",LAST.sum]];
+  const wsR=X.utils.aoa_to_sheet(res); cellFmt(wsR,6,2,EUR); cellFmt(wsR,7,2,EUR); wsR["!cols"]=[{wch:24},{wch:70},{wch:16}]; X.utils.book_append_sheet(wb,wsR,"Resumo");
+  // Premissas
+  const P=inputsRows(), wsP=X.utils.aoa_to_sheet([["Premissas e dados de entrada","Valor"],...P.map(r=>[r[0],r[1]])]);
+  P.forEach((r,i)=>{ if(typeof r[1]==="number"&&!/meses|anos|Prazo|%/.test(r[0])) cellFmt(wsP,i+1,1,EUR); }); wsP["!cols"]=[{wch:58},{wch:28}]; X.utils.book_append_sheet(wb,wsP,"Premissas");
+  // Cenários
+  const wsC=X.utils.aoa_to_sheet([["Posição","Cenário","Destaque","Impostos"+(LAST.unit?" anuais":" totais"),"Taxa efetiva","Líquido"+unit,"Observação"],
+    ...R.map((r,i)=>[i+1,r.name,r.tag,r.taxes,r.eff,r.net,(r.retido?"Fica na sociedade. ":"")+r.det])]);
+  R.forEach((r,i)=>{cellFmt(wsC,i+1,3,EUR); cellFmt(wsC,i+1,4,PCT); cellFmt(wsC,i+1,5,EUR);}); wsC["!cols"]=[{wch:8},{wch:48},{wch:18},{wch:16},{wch:12},{wch:16},{wch:60}]; X.utils.book_append_sheet(wb,wsC,"Cenários");
+  // Cálculos
+  const D=[["Cenário","Linha de cálculo","Valor (€)"]]; R.forEach(r=>{ D.push([r.name,"",""]); r.lines.forEach(x=>D.push(x.h?["",txt(x.h).toUpperCase(),""]:["",txt(x.l),x.v])); D.push(["","",""]); });
+  const wsD=X.utils.aoa_to_sheet(D); D.forEach((row,i)=>{ if(typeof row[2]==="number") cellFmt(wsD,i,2,EUR); }); wsD["!cols"]=[{wch:40},{wch:80},{wch:16}]; X.utils.book_append_sheet(wb,wsD,"Cálculos");
+  // Notas
+  const wsN=X.utils.aoa_to_sheet([["Notas da simulação"],...LAST.notes.map(n=>[txt(n)]),[],["Aviso"],[DISC]]); wsN["!cols"]=[{wch:140}]; X.utils.book_append_sheet(wb,wsN,"Notas");
+  const buf=X.write(wb,{bookType:"xlsx",type:"array"});
+  msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+}
+const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
+async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o PDF…";
+  try{ await loadLibs("pdf"); }catch(e){ msg.textContent="Não foi possível carregar o gerador de PDF. Verifique a ligação à internet."; return; }
+  const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}), st=stamp(), R=resultsRows(), W=doc.internal.pageSize.getWidth(), M=40;
+  const blue=[22,74,143], amber=[154,91,0];
+  doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...blue); doc.text("Simulador Imobiliário PT",M,50);
+  doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40); doc.text(pdfTxt(`${OPN[state.mode]} · simulação de ${st.human}`),M,68);
+  doc.setDrawColor(...amber); doc.setFillColor(255,243,220); const dl=doc.splitTextToSize(pdfTxt(DISC),W-2*M-20); doc.roundedRect(M,80,W-2*M,dl.length*13+16,4,4,"FD");
+  doc.setTextColor(60,40,0); doc.setFontSize(10); doc.text(dl,M+10,96);
+  let y=80+dl.length*13+32;
+  doc.setTextColor(20); doc.setFont("helvetica","bold"); doc.setFontSize(12.5); doc.text(pdfTxt(`Melhor cenário: ${txt(LAST.best1.name)} (${eur(LAST.best1.net)}${LAST.unit})`),M,y);
+  doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.text(pdfTxt(`Melhor a levantar: ${txt(LAST.best2.name)} (${eur(LAST.best2.net)}${LAST.unit})`),M,y+16);
+  const sumL=doc.splitTextToSize(pdfTxt(LAST.sum),W-2*M); doc.setTextColor(70); doc.text(sumL,M,y+34); y+=34+sumL.length*13+8;
+  doc.autoTable({startY:y,head:[["#","Cenário","Impostos"+(LAST.unit?" /ano":""),"Taxa efetiva","Líquido"+LAST.unit]],
+    body:R.map((r,i)=>[i+1,pdfTxt(r.name+(r.tag?`  [${r.tag}]`:"")+(r.retido?" (fica na sociedade)":"")),pdfTxt(eur(r.taxes)),pdfTxt(r.eff==null?"-":pct(r.eff)),pdfTxt(eur(r.net))]),
+    styles:{fontSize:9.5,cellPadding:5},headStyles:{fillColor:blue},columnStyles:{0:{cellWidth:22},2:{halign:"right"},3:{halign:"right"},4:{halign:"right",fontStyle:"bold"}},margin:{left:M,right:M}});
+  doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Premissas e dados de entrada","Valor"]],
+    body:inputsRows().map(r=>r[2]?[{content:pdfTxt(r[0]),colSpan:2,styles:{fontStyle:"bold",fillColor:r[2]==="h"?[218,229,244]:[240,243,247]}}]:[pdfTxt(r[0]),pdfTxt(typeof r[1]==="number"?(/meses|anos|Prazo|%/.test(r[0])?r[1].toLocaleString("pt-PT"):eur(r[1])):r[1])]),
+    styles:{fontSize:9,cellPadding:4},headStyles:{fillColor:blue},columnStyles:{1:{halign:"right",cellWidth:150}},margin:{left:M,right:M}});
+  R.forEach(r=>{ doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[[pdfTxt(r.name),pdfTxt(eur(r.net)+LAST.unit)]],
+    body:r.lines.map(x=>x.h?[{content:pdfTxt(txt(x.h).toUpperCase()),colSpan:2,styles:{fontStyle:"bold",textColor:[60,70,85],fillColor:[240,243,247]}}]:[pdfTxt(txt(x.l)),{content:pdfTxt((x.v<0?"- ":"")+eur(Math.abs(x.v))),styles:{fontStyle:x.c==="tot"?"bold":"normal"}}]),
+    styles:{fontSize:8.8,cellPadding:3.5},headStyles:{fillColor:[60,70,85]},columnStyles:{1:{halign:"right",cellWidth:110}},margin:{left:M,right:M},rowPageBreak:"avoid"}); });
+  doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Notas da simulação"]],body:[...LAST.notes.map(n=>[pdfTxt(txt(n))]),[{content:pdfTxt("Aviso: "+DISC),styles:{fontStyle:"bold"}}]],
+    styles:{fontSize:9,cellPadding:5},headStyles:{fillColor:amber},margin:{left:M,right:M}});
+  const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui aconselhamento profissional · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
+  msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`,doc.output("blob"));
+}
+$("exp-xlsx").addEventListener("click",exportXlsx);
+$("exp-pdf").addEventListener("click",exportPdf);
 fill();
 </script>
 
