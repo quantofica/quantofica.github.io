@@ -46,6 +46,7 @@ h1{font-family:var(--display);font-weight:600;font-size:28px;margin:0;text-wrap:
 @media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
 .mode{display:flex;gap:4px;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px;margin-bottom:14px}
+.mode{flex-wrap:wrap}
 .mode button{flex:1;border:0;background:transparent;color:var(--muted);font:600 13px var(--body);padding:8px;border-radius:6px;cursor:pointer}
 .mode button[aria-pressed="true"]{background:var(--panel);color:var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.12)}
 fieldset{border:0;margin:0 0 14px;padding:0;display:grid;gap:8px}
@@ -241,6 +242,7 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
   <div class="mode" role="group" aria-label="Tipo de operação">
     <button type="button" id="m-flip" aria-pressed="true">Compra, obras e venda</button>
     <button type="button" id="m-ced" aria-pressed="false">Cedência de posição</button>
+    <button type="button" id="m-rent" aria-pressed="false">Comprar para arrendar</button>
   </div>
 
   <div id="flip">
@@ -285,9 +287,39 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
   </fieldset>
   </div>
 
+  <div id="rent" hidden>
+  <fieldset><legend>Compra</legend>
+    <div class="f"><label for="rcompra">Preço de compra (€)</label><input id="rcompra" type="number" min="0" step="1000"></div>
+    <div class="f"><label for="rvpt">VPT (€)<small>Base do IMI e do AIMI · <a href="#nota-vpt">o que é?</a></small></label><input id="rvpt" type="number" min="0" step="1000"></div>
+    <div class="f"><label for="resc">Escritura e registos (€)</label><input id="resc" type="number" min="0" step="100"></div>
+    <div class="f"><label>IMT + Imposto do Selo<small>Pagos uma vez, na compra · <a href="#nota-imt">regras</a></small></label><div class="calc" id="o-rimt">—</div></div>
+  </fieldset>
+  <fieldset><legend>Obras antes de arrendar</legend>
+    <div class="f"><label for="robras">Faz obras antes de arrendar?</label><select id="robras"><option value="sim">Sim</option><option value="nao">Não</option></select></div>
+    <div class="f rob"><label for="robv">Obras, sem IVA (€)</label><input id="robv" type="number" min="0" step="1000"></div>
+    <div class="f rob"><label for="riva">IVA das obras</label><select id="riva"><option value="0.23">23%</option><option value="0.06">6%</option></select></div>
+    <div class="f rob"><label for="rtipo">Tipo de obras<small>Conservação e manutenção, ou beneficiação e valorização · <a href="#nota-arr">porque importa</a></small></label><select id="rtipo"><option value="cons">Conservação</option><option value="benef">Beneficiação</option></select></div>
+  </fieldset>
+  <fieldset><legend>Arrendamento</legend>
+    <div class="f"><label for="renda">Renda mensal (€)</label><input id="renda" type="number" min="0" step="50"></div>
+    <div class="f"><label for="ocup">Meses arrendado por ano</label><input id="ocup" type="number" min="0" max="12" step="1"></div>
+    <div class="f"><label for="regime">Regime da renda<small><a href="#nota-arr">diferenças</a></small></label><select id="regime"><option value="livre">Livre</option><option value="moderada">Moderada (≤ 2.300 €)</option><option value="acessivel">Acessível (RSAA)</option></select></div>
+    <div class="f"><label for="dur">Duração do contrato</label><select id="dur"><option value="0">&lt; 5 anos</option><option value="5">5–10 anos</option><option value="10">10–20 anos</option><option value="20">≥ 20 anos</option></select></div>
+    <div class="f"><label for="rano">Ano a simular<small>O 1.º ano inclui o efeito fiscal das obras</small></label><select id="rano"><option value="1">1.º ano</option><option value="t">Ano típico</option></select></div>
+  </fieldset>
+  <fieldset><legend>Despesas anuais</legend>
+    <div class="f"><label for="cond">Condomínio (€)</label><input id="cond" type="number" min="0" step="50"></div>
+    <div class="f"><label for="seguro">Seguro (€)</label><input id="seguro" type="number" min="0" step="50"></div>
+    <div class="f"><label for="manut">Manutenção corrente (€)</label><input id="manut" type="number" min="0" step="50"></div>
+    <div class="f"><label for="gestao">Gestão do arrendamento (% da renda)<small>Acresce IVA de 23%</small></label><input id="gestao" type="number" min="0" step="0.5"></div>
+    <div class="f"><label for="imitx">Taxa de IMI do município (%)<small>Entre 0,3% e 0,45%</small></label><input id="imitx" type="number" min="0.3" max="0.45" step="0.005"></div>
+    <div class="f"><label for="juros">Juros do crédito no ano (€)<small>Dedutíveis só na sociedade e no empresário</small></label><input id="juros" type="number" min="0" step="100"></div>
+  </fieldset>
+  </div>
+
   <fieldset><legend>Sociedade</legend>
     <div class="f"><label for="socio">Sócio(s) da sociedade<small>Quem recebe os dividendos</small></label><select id="socio"><option value="A">Pessoa 1</option><option value="B">Pessoa 2</option><option value="AB">Ambos, 50/50</option></select></div>
-    <div class="f"><label for="contab">Custos fixos da sociedade por operação (€)<small>Contabilista, constituição</small></label><input id="contab" type="number" min="0" step="100"></div>
+    <div class="f"><label for="contab">Custos fixos da sociedade (€)<small>Contabilista; por operação, ou por ano no arrendamento</small></label><input id="contab" type="number" min="0" step="100"></div>
     <div class="f"><label for="derrama">Derrama municipal (%)</label><input id="derrama" type="number" min="0" max="1.5" step="0.1"></div>
     <div class="f"><label for="ano">Ano do lucro</label><select id="ano"><option value="0.19">2026 (19%)</option><option value="0.18">2027 (18%)</option><option value="0.17">2028+ (17%)</option></select></div>
   </fieldset>
@@ -301,7 +333,7 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
   <div class="panel">
     <p class="sum" id="sum"></p>
     <div class="tbl"><table>
-      <thead><tr><th>Cenário</th><th>Impostos totais</th><th>Taxa efetiva <a class="nref" href="#nota-taxa">nota 12</a></th><th>Líquido disponível</th></tr></thead>
+      <thead><tr><th>Cenário</th><th>Impostos totais</th><th>Taxa efetiva <a class="nref" href="#nota-taxa">nota 12</a></th><th id="th-net">Líquido disponível</th></tr></thead>
       <tbody id="rows"></tbody>
     </table></div>
   </div>
@@ -437,6 +469,21 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
         <li><b>Melhor cenário:</b> o de maior líquido. "Melhor a levantar" é o de maior líquido entre os que põem o dinheiro em nome dos titulares.</li>
       </ul>
     </details>
+    <details id="nota-arr">
+      <summary>Nota 15 · Comprar para arrendar</summary>
+      <p>O simulador mostra um ano de arrendamento: rendas recebidas, despesas, impostos anuais e o líquido que sobra em dinheiro. O IMT e o Imposto do Selo da compra são pagos uma vez e aparecem à parte, no investimento.</p>
+      <ul>
+        <li><b>Em nome próprio (IRS, categoria F, art. 8.º do CIRS):</b> deduzem-se as despesas necessárias, como condomínio, IMI, seguro, conservação e gestão (art. 41.º). Os <b>juros do crédito não são dedutíveis</b>, nem as amortizações do imóvel.</li>
+        <li><b>Taxa:</b> 25% sobre a renda líquida, reduzida para 15%, 10% ou 5% em contratos de 5 a 10, 10 a 20 ou 20 ou mais anos (art. 72.º do CIRS, na redação da Lei 56/2023). O residente pode optar pelo englobamento às taxas gerais; o simulador escolhe a opção mais barata.</li>
+        <li><b>Renda moderada (até 2.300 €/mês), 2026 a 2029:</b> taxa de 10% em IRS; na sociedade e no empresário com contabilidade organizada, só 50% das rendas é tributado (art. 45.º-C do EBF, Decreto-Lei 97/2026).</li>
+        <li><b>Arrendamento acessível (RSAA):</b> rendas isentas de IRS e IRC, desde 1 de setembro de 2026, se a renda não ultrapassar o limite do concelho (cerca de 80% da mediana do INE) e o contrato tiver pelo menos 3 anos (Decreto-Lei 97/2026, Anexo III). Confirme o limite antes de escolher esta opção.</li>
+        <li><b>Obras antes de arrendar:</b> em nome próprio, as obras de <b>conservação e manutenção</b> feitas nos 24 meses antes do primeiro contrato deduzem-se às rendas (art. 41.º do CIRS); as de <b>beneficiação</b> não se deduzem às rendas e só contam como custo numa venda futura. Na sociedade, a conservação é gasto do ano e a beneficiação soma ao valor do imóvel e é amortizada.</li>
+        <li><b>Sociedade e empresário:</b> deduzem juros e amortizam o edifício a 2% ao ano, excluindo 25% do valor, que corresponde ao terreno (Decreto Regulamentar 25/2009). A amortização reduz o imposto, mas não sai do bolso, por isso o líquido em dinheiro é maior do que o lucro.</li>
+        <li><b>AIMI (art. 135.º-A e seguintes do CIMI):</b> a sociedade paga 0,4% do VPT de imóveis habitacionais, sem dedução. Pessoas singulares só pagam acima de 600.000 € de VPT (1.200.000 € em tributação conjunta), considerando apenas este imóvel.</li>
+        <li><b>Residente no Brasil:</b> as rendas são tributadas em Portugal e de novo no Brasil, pela tabela progressiva até 27,5%, com crédito do imposto português. Uma sociedade portuguesa de arrendamento tem sobretudo rendimentos passivos; o sócio residente no Brasil é tributado lá todos os anos a 15% sobre o lucro, com crédito do IRC, mesmo sem distribuição (Lei 14.754/2023).</li>
+        <li><b>Não incluídos:</b> a venda futura do imóvel e a respetiva mais-valia, prejuízos fiscais reportáveis e o Imposto do Selo do crédito.</li>
+      </ul>
+    </details>
     <details id="nota-res">
       <summary>Nota 13 · Residência fiscal: não residentes e residentes no Brasil</summary>
       <p>A residência fiscal de cada pessoa muda os impostos de vários cenários. Ser residente em Portugal e no Brasil ao mesmo tempo é possível; a Convenção Brasil–Portugal (Decreto 4.012/2001) resolve a dupla tributação, em regra pelo crédito do imposto pago no outro país (art. 23.º).</p>
@@ -481,9 +528,10 @@ const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"
   cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"B",
   casal:"sim",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:"2026-09-01",
+  rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,juros:0,
   pagas:[{d:"2026-03-02",desc:"Sinal",v:25000},{d:"2026-06-15",desc:"Reforço do sinal",v:10000},{d:"2026-12-15",desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
   recebidas:[{d:"2026-09-01",desc:"Assinatura da cedência",v:20000},{d:"2026-11-30",desc:"Na escritura",v:45000}]};
-const KEY="sim-imob-pt-v5";
+const KEY="sim-imob-pt-v6";
 const LISTS=["pagas","recebidas"];
 const ids=Object.keys(DEF).filter(k=>k!=="mode"&&!LISTS.includes(k));
 const clone=o=>JSON.parse(JSON.stringify(o));
@@ -501,7 +549,7 @@ function renderList(name){
     <button type="button" class="del" data-del="${name}" data-i="${i}" aria-label="Remover tranche">×</button>${name==="pagas"?`<div class="flag" id="pagas-${i}-flag" hidden>Posterior à cedência: não conta no custo</div>`:""}</div>`).join("");
 }
 const OPEN=new Set();
-const NOTES=[[/cláusula/,"clausula",14],[/Brasil|não residente/,"res",13],[/Distribuição|dividendo|Dividendo|liberatória/,"div",10],[/IRC/,"irc",8],[/[Dd]errama/,"derrama",9],[/categoria B|100% englobado/,"irs-b",7],
+const NOTES=[[/[Rr]enda|categoria F|[Aa]mortiza|AIMI/,"arr",15],[/cláusula/,"clausula",14],[/Brasil|não residente/,"res",13],[/Distribuição|dividendo|Dividendo|liberatória/,"div",10],[/IRC/,"irc",8],[/[Dd]errama/,"derrama",9],[/categoria B|100% englobado/,"irs-b",7],
   [/Mais-valia|englobada/,"irs-g",6],[/IRS/,"irs",5],[/IMT/,"imt",2],[/Selo/,"is",3],[/IMI/,"imi",4],[/Obras com IVA|Comissão de venda/,"iva",11],[/Líquido|Fica na sociedade/,"taxa",12]];
 function nref(t){const m=NOTES.find(n=>n[0].test(t)); return m?` <a class="nref" href="#nota-${m[1]}">nota ${m[2]}</a>`:"";}
 const after=(t,dc)=>!!(dc&&t.d&&t.d>dc);
@@ -526,8 +574,152 @@ function irc(p,geral){ if(p<=0) return 0; return Math.min(p,50000)*.15+Math.max(
 function read(){ ids.forEach(k=>{const el=$(k); state[k]= (el.tagName==="SELECT"||el.type==="date"||el.type==="text")?el.value:(parseFloat(el.value)||0);});
   save(); }
 function fill(){ ids.forEach(k=>{$(k).value=state[k];}); LISTS.forEach(renderList); setMode(state.mode,false); }
-function setMode(m,save=true){ state.mode=m; $("m-flip").setAttribute("aria-pressed",m==="flip"); $("m-ced").setAttribute("aria-pressed",m==="ced");
-  $("flip").hidden=m!=="flip"; $("ced").hidden=m!=="ced"; if(save){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}} calc(); }
+function setMode(m,save=true){ state.mode=m; ["flip","ced","rent"].forEach(k=>{$("m-"+k).setAttribute("aria-pressed",m===k); $(k).hidden=m!==k;}); if(save){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}} calc(); }
+
+function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
+  const sorted=[...sc].sort((a,b)=>b.net-a.net);
+  const best1=sorted[0], best2=sorted.find(s=>!s.retido);
+  const max=Math.max(1,...sc.map(s=>s.net));
+  const fmt=v=>(v<0?"− ":"")+eur(Math.abs(v));
+  // Mantém os dois cenários de empresário em nome individual juntos, na posição do mais bem classificado
+  const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
+  if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), mv=order.splice(Math.max(iB,iB2),1)[0]; order.splice(first+1,0,mv);}
+  $("rows").innerHTML=order.map(s=>{
+    const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
+    const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
+    const det=s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
+    return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
+      <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
+      <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
+      <td data-label="Impostos">${eur(s.taxes)}</td><td data-label="Taxa efetiva">${pct(eff)}</td><td data-label="${unit?"Líquido/ano":"Líquido"}">${eur(s.net)}${s.retido?'<div class="det">na sociedade</div>':''}</td></tr>
+      <tr class="drow" style="--sc:var(--c-${s.key})" id="d-${s.key}" ${open?"":"hidden"}><td colspan="4"><div class="calcbox">${det}</div></td></tr>`;}).join("");
+  const dot=k=>`<span class="dot" style="--sc:var(--c-${k})"></span>`;
+  $("b1n").innerHTML=dot(best1.key)+best1.name; $("b1v").textContent=eur(best1.net)+unit;
+  $("b1s").textContent=best1.retido?(unit?"Fica na sociedade para reinvestir ou amortizar o crédito.":"Fica na sociedade para a próxima operação."):"Disponível em nome dos titulares.";
+  $("th-net").textContent=unit?"Líquido por ano":"Líquido disponível";
+  $("mbn").innerHTML=dot(best1.key)+best1.name; $("mbv").textContent=eur(best1.net)+unit;
+  $("b2n").innerHTML=dot(best2.key)+best2.name; $("b2v").textContent=eur(best2.net)+unit;
+  $("b2s").textContent=`Impostos ${unit?"anuais":"totais"} de ${eur(best2.taxes)}.`;
+  // Notas sobre as pessoas
+  const ppl=casal?[A,B]:[A];
+  notes.push("<b>Taxa marginal de IRS antes da operação:</b> "+ppl.map(p=>p.nr?`${p.name}, não residente em Portugal`:`${p.name}, ${pct(RT[LIM.findIndex(l=>p.base<l)])}`).join("; ")+(joint?" (tributação conjunta do casal)":"")+". O mínimo de existência e as deduções à coleta não estão incluídos.");
+  if(casal&&S.tribut==="conjunta"&&!canJoint) notes.push(`<span class="warn"><b>Tributação conjunta indisponível:</b> exige que ambos sejam residentes em Portugal. O simulador usa a tributação separada.</span>`);
+  const nrs=ppl.filter(p=>p.nr); if(nrs.length) notes.push(`<b>Não residente em Portugal (${nrs.map(p=>p.name).join(", ")}):</b> IMT fixo de 7,5% na compra de habitação em nome próprio, mais-valias a 28% sobre 50% do ganho e dividendos a 25% (15% se residente no Brasil). Ver <a href="#nota-res">nota 13</a>.`);
+  const brs=ppl.filter(p=>p.br); if(brs.length) notes.push(`<b>Residente fiscal no Brasil (${brs.map(p=>p.name).join(", ")}):</b> o simulador soma o imposto brasileiro que exceda o português (crédito pela Convenção Brasil–Portugal). Valores estimados em euros; o Brasil apura em reais. Ver <a href="#nota-res">nota 13</a>.`);
+  const nbr=ppl.filter(p=>!p.br); if(brs.length&&nbr.length) notes.push(`<b>Dica:</b> ${nbr.map(p=>p.name).join(", ")} não é residente no Brasil; os cenários em seu nome, ou com ${nbr.length>1?"eles":"essa pessoa"} como sócio, evitam o imposto brasileiro.`);
+  const rnh=ppl.filter(p=>p.rnh); if(rnh.length) notes.push(`<b>RNH ou IFICI (${rnh.map(p=>p.name).join(", ")}):</b> não reduz nenhum dos impostos simulados, porque os rendimentos são de fonte portuguesa.`);
+  notes.push(`<b>Pressupostos:</b> ${assume}. Simulação indicativa: valide com contabilista certificado antes de decidir.`);
+  $("notes").innerHTML=notes.map(n=>`<div>${n}</div>`).join("");
+}
+
+// ======== Comprar para arrendar ========
+function aimiInd(v,ded){ const x=v-ded; if(x<=0) return 0; return Math.min(x,1000000-600000)*.007+Math.max(0,Math.min(x,2000000-600000)-(1000000-600000))*.01+Math.max(0,x-(2000000-600000))*.015; }
+function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}){
+  const notes=[], L=(l,v,c="")=>({l,v,c}), hd=t=>({h:t}), sc=[];
+  const base=Math.max(S.rcompra,S.rvpt), vptEst=!S.rvpt, vpt=S.rvpt||S.rcompra*.5;
+  const imtN=imt(base), is=base*.008;
+  const moderate=S.regime!=="livre"&&S.renda<=2300, acess=S.regime==="acessivel"&&moderate;
+  const imtOf=p=>(p.nr&&!moderate)?base*.075:imtN;
+  const obras=S.robras==="sim", obrasT=obras?S.robv*(1+parseFloat(S.riva)):0;
+  document.querySelectorAll&&document.querySelectorAll(".rob").forEach(e=>e.hidden=!obras);
+  const cons=obras&&S.rtipo==="cons", benef=obras&&S.rtipo==="benef", y1=S.rano==="1";
+  const rendaA=S.renda*S.ocup, gest=rendaA*S.gestao/100*1.23, imi=vpt*S.imitx/100;
+  const opex=S.cond+S.seguro+S.manut+gest;
+  const preTax=rendaA-opex-S.juros;                      // antes de IMI e impostos sobre o rendimento
+  const consY1=(y1&&cons)?obrasT:0;
+  const rateD={"0":.25,"5":.15,"10":.10,"20":.05}[S.dur]||.25;
+  const rateF=acess?0:(moderate?Math.min(.10,rateD):rateD);
+  const rentTax=acess?0:(moderate?rendaA*.5:rendaA);     // parte das rendas tributada em IRC / categoria B
+  const fixed=S.contab;
+  const JB=A.base+B.base, incJ=add=>add<=0?0:2*irs((JB+add)/2)-2*irs(JB/2);
+  const brTop=(p,income,ptTax,rate,what)=>{ if(!p.br||income<=0) return null; const cred=Math.min(ptTax,rate*income), t=Math.max(0,rate*income-ptTax);
+    return {t,line:L(`Imposto no Brasil de ${p.name}: ${pct(rate)} sobre ${eur(income)} (${what}) − crédito de ${eur(cred)}`,-t,"tax")}; };
+  const invest=x=>S.rcompra+S.resc+obrasT+is+x;
+  const yieldL=(net,imtX)=>L(`Rentabilidade líquida: ${pct(net/invest(imtX))} sobre ${eur(invest(imtX))} investidos`,net,"sub");
+  const opexLines=()=>[L("Rendas recebidas ("+S.ocup+" meses × "+eur(S.renda)+")",rendaA),...(S.cond?[L("− Condomínio",-S.cond)]:[]),...(S.seguro?[L("− Seguro",-S.seguro)]:[]),
+    ...(S.manut?[L("− Manutenção corrente",-S.manut)]:[]),...(gest?[L("− Gestão do arrendamento com IVA",-gest)]:[]),L("− IMI",-imi)];
+  // ----- Pessoa singular (categoria F) -----
+  const dedF=opex+imi+consY1, netF=rendaA-dedF, nP=Math.max(0,netF);
+  const ps=(key,name,owners)=>{
+    const imtX=owners.reduce((a,o)=>a+o.share*imtOf(o.p),0);
+    const tl=[]; let irsT=0, brT=0, aimi=0;
+    owners.forEach(o=>{ aimi+=aimiInd(vpt*o.share,(joint?1200000:600000)*(joint?o.share:1)); });
+    if(joint){ const aut=nP*rateF, eng=incJ(nP), t=Math.min(aut,eng); irsT=t;
+      tl.push(L(eng<aut?`IRS do casal, englobamento: ${eur(JB)} → ${eur(JB+nP)} de rendimento coletável`:`IRS do casal, taxa autónoma ${pct(rateF)} sobre ${eur(nP)}`,-t,"tax"));
+      owners.forEach(o=>{const b=brTop(o.p,nP*o.share,t*o.share,.275,"rendas"); if(b){brT+=b.t; tl.push(b.line);}}); }
+    else owners.forEach(o=>{ const g=nP*o.share, aut=g*rateF, eng=o.p.nr?Infinity:inc(o.p.base,g), t=Math.min(aut,eng); irsT+=t;
+      tl.push(L(eng<aut?`IRS de ${o.p.name}, englobamento: ${eur(o.p.base)} → ${eur(o.p.base+g)} de rendimento coletável`:`IRS de ${o.p.name}${o.p.nr?" (não residente)":""}, taxa autónoma ${pct(rateF)} sobre ${eur(g)}`,-t,"tax"));
+      const b=brTop(o.p,g,t,.275,"rendas"); if(b){brT+=b.t; tl.push(b.line);} });
+    const annual=imi+aimi+irsT+brT, net=preTax-annual;
+    const lines=[hd("Renda líquida para IRS (categoria F)"),...opexLines(),...(consY1?[L("− Obras de conservação antes do arrendamento",-consY1)]:[]),
+      ...(S.juros?[L("Juros do crédito: não dedutíveis em categoria F",0,"sub")]:[]),...(benef?[L("Obras de beneficiação: não dedutíveis às rendas",0,"sub")]:[]),
+      L("= Renda líquida tributável",netF,"tot"),...(netF<0?[L(`Perda de ${eur(-netF)}, dedutível às rendas dos 6 anos seguintes (art. 55.º do CIRS)`,0,"sub")]:[]),hd("Imposto"),...tl,...(aimi?[L("− AIMI",-aimi,"tax")]:[]),
+      hd("Dinheiro no ano"),L("Rendas menos despesas, juros e IMI",preTax-imi),L("− IRS"+(brT?" e imposto no Brasil":"")+(aimi?" e AIMI":""),-(irsT+brT+aimi)),L("= Líquido por ano",net,"tot"),yieldL(net,imtX),
+      hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtX+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",irsT),...(brT?[L("Imposto no Brasil",brT)]:[]),L("= Total anual",annual,"tot")];
+    return {key,name,det:`Na compra: IMT + Selo ${eur(imtX+is)} · ${acess?"rendas isentas (RSAA)":"taxa de IRS "+pct(rateF)+" ou englobamento"}`,taxes:annual,net,lines};
+  };
+  if(joint) sc.push(ps("a2","Pessoa singular, casal (tributação conjunta)",[{p:A,share:.5},{p:B,share:.5}]));
+  else { sc.push(ps("a1",`Pessoa singular, em nome de ${A.name}`,[{p:A,share:1}]));
+    if(casal){ sc.push(ps("a2","Pessoa singular, bem comum 50/50",[{p:A,share:.5},{p:B,share:.5}])); sc.push(ps("a3",`Pessoa singular, em nome de ${B.name}`,[{p:B,share:1}])); } }
+  // ----- Sociedade -----
+  const imtCo=imtN, aimiCo=vpt*.004;
+  const deprCo=((S.rcompra+S.resc+imtCo+is)*.75+(benef?obrasT:0))*.02;
+  const profitAcc=rendaA-opex-imi-S.juros-aimiCo-fixed-deprCo-consY1;
+  const taxable=profitAcc-(rendaA-rentTax);
+  const ircV=irc(taxable,geral), derV=Math.max(0,taxable)*der;
+  const cashCo=preTax-imi-aimiCo-fixed-ircV-derV;
+  const netAcc=profitAcc-ircV-derV, D=Math.max(0,netAcc);
+  const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:.5},{p:B,share:.5}];
+  const shName=sh.map(o=>o.p.name).join(" e ");
+  let brCo=0; const brCoL=[]; sh.forEach(o=>{const inc_=Math.max(0,profitAcc)*o.share, t=Math.max(0,.15*inc_-(ircV+derV)*o.share); if(o.p.br){brCo+=t; brCoL.push(L(`Imposto no Brasil de ${o.p.name}: 15% sobre ${eur(inc_)} de lucro (Lei 14.754/2023) − crédito do IRC`,-t,"tax"));}});
+  const coLines=[hd("Lucro tributável (IRC)"),...opexLines(),...(S.juros?[L("− Juros do crédito",-S.juros)]:[]),L("− AIMI (0,4% do VPT)",-aimiCo),L("− Custos fixos da sociedade",-fixed),
+    L("− Amortização do imóvel (2% sobre 75% do custo"+(benef?" e obras":"")+")",-deprCo),...(consY1?[L("− Obras de conservação (gasto do 1.º ano)",-consY1)]:[]),L("= Lucro contabilístico",profitAcc,"tot"),
+    ...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),L("= Lucro tributável",taxable,"tot"),...(taxable<0?[L(`Prejuízo fiscal de ${eur(-taxable)}, dedutível aos lucros dos anos seguintes (art. 52.º do CIRC)`,0,"sub")]:[]),
+    hd("IRC e derrama"),L(`− IRC (15% até 50.000 €, depois ${pct(geral)})`,-ircV,"tax"),L(`− Derrama municipal ${pct(der)}`,-derV,"tax"),...brCoL];
+  const cashL=(extra,lbl)=>[hd("Dinheiro no ano"),L("Rendas menos despesas, juros, IMI, AIMI e custos fixos",preTax-imi-aimiCo-fixed),L("− IRC e derrama",-(ircV+derV)),...(brCo?[L("− Imposto no Brasil",-brCo)]:[]),...(extra?[L(lbl,-extra)]:[])];
+  const coTot=(div)=>[hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtCo+is,"sub"),L("IMI",imi),L("AIMI",aimiCo),L("IRC + derrama",ircV+derV),...(div?[L("IRS sobre dividendos",div)]:[]),...(brCo?[L("Imposto no Brasil",brCo)]:[]),L("= Total anual",imi+aimiCo+ircV+derV+div+brCo,"tot")];
+  const n1=cashCo-brCo;
+  sc.push({key:"c1",name:"Sociedade, lucro retido",det:`Na compra: IMT + Selo ${eur(imtCo+is)} · sócio: ${shName}`,taxes:imi+aimiCo+ircV+derV+brCo,net:n1,retido:true,
+    lines:[...coLines,...cashL(0),L("= Fica na sociedade por ano",n1,"tot"),yieldL(n1,imtCo),...coTot(0)]});
+  const whRate=p=>p.nr?(p.br?.15:.25):.28;
+  { let t=0; const tl=[]; sh.forEach(o=>{const d=D*o.share, r=whRate(o.p); t+=d*r; tl.push(L(`− Retenção sobre o dividendo de ${o.p.name}: ${pct(r)} sobre ${eur(d)}`,-d*r,"tax"));});
+    const n=cashCo-brCo-t;
+    sc.push({key:"c2",name:"Sociedade, dividendo com retenção na fonte",det:`Distribui o lucro de ${eur(D)} · sócio: ${shName}`,taxes:imi+aimiCo+ircV+derV+brCo+t,net:n,
+      lines:[...coLines,hd("Distribuição do lucro"),L("Dividendo bruto (lucro líquido)",D),...tl,...cashL(t,"− Imposto sobre dividendos"),L("= Líquido por ano",n,"tot"),L(`Inclui ${eur(Math.max(0,cashCo-D))} que ficam na sociedade (amortizações)`,Math.max(0,cashCo-D),"sub"),yieldL(n,imtCo),...coTot(t)]}); }
+  if(sh.some(o=>!o.p.nr)){ let t=0; const tl=[];
+    if(joint){ const add=.5*D; t=incJ(add); tl.push(L(`IRS do casal sobre 50% do dividendo (${eur(add)})`,-t,"tax")); }
+    else sh.forEach(o=>{const d=D*o.share; if(o.p.nr){const r=whRate(o.p); t+=d*r; tl.push(L(`− Retenção sobre o dividendo de ${o.p.name}: ${pct(r)}`,-d*r,"tax"));} else {const x=inc(o.p.base,.5*d); t+=x; tl.push(L(`IRS de ${o.p.name}: 50% do dividendo englobado, ${eur(o.p.base)} → ${eur(o.p.base+.5*d)}`,-x,"tax"));}});
+    const n=cashCo-brCo-t;
+    sc.push({key:"c3",name:"Sociedade, dividendo com englobamento",det:`Distribui o lucro de ${eur(D)} · sócio: ${shName}`,taxes:imi+aimiCo+ircV+derV+brCo+t,net:n,
+      lines:[...coLines,hd("Distribuição do lucro"),L("Dividendo bruto (lucro líquido)",D),...tl,...cashL(t,"− Imposto sobre dividendos"),L("= Líquido por ano",n,"tot"),yieldL(n,imtCo),...coTot(t)]}); }
+  // ----- Empresário em nome individual (categoria B) -----
+  const eni=(key,p,name)=>{
+    const imtE=imtOf(p), aimi=aimiInd(vpt,joint?1200000:600000);
+    const depr=((S.rcompra+S.resc+imtE+is)*.75+(benef?obrasT:0))*.02;
+    const prof=rendaA-opex-imi-S.juros-aimi-fixed-depr-consY1, tx=Math.max(0,prof-(rendaA-rentTax));
+    let t, line; if(joint){t=incJ(tx); line=L(`IRS do casal (conjunta): ${eur(JB)} → ${eur(JB+tx)}`,-t,"tax");} else if(p.nr){t=.25*tx; line=L(`IRS de ${p.name} (não residente): 25% sobre ${eur(tx)}`,-t,"tax");} else {t=inc(p.base,tx); line=L(`IRS de ${p.name}: ${eur(p.base)} → ${eur(p.base+tx)} de rendimento coletável`,-t,"tax");}
+    const b=brTop(p,Math.max(0,prof),t,.275,"rendimento de atividade"), br=b?b.t:0;
+    const net=preTax-imi-aimi-fixed-t-br;
+    sc.push({key,name,det:`Na compra: IMT + Selo ${eur(imtE+is)} · lucro 100% englobado; sem Segurança Social`,taxes:imi+aimi+t+br,net,
+      lines:[hd("Lucro (categoria B, contabilidade organizada)"),...opexLines(),...(S.juros?[L("− Juros do crédito",-S.juros)]:[]),...(aimi?[L("− AIMI",-aimi)]:[]),L("− Contabilidade",-fixed),
+        L("− Amortização do imóvel",-depr),...(consY1?[L("− Obras de conservação (1.º ano)",-consY1)]:[]),...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),
+        L("= Lucro tributável (100% englobado)",tx,"tot"),hd("Imposto"),line,...(b?[b.line]:[]),
+        hd("Dinheiro no ano"),L("= Líquido por ano (antes de Segurança Social)",net,"tot"),yieldL(net,imtE),
+        hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtE+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),L("= Total anual",imi+aimi+t+br,"tot")]});};
+  if(joint) eni("b",A,"Empresário em nome individual (casal, tributação conjunta)");
+  else { eni("b",A,`Empresário em nome individual (${A.name})`); if(casal) eni("b2",B,`Empresário em nome individual (${B.name})`); }
+  // Resumo e notas
+  $("o-rimt").textContent=eur(imtN)+" + "+eur(is);
+  $("sum").innerHTML=`Rendas por ano <b>${eur(rendaA)}</b> · Despesas e juros <b>${eur(opex+S.juros)}</b> · Resultado antes de IMI e impostos <b>${eur(preTax)}</b> · Investimento <b>${eur(invest(imtN))}</b>${obrasT?` (inclui obras de ${eur(obrasT)})`:""}`;
+  if(vptEst) notes.push(`<span class="warn"><b>VPT em falta:</b> o IMI e o AIMI foram estimados com um VPT de 50% do preço. Indique o VPT da caderneta predial para um valor correto.</span>`);
+  if(S.regime!=="livre"&&S.renda>2300) notes.push(`<span class="warn"><b>Renda acima de 2.300 €/mês:</b> não cumpre o limite de renda moderada; o simulador aplica as regras da renda livre.</span>`);
+  if(acess) notes.push(`<b>Arrendamento acessível:</b> só se aplica se a renda não ultrapassar o limite do concelho, cerca de 80% da mediana de rendas do INE, e o contrato for registado na plataforma do IHRU. Ver <a href="#nota-arr">nota 15</a>.`);
+  if(moderate&&!acess) notes.push(`<b>Renda moderada:</b> taxa de IRS de 10% e 50% das rendas em IRC, para rendimentos de 2026 a 2029 (art. 45.º-C do EBF).`);
+  if(S.juros) notes.push(`<b>Crédito:</b> os juros (${eur(S.juros)}) reduzem o imposto na sociedade e no empresário, mas não em nome próprio (categoria F).`);
+  if(obras) notes.push(cons?(y1?`<b>Obras de conservação:</b> deduzidas às rendas no 1.º ano em nome próprio (feitas nos 24 meses antes do contrato) e gasto do ano na sociedade. Mude para "Ano típico" para ver os anos seguintes.`:`<b>Obras de conservação:</b> já deduzidas no 1.º ano; no ano típico não têm efeito.`):`<b>Obras de beneficiação:</b> não se deduzem às rendas em nome próprio; na sociedade e no empresário somam ao custo do imóvel e são amortizadas a 2% ao ano.`);
+  notes.push(`<b>Sociedade:</b> paga AIMI de 0,4% do VPT (${eur(aimiCo)} por ano), que as pessoas singulares só pagam acima de 600.000 € de VPT. A amortização do imóvel (${eur(deprCo)} por ano) reduz o IRC sem sair do bolso.`);
+  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"/ano",assume:"um ano de arrendamento; IMT e Imposto do Selo contados à parte, no investimento; amortização a 2% ao ano sobre 75% do custo; venda futura não incluída"});
+}
 
 function calc(){
   const S=state, geral=parseFloat(S.ano), der=S.derrama/100;
@@ -539,6 +731,7 @@ function calc(){
   const so=$("socio"); so.options[0].text=A.name.replace(/&amp;/g,"&"); so.options[1].text=B.name.replace(/&amp;/g,"&"); so.options[2].text="Ambos, 50/50";
   [1,2].forEach(i=>{so.options[i].disabled=!casal; so.options[i].hidden=!casal;});
   const socio=casal?S.socio:"A"; if(!casal&&so.value!=="A") so.value="A";
+  if(S.mode==="rent"){ calcRent({S,A,B,casal,joint,canJoint,socio,geral,der}); return; }
   let imtBase, imtNormal, isPS, imiPS, coExempt, real, items, preTax, notes=[];
   const flip=S.mode==="flip";
   if(flip){
@@ -650,38 +843,7 @@ function calc(){
   if(joint) eni("b",A,"Empresário em nome individual (casal, tributação conjunta)");
   else { eni("b",A,`Empresário em nome individual (${A.name})`); if(casal) eni("b2",B,`Empresário em nome individual (${B.name})`); }
 
-  const sorted=[...sc].sort((a,b)=>b.net-a.net);
-  const best1=sorted[0], best2=sorted.find(s=>!s.retido);
-  const max=Math.max(1,...sc.map(s=>s.net));
-  const fmt=v=>(v<0?"− ":"")+eur(Math.abs(v));
-  // Mantém os dois cenários de empresário em nome individual juntos, na posição do mais bem classificado
-  const order=[...sorted], iB=order.findIndex(x=>x.key==="b"), iB2=order.findIndex(x=>x.key==="b2");
-  if(iB>-1&&iB2>-1){const first=Math.min(iB,iB2), mv=order.splice(Math.max(iB,iB2),1)[0]; order.splice(first+1,0,mv);}
-  $("rows").innerHTML=order.map(s=>{
-    const eff=preTax>0?s.taxes/preTax:NaN, open=OPEN.has(s.key);
-    const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
-    const det=s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
-    return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
-      <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
-      <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
-      <td data-label="Impostos">${eur(s.taxes)}</td><td data-label="Taxa efetiva">${pct(eff)}</td><td data-label="Líquido">${eur(s.net)}${s.retido?'<div class="det">na sociedade</div>':''}</td></tr>
-      <tr class="drow" style="--sc:var(--c-${s.key})" id="d-${s.key}" ${open?"":"hidden"}><td colspan="4"><div class="calcbox">${det}</div></td></tr>`;}).join("");
-  const dot=k=>`<span class="dot" style="--sc:var(--c-${k})"></span>`;
-  $("b1n").innerHTML=dot(best1.key)+best1.name; $("b1v").textContent=eur(best1.net);
-  $("b1s").textContent=best1.retido?"Fica na sociedade para a próxima operação.":"Disponível em nome dos titulares.";
-  $("mbn").innerHTML=dot(best1.key)+best1.name; $("mbv").textContent=eur(best1.net);
-  $("b2n").innerHTML=dot(best2.key)+best2.name; $("b2v").textContent=eur(best2.net);
-  $("b2s").textContent=`Impostos totais de ${eur(best2.taxes)}.`;
-  // Notas sobre as pessoas
-  const ppl=casal?[A,B]:[A];
-  notes.push("<b>Taxa marginal de IRS antes da operação:</b> "+ppl.map(p=>p.nr?`${p.name}, não residente em Portugal`:`${p.name}, ${pct(RT[LIM.findIndex(l=>p.base<l)])}`).join("; ")+(joint?" (tributação conjunta do casal)":"")+". O mínimo de existência e as deduções à coleta não estão incluídos.");
-  if(casal&&S.tribut==="conjunta"&&!canJoint) notes.push(`<span class="warn"><b>Tributação conjunta indisponível:</b> exige que ambos sejam residentes em Portugal. O simulador usa a tributação separada.</span>`);
-  const nrs=ppl.filter(p=>p.nr); if(nrs.length) notes.push(`<b>Não residente em Portugal (${nrs.map(p=>p.name).join(", ")}):</b> IMT fixo de 7,5% na compra de habitação em nome próprio, mais-valias a 28% sobre 50% do ganho e dividendos a 25% (15% se residente no Brasil). Ver <a href="#nota-res">nota 13</a>.`);
-  const brs=ppl.filter(p=>p.br); if(brs.length) notes.push(`<b>Residente fiscal no Brasil (${brs.map(p=>p.name).join(", ")}):</b> o simulador soma o imposto brasileiro que exceda o português (crédito pela Convenção Brasil–Portugal). Valores estimados em euros; o Brasil apura em reais. Ver <a href="#nota-res">nota 13</a>.`);
-  const nbr=ppl.filter(p=>!p.br); if(brs.length&&nbr.length) notes.push(`<b>Dica:</b> ${nbr.map(p=>p.name).join(", ")} não é residente no Brasil; os cenários em seu nome, ou com ${nbr.length>1?"eles":"essa pessoa"} como sócio, evitam o imposto brasileiro.`);
-  const rnh=ppl.filter(p=>p.rnh); if(rnh.length) notes.push(`<b>RNH ou IFICI (${rnh.map(p=>p.name).join(", ")}):</b> não reduz nenhum dos impostos simulados, porque os rendimentos são de fonte portuguesa.`);
-  notes.push(`<b>Pressupostos:</b> sociedade com atividade de compra para revenda (isenção de IMT e de IMI até ao 3.º ano), IRC de 15% nos primeiros 50.000 €. Simulação indicativa: valide com contabilista certificado antes de decidir.`);
-  $("notes").innerHTML=notes.map(n=>`<div>${n}</div>`).join("");
+  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"",assume:"sociedade com atividade de compra para revenda (isenção de IMT e de IMI até ao 3.º ano), IRC de 15% nos primeiros 50.000 €"});
 }
 
 document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#nota-"]'); if(!a) return; const d=document.getElementById(a.getAttribute("href").slice(1)); if(d){d.open=true;}});
@@ -699,6 +861,7 @@ $("form").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b
 $("form").addEventListener("submit",e=>e.preventDefault());
 $("m-flip").addEventListener("click",()=>setMode("flip"));
 $("m-ced").addEventListener("click",()=>setMode("ced"));
+$("m-rent").addEventListener("click",()=>setMode("rent"));
 $("reset").addEventListener("click",()=>{state=clone(DEF);try{localStorage.removeItem(KEY);}catch(e){} fill();});
 fill();
 </script>
