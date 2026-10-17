@@ -147,7 +147,7 @@ table.mini td:last-child,table.mini th:last-child{text-align:right;padding-right
 .del{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:4px;height:28px}
 .del:hover{color:var(--warn)}
 .tr.excl{opacity:.55;border-style:dashed}
-.tr.excl input[type="number"]{text-decoration:line-through}
+.tr.excl input[data-num]{text-decoration:line-through}
 .flag{grid-column:1/-1;font:600 11px var(--body);color:var(--warn)}
 .empty{color:var(--muted);font-size:12px;font-style:italic}
 .f.tot{border-top:1px solid var(--line);padding-top:8px}
@@ -192,7 +192,7 @@ tr.drow .calcbox{background:color-mix(in srgb,var(--sc) 4%,var(--bg))}
   .tr input{font-size:16px}
   .tr{grid-template-columns:minmax(0,1fr) 36px}
   .tr input[type="date"]{grid-column:1/2}
-  .tr input[type="number"]{grid-column:1/2}
+  .tr input[data-num]{grid-column:1/2}
   .tr .del{grid-row:2/4;grid-column:2;height:100%}
   .best{grid-template-columns:minmax(0,1fr);gap:10px}
   .win{padding:12px}
@@ -343,6 +343,62 @@ td .det{font-family:var(--body)}
 .ios-hint p{margin:0;font-size:14px;text-align:left}
 .ios-hint button{border:0;background:transparent;color:inherit;font-size:22px;cursor:pointer}
 @media (max-width:640px){.win .v.hero{font-size:32px} .seg button{font-size:13.5px;padding:9px 4px}}
+
+/* ===== Passos, guardar, donut (v4) ===== */
+.stepper{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 16px;counter-reset:st}
+.st{display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--bg);color:var(--muted);border-radius:10px;padding:8px 10px;font:600 14px var(--body);cursor:pointer;min-width:0}
+.st-n{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--panel);border:1px solid var(--line);font-size:13px}
+.st-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.st.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.st.on .st-n{background:var(--on-accent);color:var(--accent);border-color:transparent}
+.st.done .st-n{background:var(--good);color:#fff;border-color:transparent}
+.st.done .st-n{font-size:0}.st.done .st-n::after{content:"✓";font-size:13px}
+.fstep.off{display:none}
+.stepnav{display:flex;gap:10px;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.stepnav :only-child{margin-left:auto}
+.btn-primary{border:0;background:var(--accent);color:var(--on-accent);font:600 15px var(--body);padding:12px 16px;border-radius:10px;cursor:pointer}
+.btn-ghost{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:600 15px var(--body);padding:12px 16px;border-radius:10px;cursor:pointer}
+.btn-ghost.sm{font-size:13.5px;padding:7px 10px}
+.danger-t{color:var(--warn)}.danger-t.armed{background:var(--warn);color:var(--panel);border-color:var(--warn)}
+.saves{margin-top:16px}
+.saves-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.saves-h h2{font-family:var(--display);font-size:19px;margin:0 0 10px}
+.saves-c{font-size:13px;color:var(--muted)}
+.save-form{display:flex;gap:8px;margin-bottom:12px}
+.save-form input{flex:1;min-width:0;text-align:left;font-family:var(--body)}
+.saves-list{display:grid;gap:8px}
+.sv{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg)}
+.sv-c input{width:20px;height:20px;accent-color:var(--accent)}
+.sv-t{flex:1;min-width:0;display:grid;gap:1px}
+.sv-t b{font-size:15px}.sv-t span{font-size:13px;color:var(--muted);text-align:left}
+.sv-v{color:var(--good);font-family:var(--mono)}
+.sv-a{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.empty-s,.sv-hint{font-size:14px;color:var(--muted);margin:4px 0}
+.cmp-h{font:600 16px var(--body);margin:16px 0 8px}
+table.qcmp{min-width:480px}
+table.qcmp th,table.qcmp td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-size:14px;vertical-align:top;font-family:var(--body)}
+table.qcmp thead th{font:600 13px var(--body);text-transform:none;letter-spacing:0;color:var(--accent)}
+table.qcmp tbody th{font:500 13.5px var(--body);color:var(--muted);text-transform:none;letter-spacing:0;white-space:normal}
+table.qcmp td.num{font-family:var(--mono);text-align:right;white-space:nowrap}
+table.qcmp tr.strong td{font-weight:700}
+table.qcmp td.win-c{background:var(--good-soft);color:var(--good);font-weight:700}
+@media (max-width:640px){
+  .stepper .st{flex-direction:column;gap:3px;padding:7px 4px;font-size:12.5px}
+  .save-form{flex-direction:column}
+  .sv{flex-wrap:wrap}.sv-a{width:100%;justify-content:flex-start;padding-left:30px}
+  .saves .tbl{overflow-x:auto!important}
+  table.qcmp{display:table!important;width:auto!important} table.qcmp thead{display:table-header-group!important} table.qcmp tbody{display:table-row-group!important}
+  table.qcmp tr{display:table-row!important;padding:0!important;box-shadow:none!important;border:0!important;background:none!important} table.qcmp th,table.qcmp td{display:table-cell!important;width:auto!important}
+}
+.comp-body{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.comp-body .comp-leg{flex:1;min-width:200px;display:grid;gap:4px;margin:0}
+.comp-tot{margin-top:4px;padding-top:4px;border-top:1px dashed var(--line)}
+.donut{flex:none;max-width:100%}
+.dn-c{font:700 20px var(--body);fill:var(--ink)}
+.dn-s{font:500 11px var(--body);fill:var(--muted)}
+.win.primary{position:relative}
+.hero-chart{float:right;margin:0 0 6px 10px}
+.hero-chart .dn-c{font-size:16px}.hero-chart .dn-s{font-size:10px}
 </style>
 </head>
 <body>
@@ -366,6 +422,7 @@ td .det{font-family:var(--body)}
         <p class="sm-h">Partilhar</p>
         <button type="button" role="menuitem" data-act="mail"><span class="sm-i sm-mail"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>E-mail</button>
         <button type="button" role="menuitem" data-act="wa"><span class="sm-i sm-wa"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.2-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg></span>WhatsApp</button>
+        <button type="button" role="menuitem" data-act="save"><span class="sm-i"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 3h11l3 3v15H5z"/><path d="M8 3v6h8V3"/><path d="M8 21v-7h8v7"/></svg></span>Guardar simulação</button>
         <button type="button" role="menuitem" data-act="copy"><span class="sm-i"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></span>Copiar resumo</button>
         <button type="button" role="menuitem" data-act="native" id="act-native" hidden><span class="sm-i">…</span>Outras apps</button>
       </div>
@@ -386,6 +443,12 @@ td .det{font-family:var(--body)}
 </nav>
 <div class="grid">
 <form class="panel" id="form" autocomplete="off">
+  <nav class="stepper" aria-label="Passos da simulação">
+    <button type="button" class="st" data-go="1"><span class="st-n">1</span><span class="st-t">Titulares</span></button>
+    <button type="button" class="st" data-go="2"><span class="st-n">2</span><span class="st-t">Operação</span></button>
+    <button type="button" class="st" data-go="3"><span class="st-n">3</span><span class="st-t">Resultados</span></button>
+  </nav>
+  <section class="fstep" data-step="1">
   <h2 class="step">1 · Quem investe</h2>
   <select id="casal" hidden aria-hidden="true" tabindex="-1"><option value="nao">nao</option><option value="sim">sim</option></select>
   <div class="pcards">
@@ -412,6 +475,9 @@ td .det{font-family:var(--body)}
     <div class="f" id="row-quota"><label for="quota">Quota da pessoa 2 na compropriedade (%)<small>A pessoa 1 fica com o restante</small></label><input id="quota" type="number" min="0" max="100" step="5"></div>
     <div class="f" id="row-tribut"><label for="tribut">Tributação do IRS do casal<small>Conjunta só se ambos forem residentes em Portugal</small></label><select id="tribut"><option value="separada">Separada</option><option value="conjunta">Conjunta</option></select></div>
   </fieldset>
+  <div class="stepnav"><button type="button" class="btn-primary" data-go="2">Seguinte: dados da operação →</button></div>
+  </section>
+  <section class="fstep" data-step="2">
   <h2 class="step" id="op-title">2 · Comprar e vender</h2>
 
   <div id="flip">
@@ -498,11 +564,13 @@ td .det{font-family:var(--body)}
     <div class="f"><label for="derrama">Derrama municipal (%)</label><input id="derrama" type="number" min="0" max="1.5" step="0.1"></div>
     <div class="f"><label for="ano">Ano do lucro</label><select id="ano"><option value="0.19">2026 (19%)</option><option value="0.18">2027 (18%)</option><option value="0.17">2028+ (17%)</option></select></div>
   </fieldset>
+  <div class="stepnav"><button type="button" class="btn-ghost" data-go="1">← Titulares</button><button type="button" class="btn-primary" data-go="3">Ver resultados →</button></div>
+  </section>
 </form>
 
 <section aria-live="polite" id="res">
   <div class="best">
-    <div class="win primary"><div class="k">Resultado líquido · melhor cenário</div><div class="n" id="b1n">—</div><div class="v hero" id="b1v">—</div><div class="chips"><span class="chip" id="b1d"></span><span class="chip" id="b1d2" hidden>Também é o melhor para levantar o dinheiro</span></div><div class="s" id="b1s"></div></div>
+    <div class="win primary"><div class="hero-chart" id="b1chart" aria-hidden="true"></div><div class="k">Resultado líquido · melhor cenário</div><div class="n" id="b1n">—</div><div class="v hero" id="b1v">—</div><div class="chips"><span class="chip" id="b1d"></span><span class="chip" id="b1d2" hidden>Também é o melhor para levantar o dinheiro</span></div><div class="s" id="b1s"></div></div>
     <div class="win"><div class="k">Melhor se levantar o dinheiro</div><div class="n" id="b2n">—</div><div class="v" id="b2v">—</div><div class="s" id="b2s"></div></div>
   </div>
   <div class="panel">
@@ -511,6 +579,15 @@ td .det{font-family:var(--body)}
       <thead><tr><th>Cenário</th><th>Impostos totais</th><th>Taxa efetiva <a class="nref" href="#nota-taxa">nota 12</a></th><th id="th-net">Líquido disponível</th></tr></thead>
       <tbody id="rows"></tbody>
     </table></div>
+  </div>
+  <div class="panel saves" id="saves">
+    <div class="saves-h"><h2>Simulações guardadas</h2><span class="saves-c" id="saves-count"></span></div>
+    <form id="save-form" class="save-form" autocomplete="off">
+      <input id="save-name" type="text" maxlength="40" placeholder="Nome, por exemplo: T2 Bonfim com crédito" aria-label="Nome da simulação">
+      <button type="submit" class="btn-primary">Guardar</button>
+    </form>
+    <div id="saves-list" class="saves-list"></div>
+    <div id="saves-cmp"></div>
   </div>
   <div class="notes" id="notes"></div>
   <div class="disc-full" role="note">
@@ -729,14 +806,25 @@ function renderList(name){
   box.innerHTML=L.map((t,i)=>`<div class="tr" id="${name}-${i}-row">
     <input type="text" id="${name}-${i}-desc" data-list="${name}" data-i="${i}" data-k="desc" value="${esc(t.desc)}" placeholder="Descrição" aria-label="Descrição">
     <input type="date" id="${name}-${i}-d" data-list="${name}" data-i="${i}" data-k="d" value="${esc(t.d)}" aria-label="Data">
-    <input type="number" id="${name}-${i}-v" data-list="${name}" data-i="${i}" data-k="v" value="${t.v}" min="0" step="1000" aria-label="Valor em euros">
+    <input type="text" inputmode="decimal" data-num="1" id="${name}-${i}-v" data-list="${name}" data-i="${i}" data-k="v" value="${fmtNum(t.v)}" aria-label="Valor em euros">
     <button type="button" class="del" data-del="${name}" data-i="${i}" aria-label="Remover tranche">×</button>${name==="pagas"?`<div class="flag" id="pagas-${i}-flag" hidden>Posterior à cedência: não conta no custo</div>`:""}</div>`).join("");
 }
 const OPEN=new Set();
 const NOTES=[[/[Rr]enda|categoria F|[Aa]mortiza|AIMI/,"arr",15],[/cláusula/,"clausula",14],[/Brasil|não residente/,"res",13],[/Distribuição|dividendo|Dividendo|liberatória/,"div",10],[/IRC/,"irc",8],[/[Dd]errama/,"derrama",9],[/categoria B|100% englobado/,"irs-b",7],
   [/Mais-valia|englobada/,"irs-g",6],[/IRS/,"irs",5],[/IMT/,"imt",2],[/Selo/,"is",3],[/IMI/,"imi",4],[/Obras com IVA|Comissão de venda/,"iva",11],[/Líquido|Fica na sociedade/,"taxa",12]];
+function donutSVG(parts,size,center,sub){ const tot=parts.reduce((a,p)=>a+Math.max(0,p[1]),0); if(!tot) return ""; const r=size/2-8, c=2*Math.PI*r; let off=0;
+  const segs=parts.filter(p=>p[1]>0).map(p=>{ const len=p[1]/tot*c, el=`<circle r="${r}" cx="${size/2}" cy="${size/2}" fill="none" stroke="${p[2]}" stroke-width="14" stroke-dasharray="${Math.max(0,len-1.5)} ${c}" stroke-dashoffset="${-off}"><title>${p[0]}: ${eur(p[1])}</title></circle>`; off+=len; return el; }).join("");
+  return `<svg class="donut" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" role="img" aria-label="${center||""} ${sub||""}"><g transform="rotate(-90 ${size/2} ${size/2})"><circle r="${r}" cx="${size/2}" cy="${size/2}" fill="none" stroke="var(--line)" stroke-width="14"/>${segs}</g>${center?`<text x="50%" y="${sub?"47%":"53%"}" text-anchor="middle" class="dn-c">${center}</text>`:""}${sub?`<text x="50%" y="63%" text-anchor="middle" class="dn-s">${sub}</text>`:""}</svg>`; }
 function nref(t){const m=NOTES.find(n=>n[0].test(t)); return m?` <a class="nref" href="#nota-${m[1]}">nota ${m[2]}</a>`:"";}
 const after=(t,dc)=>!!(dc&&t.d&&t.d>dc);
+function parseNum(v){ const s=String(v??"").replace(/[\s\u00A0\u202F]/g,"").replace(/\./g,"").replace(",","."); const n=parseFloat(s); return isFinite(n)?n:0; }
+function fmtNum(v){ if(v===""||v==null) return ""; const n=Number(v); if(!isFinite(n)) return ""; const neg=n<0, a=Math.abs(n), int=Math.trunc(a), dec=Math.round((a-int)*1e6)/1e6;
+  const ds=dec?String(dec).slice(2,8):""; return (neg?"-":"")+String(int).replace(/\B(?=(\d{3})+(?!\d))/g," ")+(ds?","+ds:""); }
+function liveFormat(el){ const v=el.value, pos=el.selectionStart??v.length; const before=v.slice(0,pos).replace(/[^\d,]/g,"").length;
+  let clean=v.replace(/[^\d,\-]/g,""); const parts=clean.split(","); let int=parts[0].replace(/-/g,""), neg=clean.startsWith("-");
+  int=int.replace(/^0+(?=\d)/,""); let out=(neg?"-":"")+int.replace(/\B(?=(\d{3})+(?!\d))/g," "); if(parts.length>1) out+=","+parts.slice(1).join("").replace(/-/g,"");
+  if(out===v) return; el.value=out; let n=0,i=0; for(;i<out.length&&n<before;i++){ if(/[\d,]/.test(out[i])) n++; } try{ el.setSelectionRange(i,i); }catch(e){} }
+document.addEventListener("input",e=>{ const el=e.target; if(el&&el.dataset&&el.dataset.num) liveFormat(el); },true);
 const sumL=L=>L.reduce((a,t)=>a+(parseFloat(t.v)||0),0);
 const $=id=>document.getElementById(id);
 const eur=v=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(Math.round(v));
@@ -755,9 +843,9 @@ function imt(b){ if(b<=0) return 0;
   if(b<=330539) return b*.07-9394.50; if(b<=633931) return b*.08-12699.89; if(b<=1150853) return b*.06; return b*.075;}
 function irc(p,geral){ if(p<=0) return 0; return Math.min(p,50000)*.15+Math.max(0,p-50000)*geral;}
 
-function read(){ ids.forEach(k=>{const el=$(k); state[k]= (el.tagName==="SELECT"||el.type==="date"||el.type==="text")?el.value:(parseFloat(el.value)||0);});
+function read(){ ids.forEach(k=>{const el=$(k); state[k]= el.dataset.num?parseNum(el.value):(el.tagName==="SELECT"||el.type==="date"||el.type==="text")?el.value:(parseFloat(el.value)||0);});
   save(); }
-function fill(){ ids.forEach(k=>{$(k).value=state[k];}); LISTS.forEach(renderList); setMode(state.mode,false); }
+function fill(){ ids.forEach(k=>{const el=$(k); el.value=el.dataset.num?fmtNum(state[k]):state[k];}); LISTS.forEach(renderList); setMode(state.mode,false); }
 function setMode(m,save=true){ state.mode=m; if($("op-title")) $("op-title").textContent="2 · "+({flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"}[m]); ["flip","ced","rent"].forEach(k=>{$("m-"+k).setAttribute("aria-pressed",m===k); $(k).hidden=m!==k;}); if(save){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}} calc(); }
 
 let LAST=null;
@@ -776,8 +864,9 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
     const tag=s===best1?'<span class="pill g">Melhor</span>':(s===best2?'<span class="pill">Melhor a levantar</span>':'');
     const comp=(()=>{ const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)); if(i<0) return ""; const parts=[];
       for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c==="tot"||x.c==="sub"||!(x.v>0)) continue; parts.push([txt(x.l),x.v]); }
-      const tot=parts.reduce((a,x)=>a+x[1],0); if(!tot) return ""; const pal=["#1e63c6","#d06800","#0e8a49","#7a3fd0","#c2185b","#00808c","#5d4037"];
-      return `<div class="comp"><div class="comp-h">Composição dos impostos${unit?" no ano":""} · ${eur(tot)}</div><div class="comp-bar">${parts.map((x,k)=>`<span style="flex:${x[1]};background:${pal[k%pal.length]}" title="${x[0]}: ${eur(x[1])}"></span>`).join("")}</div><div class="comp-leg">${parts.map((x,k)=>`<span><i style="background:${pal[k%pal.length]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/tot)}</span>`).join("")}</div></div>`; })();
+      const pal=["#1e63c6","#d06800","#7a3fd0","#c2185b","#00808c","#5d4037","#c62828"]; parts.forEach((p,k)=>p.push(pal[k%pal.length]));
+      const tot=parts.reduce((a,x)=>a+x[1],0), all=[...parts]; if(s.net>0) all.push(["Líquido",s.net,"#0e8a49"]); const base=all.reduce((a,x)=>a+x[1],0); if(!base) return "";
+      return `<div class="comp"><div class="comp-h">Para onde vai o resultado${unit?" no ano":""}</div><div class="comp-body">${donutSVG(all,132,s.net>0?pct(s.net/base):"",s.net>0?"líquido":"")}<div class="comp-leg">${all.map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/base)}</span>`).join("")}<span class="comp-tot">Impostos: <b>${eur(tot)}</b></span></div></div></div>`; })();
     const det=comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
@@ -785,6 +874,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
       <td data-label="Impostos">${eur(s.taxes)}</td><td data-label="Taxa efetiva">${pct(eff)}</td><td data-label="${unit?"Líquido/ano":"Líquido"}">${eur(s.net)}${s.retido?'<div class="det">na sociedade</div>':''}</td></tr>
       <tr class="drow" style="--sc:var(--c-${s.key})" id="d-${s.key}" ${open?"":"hidden"}><td colspan="4"><div class="calcbox">${det}</div></td></tr>`;}).join("");
   const dot=k=>`<span class="dot" style="--sc:var(--c-${k})"></span>`;
+  { const bt=Math.max(0,best1.net)+Math.max(0,best1.taxes); $("b1chart").innerHTML=bt>0&&best1.net>0?donutSVG([["Líquido",best1.net,"#0e8a49"],["Impostos",best1.taxes,"#d06800"]],96,pct(best1.net/bt),"líquido"):""; }
   $("b1n").innerHTML=dot(best1.key)+best1.name; $("b1v").textContent=eur(best1.net)+unit;
   { const s2=sorted[1], dif=s2?best1.net-s2.net:0; $("b1d").textContent=!s2?"":(dif>=1?`+${eur(dif)}${unit} face ao 2.º melhor cenário`:`Empatado com: ${txt(s2.name)}`); $("b1d").hidden=!s2;
     const same=best1===best2; $("b2n").closest(".win").hidden=same; $("b1d2").hidden=!same; }
@@ -1060,7 +1150,7 @@ $("openall").addEventListener("click",()=>{const ds=[...document.querySelectorAl
 $("rows").addEventListener("click",e=>{const b=e.target.closest("[data-tog]"); if(!b) return; const k=b.dataset.tog;
   OPEN.has(k)?OPEN.delete(k):OPEN.add(k); const r=$("d-"+k), o=OPEN.has(k); r.hidden=!o; b.setAttribute("aria-expanded",o); b.textContent=o?"Ocultar cálculo":"Ver cálculo";});
 $("form").addEventListener("input",e=>{const d=e.target.dataset;
-  if(d.list){const t=state[d.list][+d.i]; t[d.k]=d.k==="v"?(parseFloat(e.target.value)||0):e.target.value; save(); calc(); return;}
+  if(d.list){const t=state[d.list][+d.i]; t[d.k]=d.k==="v"?parseNum(e.target.value):e.target.value; save(); calc(); return;}
   read();calc();});
 $("form").addEventListener("change",e=>{if(["origem","clausula","dced"].includes(e.target.id)){read();calc();}});
 $("form").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b) return;
@@ -1068,9 +1158,51 @@ $("form").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b
     const L=state[b.dataset.add]; const el=document.getElementById(`${b.dataset.add}-${L.length-1}-desc`); el&&el.focus();}
   if(b.dataset.del){state[b.dataset.del].splice(+b.dataset.i,1); renderList(b.dataset.del); save(); calc();}});
 $("form").addEventListener("submit",e=>e.preventDefault());
-$("m-flip").addEventListener("click",()=>setMode("flip"));
-$("m-ced").addEventListener("click",()=>setMode("ced"));
-$("m-rent").addEventListener("click",()=>setMode("rent"));
+$("m-flip").addEventListener("click",()=>{setMode("flip"); goStep(2,true);});
+$("m-ced").addEventListener("click",()=>{setMode("ced"); goStep(2,true);});
+$("m-rent").addEventListener("click",()=>{setMode("rent"); goStep(2,true);});
+// ===== Passos =====
+let STEP=1; const VISITED=new Set([1]);
+function goStep(n,quiet){ if(n===3){ VISITED.add(3); paintSteps(3); $("res").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+  STEP=n; VISITED.add(n); document.querySelectorAll(".fstep").forEach(f=>f.classList.toggle("off",+f.dataset.step!==n)); paintSteps(n);
+  try{ localStorage.setItem("qf-step",String(n)); }catch(e){}
+  if(!quiet){ const f=$("form"); const top=f.getBoundingClientRect().top+scrollY-90; if(Math.abs(scrollY-top)>40) scrollTo({top,behavior:"smooth"}); } }
+function paintSteps(cur){ document.querySelectorAll(".stepper .st").forEach(b=>{ const k=+b.dataset.go; b.classList.toggle("on",k===cur||(cur===3?false:k===STEP&&cur!==3)); b.classList.toggle("done",VISITED.has(k)&&k!==cur); b.setAttribute("aria-current",k===cur?"step":"false"); }); }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-go]"); if(b) goStep(+b.dataset.go); });
+// ===== Simulações guardadas =====
+const SKEY="qf-saves";
+function getSaves(){ try{ return JSON.parse(localStorage.getItem(SKEY)||"[]"); }catch(e){ return []; } }
+function putSaves(a){ try{ localStorage.setItem(SKEY,JSON.stringify(a)); return true; }catch(e){ return false; } }
+const CMP=new Set();
+function renderSaves(){ const a=getSaves(), box=$("saves-list"); $("saves-count").textContent=a.length?`${a.length} guardada${a.length>1?"s":""}`:"";
+  if(!a.length){ box.innerHTML='<p class="empty-s">Ainda não guardou nenhuma simulação. Dê-lhe um nome e toque em Guardar para a poder abrir e comparar mais tarde.</p>'; $("saves-cmp").innerHTML=""; return; }
+  box.innerHTML=a.map(x=>`<div class="sv"><label class="sv-c"><input type="checkbox" data-cmp="${x.id}" ${CMP.has(x.id)?"checked":""} aria-label="Comparar ${esc(x.name)}"></label>
+    <div class="sv-t"><b>${esc(x.name)}</b><span>${OPN[x.mode]} · ${x.date}</span><span>Melhor: ${esc(x.best)} · <b class="sv-v">${eur(x.bestNet)}${x.unit||""}</b></span></div>
+    <div class="sv-a"><button type="button" class="btn-ghost sm" data-open="${x.id}">Abrir</button><button type="button" class="btn-ghost sm danger-t" data-del="${x.id}">Apagar</button></div></div>`).join("")
+    +(a.length>1?`<p class="sv-hint">Marque duas ou mais simulações para as comparar lado a lado.</p>`:"");
+  renderCompare(a); }
+function renderCompare(a){ const sel=a.filter(x=>CMP.has(x.id)), box=$("saves-cmp"); if(sel.length<2){ box.innerHTML=""; return; }
+  const names=[...new Set(sel.flatMap(x=>x.rows.map(r=>r[0])))];
+  const best=(vals)=>{ const m=Math.max(...vals.filter(v=>v!=null)); return vals.map(v=>v!=null&&v===m); };
+  const bn=best(sel.map(x=>x.bestNet));
+  const row=(lab,cells,cls="")=>`<tr class="${cls}"><th scope="row">${lab}</th>${cells.join("")}</tr>`;
+  box.innerHTML=`<h3 class="cmp-h">Comparação</h3><div class="tbl"><table class="qcmp"><thead><tr><th></th>${sel.map(x=>`<th scope="col">${esc(x.name)}</th>`).join("")}</tr></thead><tbody>
+    ${row("Operação",sel.map(x=>`<td>${OPN[x.mode]}</td>`))}${row("Data",sel.map(x=>`<td>${x.date}</td>`))}
+    ${row("Melhor cenário",sel.map(x=>`<td>${esc(x.best)}</td>`))}
+    ${row("Líquido do melhor",sel.map((x,i)=>`<td class="num ${bn[i]?"win-c":""}">${eur(x.bestNet)}${x.unit||""}</td>`),"strong")}
+    ${row("Impostos do melhor",sel.map(x=>`<td class="num">${eur(x.bestTaxes)}</td>`))}
+    ${names.map(n=>{ const vals=sel.map(x=>{const r=x.rows.find(r=>r[0]===n); return r?r[1]:null;}), w=best(vals); return row(esc(n),vals.map((v,i)=>`<td class="num ${w[i]?"win-c":""}">${v==null?"—":eur(v)+(sel[i].unit||"")}</td>`)); }).join("")}
+  </tbody></table></div><p class="sv-hint">O valor mais alto de cada linha está destacado a verde.</p>`; }
+$("save-form").addEventListener("submit",e=>{ e.preventDefault(); if(!LAST) return; const name=$("save-name").value.trim()||`Simulação ${OPN[state.mode]}`;
+  const a=getSaves(); const x={id:Date.now().toString(36),name,mode:state.mode,date:stamp().human,state:clone(state),best:txt(LAST.best1.name),bestNet:Math.round(LAST.best1.net),bestTaxes:Math.round(LAST.best1.taxes),unit:LAST.unit,
+    rows:LAST.order.map(s=>[txt(s.name),Math.round(s.net)])};
+  a.unshift(x); if(a.length>30) a.length=30; if(!putSaves(a)){ $("exp-msg").textContent="Não foi possível guardar neste navegador."; return; }
+  $("save-name").value=""; renderSaves(); $("exp-msg").textContent=`Simulação "${name}" guardada.`; });
+$("saves").addEventListener("click",e=>{ const o=e.target.closest("[data-open]"), d=e.target.closest("[data-del]");
+  if(o){ const x=getSaves().find(x=>x.id===o.dataset.open); if(!x) return; state={...clone(DEF),...clone(x.state)}; save(); fill(); goStep(2,true); $("exp-msg").textContent=`Simulação "${x.name}" aberta.`; scrollTo({top:0,behavior:"smooth"}); return; }
+  if(d){ if(!d.classList.contains("armed")){ d.classList.add("armed"); d.textContent="Confirmar"; setTimeout(()=>{ if(d.isConnected){ d.classList.remove("armed"); d.textContent="Apagar"; } },4000); return; }
+    putSaves(getSaves().filter(x=>x.id!==d.dataset.del)); CMP.delete(d.dataset.del); renderSaves(); } });
+$("saves").addEventListener("change",e=>{ const c=e.target.closest("[data-cmp]"); if(!c) return; c.checked?CMP.add(c.dataset.cmp):CMP.delete(c.dataset.cmp); renderCompare(getSaves()); });
 let armT=null;
 $("reset").addEventListener("click",()=>{ const b=$("reset");
   if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Tocar de novo para confirmar"; clearTimeout(armT); armT=setTimeout(()=>{b.classList.remove("armed"); b.textContent="Repor valores a zero";},4000); return; }
@@ -1095,7 +1227,7 @@ function inputsRows(){ const rows=[];
     else if(el.matches("legend,.pc-h")) rows.push([el.textContent.trim(),"","s"]);
     else { const lab=el.querySelector("label"); if(!lab) return;
       const name=[...lab.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join("").trim(); const c=el.querySelector("input,select"); let v="";
-      if(c) v=c.tagName==="SELECT"?c.options[c.selectedIndex].text:(c.type==="number"?(parseFloat(c.value)||0):c.value);
+      if(c) v=c.tagName==="SELECT"?c.options[c.selectedIndex].text:(c.dataset.num?parseNum(c.value):c.type==="number"?(parseFloat(c.value)||0):c.value);
       else { const k=el.querySelector(".calc"); v=k?k.textContent.trim():""; }
       rows.push([name,v,""]); }
   });
@@ -1213,6 +1345,7 @@ async function sharePdfNative(text){ if(!navigator.share||!navigator.canShare) r
   try{ const r=await buildPdf(), f=new File([r.blob],r.filename,{type:"application/pdf"}); if(!navigator.canShare({files:[f]})) return false;
     await navigator.share({files:[f],title:"QuantoFica – simulação",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
 async function shareAct(act){ const msg=$("exp-msg"); closeMenu();
+  if(act==="save"){ $("saves").scrollIntoView({behavior:"smooth",block:"start"}); setTimeout(()=>$("save-name").focus(),350); return; }
   if(act==="pdf") return exportPdf(); if(act==="xlsx") return exportXlsx();
   const text=summaryText();
   if(act==="copy"){ try{ await navigator.clipboard.writeText(text); msg.textContent="Resumo copiado. Pode colá-lo em qualquer app."; }catch(e){ msg.textContent="Não foi possível copiar automaticamente nesta vista."; } return; }
@@ -1240,11 +1373,14 @@ function enhance(){
   document.querySelectorAll("#form .f input[type=number]").forEach(inp=>{ if(inp.parentElement.classList.contains("inp")) return; const t=(inp.closest(".f").querySelector("label")||{}).textContent||"";
     const u=/\(%|%\)|\(% /.test(t)?"%":/\(€\)/.test(t)?"€":/anos\)?$|Prazo/.test(t)?"anos":/[Mm]eses/.test(t)?"meses":""; if(!u) return;
     const w=document.createElement("span"); w.className="inp"; w.dataset.u=u; inp.replaceWith(w); w.appendChild(inp); inp.setAttribute("inputmode","decimal"); });
+  document.querySelectorAll("#form .f input[type=number]").forEach(inp=>{ inp.type="text"; inp.dataset.num="1"; inp.setAttribute("inputmode","decimal"); inp.removeAttribute("step"); });
 }
 function syncSeg(){ document.querySelectorAll("#form .seg").forEach(box=>{ const sel=box.previousElementSibling; [...box.children].forEach(b=>{ const on=b.dataset.v===sel.value; b.setAttribute("aria-checked",String(on)); b.classList.toggle("on",on); }); }); }
 enhance();
 const _calc=calc; calc=function(){ _calc(); syncSeg(); };
 fill();
+renderSaves();
+(function(){ let n=1; try{ n=+localStorage.getItem("qf-step")||1; }catch(e){} goStep(n===2?2:1,true); })();
 // Dica de instalação no iPhone (só fora da app instalada)
 (function(){ try{ const ios=/iPhone|iPad|iPod/.test(navigator.userAgent), standalone=navigator.standalone||matchMedia("(display-mode: standalone)").matches;
   if(!ios||standalone||window.claude||localStorage.getItem("hint-ios")) return;
