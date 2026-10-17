@@ -1,6 +1,6 @@
 // Simulador Imobiliário PT: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "simulador-2026-10-17d";
+const VERSION = "simulador-2026-10-17e";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png",
   "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
@@ -21,7 +21,7 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   // Página: tenta a rede primeiro (para receber atualizações) e usa a cópia guardada sem internet.
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put("./index.html", copy)); return r; })
+    e.respondWith(fetch(req.url, { cache: "no-store" }).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put("./index.html", copy)); return r; })
       .catch(() => caches.match("./index.html")));
     return;
   }

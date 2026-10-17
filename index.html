@@ -988,7 +988,17 @@ fill();
 </script>
 
 <script>
-if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").catch(()=>{});});}
+if("serviceWorker" in navigator){
+  // Atualiza a app sozinha: procura versão nova ao abrir e ao voltar à app, e recarrega quando a encontra.
+  let reloaded=false;
+  navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(!reloaded){ reloaded=true; location.reload(); } });
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(reg=>{
+      const check=()=>reg.update().catch(()=>{});
+      check(); document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible") check(); });
+    }).catch(()=>{});
+  });
+}
 </script>
 </body>
 </html>
