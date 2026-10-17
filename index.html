@@ -399,7 +399,26 @@ table.qcmp td.win-c{background:var(--good-soft);color:var(--good);font-weight:70
 .win.primary{position:relative}
 .hero-chart{float:right;margin:0 0 6px 10px}
 .hero-chart .dn-c{font-size:16px}.hero-chart .dn-s{font-size:10px}
+
+/* ===== Passos sempre visíveis (v5) ===== */
+.side .stepper{margin:0;grid-template-columns:1fr;gap:6px}
+.side .st{background:var(--panel);padding:10px 12px}
+.side .st.on{background:var(--accent)}
+.side-h2{margin-top:8px}
+@media (max-width:1180px){
+  .side{box-shadow:0 6px 14px -10px rgba(10,20,40,.35)}
+  .side .stepper{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr))}
+  .side .st{padding:8px;justify-content:center}
+}
+@media (max-width:640px){
+  .side button{padding:6px 4px}
+  .side .ni{width:26px;height:26px}
+  .side .ni svg{width:16px;height:16px}
+  .side .st{flex-direction:row;gap:6px;padding:6px 4px;font-size:12.5px}
+  .side .st-n{width:20px;height:20px;font-size:11.5px}
+}
 </style>
+
 </head>
 <body>
 
@@ -439,15 +458,16 @@ table.qcmp td.win-c{background:var(--good-soft);color:var(--good);font-weight:70
   <button type="button" id="m-flip" aria-pressed="true"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 15h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Comprar e vender</b><small>Compra, obras e revenda</small></span></button>
   <button type="button" id="m-ced" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Cedência de posição</b><small>Venda do contrato-promessa</small></span></button>
   <button type="button" id="m-rent" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9"/><path d="M17 6l3 3"/><path d="M15 8l2 2"/></svg></span><span class="nt"><b>Comprar para arrendar</b><small>Rendas, obras e crédito</small></span></button>
-  <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
-</nav>
-<div class="grid">
-<form class="panel" id="form" autocomplete="off">
+  <p class="side-h side-h2">Passos</p>
   <nav class="stepper" aria-label="Passos da simulação">
     <button type="button" class="st" data-go="1"><span class="st-n">1</span><span class="st-t">Titulares</span></button>
     <button type="button" class="st" data-go="2"><span class="st-n">2</span><span class="st-t">Operação</span></button>
     <button type="button" class="st" data-go="3"><span class="st-n">3</span><span class="st-t">Resultados</span></button>
   </nav>
+  <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
+</nav>
+<div class="grid">
+<form class="panel" id="form" autocomplete="off">
   <section class="fstep" data-step="1">
   <h2 class="step">1 · Quem investe</h2>
   <select id="casal" hidden aria-hidden="true" tabindex="-1"><option value="nao">nao</option><option value="sim">sim</option></select>
@@ -1163,12 +1183,15 @@ $("m-ced").addEventListener("click",()=>{setMode("ced"); goStep(2,true);});
 $("m-rent").addEventListener("click",()=>{setMode("rent"); goStep(2,true);});
 // ===== Passos =====
 let STEP=1; const VISITED=new Set([1]);
-function goStep(n,quiet){ if(n===3){ VISITED.add(3); paintSteps(3); $("res").scrollIntoView({behavior:"smooth",block:"start"}); return; }
+function stickOff(){ const sd=document.querySelector(".side"); return (innerWidth<=1180&&sd)?sd.getBoundingClientRect().height+10:16; }
+function scrollToEl(el){ const top=el.getBoundingClientRect().top+scrollY-stickOff(); scrollTo({top:Math.max(0,top),behavior:"smooth"}); }
+function goStep(n,quiet){ if(n===3){ VISITED.add(3); paintSteps(3); scrollToEl($("res")); return; }
   STEP=n; VISITED.add(n); document.querySelectorAll(".fstep").forEach(f=>f.classList.toggle("off",+f.dataset.step!==n)); paintSteps(n);
   try{ localStorage.setItem("qf-step",String(n)); }catch(e){}
-  if(!quiet){ const f=$("form"); const top=f.getBoundingClientRect().top+scrollY-90; if(Math.abs(scrollY-top)>40) scrollTo({top,behavior:"smooth"}); } }
+  if(!quiet) scrollToEl($("form")); }
 function paintSteps(cur){ document.querySelectorAll(".stepper .st").forEach(b=>{ const k=+b.dataset.go; b.classList.toggle("on",k===cur||(cur===3?false:k===STEP&&cur!==3)); b.classList.toggle("done",VISITED.has(k)&&k!==cur); b.setAttribute("aria-current",k===cur?"step":"false"); }); }
 document.addEventListener("click",e=>{ const b=e.target.closest("[data-go]"); if(b) goStep(+b.dataset.go); });
+addEventListener("scroll",()=>{ const r=$("res").getBoundingClientRect(), f=$("form").getBoundingClientRect(); const inRes=innerWidth<=860?r.top<innerHeight*.45:false; paintSteps(inRes?3:STEP); },{passive:true});
 // ===== Simulações guardadas =====
 const SKEY="qf-saves";
 function getSaves(){ try{ return JSON.parse(localStorage.getItem(SKEY)||"[]"); }catch(e){ return []; } }
