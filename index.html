@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Simulador fiscal para compra e venda ou cedência de posição contratual de imóveis em Portugal.">
+<meta name="description" content="QuantoFica: simulador fiscal imobiliário para Portugal e Brasil.">
 <meta name="theme-color" content="#f3f5f8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f141c" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Simulador PT">
+<meta name="apple-mobile-web-app-title" content="QuantoFica">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -20,7 +20,7 @@ img{max-width:100%}
 [hidden]{display:none!important}
 .disclaimer{max-width:1180px;margin:0 auto;padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:12px;color:var(--muted)}
 </style>
-<title>Simulador Imobiliário PT</title>
+<title>QuantoFica</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -313,6 +313,7 @@ td .det{font-family:var(--body)}
 }
 
 /* ===== Acabamento profissional (v3) ===== */
+.h1-sub{display:block;font:500 15px var(--body);color:var(--muted);letter-spacing:0;margin-top:2px}
 .sum{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:0 0 14px}
 .sp{display:flex;flex-direction:column;gap:2px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
 .sp span{font-size:12.5px;color:var(--muted);text-align:left}
@@ -350,7 +351,7 @@ td .det{font-family:var(--body)}
 <div class="wrap" lang="pt-PT">
 <header>
   <div>
-    <h1>Simulador Imobiliário PT</h1>
+    <h1>QuantoFica <span class="h1-sub">Simulador fiscal imobiliário PT·BR</span></h1>
     <p class="sub">Indique quem investe e os valores da operação, e compare a carga fiscal em nome próprio, em nome do cônjuge, como empresário individual ou através de sociedade. Regras de 2026 em Portugal, com o efeito no Brasil para residentes fiscais brasileiros.</p>
   </div>
   <div class="actions">
@@ -1116,7 +1117,7 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
   const cellFmt=(ws,r,c,z)=>{const a=X.utils.encode_cell({r,c}); if(ws[a]&&typeof ws[a].v==="number") ws[a].z=z;};
   const wb=X.utils.book_new();
   // Resumo
-  const res=[["Simulador Imobiliário PT"],["Operação",OPN[state.mode]],["Data da simulação",st.human],[],["Aviso",DISC],[],
+  const res=[["QuantoFica · Simulador fiscal imobiliário PT·BR"],["Operação",OPN[state.mode]],["Data da simulação",st.human],[],["Aviso",DISC],[],
     ["Melhor cenário",txt(LAST.best1.name),r2(LAST.best1.net)],["Melhor a levantar",txt(LAST.best2.name),r2(LAST.best2.net)],[],["Resumo da operação",LAST.sum]];
   const wsR=X.utils.aoa_to_sheet(res); cellFmt(wsR,6,2,EUR); cellFmt(wsR,7,2,EUR); wsR["!cols"]=[{wch:24},{wch:70},{wch:16}]; X.utils.book_append_sheet(wb,wsR,"Resumo");
   // Premissas
@@ -1132,14 +1133,14 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
   // Notas
   const wsN=X.utils.aoa_to_sheet([["Notas da simulação"],...LAST.notes.map(n=>[txt(n)]),[],["Aviso"],[DISC]]); wsN["!cols"]=[{wch:140}]; X.utils.book_append_sheet(wb,wsN,"Notas");
   const buf=X.write(wb,{bookType:"xlsx",type:"array"});
-  msg.textContent=await saveFile(`simulacao-imobiliaria-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
+  msg.textContent=await saveFile(`quantofica-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
 }
 const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
 async function buildPdf(){ await loadLibs("pdf");
   const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}), st=stamp(), R=resultsRows(), W=doc.internal.pageSize.getWidth(), M=40;
   const blue=[22,74,143], amber=[154,91,0];
-  doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...blue); doc.text("Simulador Imobiliário PT",M,50);
-  doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40); doc.text(pdfTxt(`${OPN[state.mode]} · simulação de ${st.human}`),M,68);
+  doc.setFont("helvetica","bold"); doc.setFontSize(18); doc.setTextColor(...blue); doc.text("QuantoFica",M,50);
+  doc.setFont("helvetica","normal"); doc.setFontSize(10.5); doc.setTextColor(40); doc.text(pdfTxt(`Simulador fiscal imobiliário PT·BR · ${OPN[state.mode]} · simulação de ${st.human}`),M,68);
   doc.setDrawColor(...amber); doc.setFillColor(255,243,220); const dl=doc.splitTextToSize(pdfTxt(DISC),W-2*M-20); doc.roundedRect(M,80,W-2*M,dl.length*13+16,4,4,"FD");
   doc.setTextColor(60,40,0); doc.setFontSize(10); doc.text(pdfTxt(DISC),M+10,96,{maxWidth:W-2*M-20,align:"justify"});
   let y=80+dl.length*13+30;
@@ -1196,13 +1197,13 @@ async function buildPdf(){ await loadLibs("pdf");
   doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[["Notas da simulação"]],body:[...LAST.notes.map(n=>[pdfTxt(txt(n))]),[{content:pdfTxt("Aviso: "+DISC),styles:{fontStyle:"bold"}}]],
     styles:{fontSize:9.5,cellPadding:6,halign:"justify"},headStyles:{fillColor:amber,halign:"left"},margin:{left:M,right:M}});
   const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120); doc.text(pdfTxt(`Simulação indicativa · não substitui o aconselhamento de contabilista, advogado, consultor imobiliário e mediador de crédito · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
-  return {blob:doc.output("blob"),filename:`simulacao-imobiliaria-${state.mode}-${st.file}.pdf`};
+  return {blob:doc.output("blob"),filename:`quantofica-${state.mode}-${st.file}.pdf`};
 }
 async function exportPdf(){ const msg=$("exp-msg"); if(!LAST) return; msg.textContent="A preparar o PDF…";
   let r; try{ r=await buildPdf(); }catch(e){ msg.textContent="Não foi possível criar o PDF. Verifique a ligação à internet."; return; }
   msg.textContent=await saveFile(r.filename,r.blob); }
 function summaryText(){ if(!LAST) return ""; const st=stamp(), u=LAST.unit?" por ano":"";
-  const L=[`Simulação imobiliária – ${OPN[state.mode]} (${st.human})`,"",`Melhor cenário: ${txt(LAST.best1.name)} – ${eur(LAST.best1.net)}${u}`];
+  const L=[`QuantoFica – simulação ${OPN[state.mode]} (${st.human})`,"",`Melhor cenário: ${txt(LAST.best1.name)} – ${eur(LAST.best1.net)}${u}`];
   if(LAST.best2!==LAST.best1) L.push(`Melhor se levantar o dinheiro: ${txt(LAST.best2.name)} – ${eur(LAST.best2.net)}${u}`);
   L.push("","Cenários (líquido | impostos):"); LAST.order.forEach((s,i)=>L.push(`${i+1}. ${txt(s.name)}: ${eur(s.net)}${u} | ${eur(s.taxes)}`));
   if(LAST.sumPairs&&LAST.sumPairs.length){ L.push("","Resumo:"); LAST.sumPairs.forEach(p=>L.push(`• ${p[0]}: ${p[1]}`)); }
@@ -1210,14 +1211,14 @@ function summaryText(){ if(!LAST) return ""; const st=stamp(), u=LAST.unit?" por
 function openLink(href){ const a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove(); }
 async function sharePdfNative(text){ if(!navigator.share||!navigator.canShare) return false;
   try{ const r=await buildPdf(), f=new File([r.blob],r.filename,{type:"application/pdf"}); if(!navigator.canShare({files:[f]})) return false;
-    await navigator.share({files:[f],title:"Simulação imobiliária",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
+    await navigator.share({files:[f],title:"QuantoFica – simulação",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
 async function shareAct(act){ const msg=$("exp-msg"); closeMenu();
   if(act==="pdf") return exportPdf(); if(act==="xlsx") return exportXlsx();
   const text=summaryText();
   if(act==="copy"){ try{ await navigator.clipboard.writeText(text); msg.textContent="Resumo copiado. Pode colá-lo em qualquer app."; }catch(e){ msg.textContent="Não foi possível copiar automaticamente nesta vista."; } return; }
   if(act==="native"){ msg.textContent="A preparar o PDF…"; const ok=await sharePdfNative(text); msg.textContent=ok?"":"A partilha não está disponível neste dispositivo."; return; }
   if(act==="mail"){ msg.textContent="A preparar o e-mail…"; if(await sharePdfNative(text)){ msg.textContent="Escolha a app de e-mail para enviar o PDF."; return; }
-    openLink("mailto:?subject="+encodeURIComponent("Simulação imobiliária – "+OPN[state.mode])+"&body="+encodeURIComponent(text+"\n\n(Exporte o PDF para o anexar.)"));
+    openLink("mailto:?subject="+encodeURIComponent("QuantoFica – simulação "+OPN[state.mode])+"&body="+encodeURIComponent(text+"\n\n(Exporte o PDF para o anexar.)"));
     msg.textContent="Se o e-mail não abrir, use Copiar resumo."; return; }
   if(act==="wa"){ openLink("https://wa.me/?text="+encodeURIComponent(text)); msg.textContent="A abrir o WhatsApp…"; return; } }
 function closeMenu(){ $("share-menu").hidden=true; $("share-btn").setAttribute("aria-expanded","false"); }

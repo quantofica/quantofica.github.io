@@ -1,7 +1,7 @@
 {
-  "name": "Simulador Imobiliário PT",
-  "short_name": "Simulador PT",
-  "description": "Compara impostos de compra e venda ou cedência de posição de imóveis em Portugal: pessoa singular, empresário individual e sociedade.",
+  "name": "QuantoFica",
+  "short_name": "QuantoFica",
+  "description": "Simulador fiscal imobiliário PT·BR: compra e venda, cedência de posição e arrendamento, com comparação de cenários.",
   "lang": "pt-PT",
   "start_url": "./",
   "scope": "./",

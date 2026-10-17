@@ -1,4 +1,4 @@
-# Simulador Imobiliário PT — app instalável (PWA)
+# QuantoFica — simulador fiscal imobiliário PT·BR (app instalável)
 
 ## Conteúdo
 - `index.html` — a aplicação completa
