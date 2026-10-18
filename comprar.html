@@ -103,7 +103,7 @@ footer a{color:var(--accent)}
         </label>
         <label class="plan">
           <input type="radio" name="plano" value="agencia">
-          <div class="plan-h"><b>Agência <span class="tag">Profissional</span></b><span class="price" id="p-agencia">19,90 € <small>/mês</small></span></div>
+          <div class="plan-h"><b>Agência <span class="tag">Profissional</span></b><span class="price" id="p-agencia">12,90 € <small>/mês</small></span></div>
           <div class="sub">Mensalidade · cancele quando quiser</div>
           <ul>
             <li>Tudo o que o plano Cliente inclui</li>
@@ -168,10 +168,10 @@ footer a{color:var(--accent)}
 <script>
 // ===== Configuração (altere aqui) =====
 // Links de pagamento do Stripe (Payment Links). Vazio = pagamento ainda não ativo.
-const STRIPE={ cliente:"https://buy.stripe.com/test_8x2eVcfpk5zf5TueKVcIE00", agencia:"https://buy.stripe.com/test_6oUeVca504vbchS7itcIE01" }; // MODO DE TESTE — trocar pelos links reais
+const STRIPE={ cliente:"https://buy.stripe.com/test_8x2eVcfpk5zf5TueKVcIE00", agencia:"https://buy.stripe.com/test_7sYbJ04KG5zf2Hi5alcIE02" }; // MODO DE TESTE — trocar pelos links reais
 // URL da aplicação Web do Google Apps Script que grava na folha Google (o mesmo do app). Vazio = não grava.
 const SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRkjHV0Xs4aEvilTTz6B1-3yDK2YWh4OxLMNph8AwcD_pM8VHe/exec";
-const PRICES={ cliente:{v:"9,90 €",l:"Total · compra única"}, agencia:{v:"19,90 €/mês",l:"Total · por mês"} };
+const PRICES={ cliente:{v:"9,90 €",l:"Total · compra única"}, agencia:{v:"12,90 €/mês",l:"Total · por mês"} };
 const CONTACT="quantofica@[defina]";
 
 const $=id=>document.getElementById(id);
