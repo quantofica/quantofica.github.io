@@ -630,6 +630,16 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
   .qtabbar .qt-badge{position:absolute;top:2px;left:50%;margin-left:8px;min-width:18px;height:18px;font-size:11px;line-height:18px}
 }
 @media print{ .qtabbar,.qt-live,.qt-savebtn{display:none!important} }
+/* Barra inferior colorida */
+@media (max-width:860px){
+  .qtabbar{background:linear-gradient(180deg,#22579e,#163e75);border-top:0;box-shadow:0 -8px 20px -10px rgba(10,30,70,.55)}
+  .qtabbar button{color:rgba(255,255,255,.78)}
+  .qtabbar button[aria-current="page"]{color:#ffffff}
+  .qtabbar button[aria-current="page"] svg{background:rgba(255,255,255,.2)}
+  .qtabbar .qt-badge{box-shadow:0 0 0 2px #1d4f91}
+  :root[data-theme="dark"] .qtabbar{background:linear-gradient(180deg,#1d3a66,#12264a)}
+}
+@media (max-width:860px) and (prefers-color-scheme:dark){ :root:not([data-theme="light"]) .qtabbar{background:linear-gradient(180deg,#1d3a66,#12264a)} }
 @media (min-width:1181px){ .side{max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain} }
 #form .stepper .st{padding:8px 6px;gap:6px;font-size:13.5px;justify-content:center}
 #form .stepper .st-t{overflow:visible;white-space:normal}
