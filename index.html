@@ -1017,6 +1017,10 @@ html:root[data-agc] .wrap>header{background:linear-gradient(135deg,var(--agb-bar
 .dg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 html.dg-open,html.dg-open body{overflow:hidden}
 @media print{.dg{display:none!important}}
+
+/* ===== Q: sair da pré-visualização da captação ===== */
+.ld-band{flex-wrap:wrap}
+.ld-exit{margin-left:auto;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid currentColor;background:rgba(255,255,255,.15);color:inherit;font:700 14px var(--body);cursor:pointer;flex:none}
 </style>
 
 </head>
@@ -4045,6 +4049,11 @@ agbRefresh();
     const col=LEAD.color||DEFCOL; root.style.setProperty("--lead",col); root.style.setProperty("--lead-ink",inkFor(col));
     BAND=document.createElement("div"); BAND.className="ld-band"; BAND.setAttribute("role","note");
     BAND.innerHTML=`<span class="ld-ic" aria-hidden="true">${esc((LEAD.name.match(/[A-Za-zÀ-ÿ0-9]/)||["Q"])[0].toUpperCase())}</span><div><b>${esc(LEAD.name)}</b>${LEAD.msg?`<p>${esc(LEAD.msg)}</p>`:""}</div>`;
+    // Quem tem licença neste dispositivo (a própria agência a pré-visualizar) pode sair do modo visitante
+    if(LS.get("qf-license")){ const ex=document.createElement("button"); ex.type="button"; ex.className="ld-exit"; ex.textContent="Sair da pré-visualização";
+      ex.onclick=()=>{ restoreOrig(); ["qf-lead-orig","qf-lead-state","qf-lead-contact"].forEach(k=>{ try{ sessionStorage.removeItem(k); }catch(e){} });
+        try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){} location.reload(); };
+      BAND.appendChild(ex); }
     const hd=document.querySelector(".wrap>header"); hd?hd.after(BAND):document.body.prepend(BAND);
     const rows=$("rows"), tb=rows&&rows.closest(".panel"); if(tb) tb.classList.add("ld-tbl");
     GATE=document.createElement("div"); GATE.className="panel lead-gate"; GATE.id="lead-gate"; GATE.dataset.tab="resultado dados"; GATE.setAttribute("aria-labelledby","ld-g-h");
