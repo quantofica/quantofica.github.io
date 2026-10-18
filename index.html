@@ -582,6 +582,62 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
 .side button.qf-link{display:block;width:auto;border:0;background:none;color:var(--accent);padding:6px 4px;margin:0 0 0 0;font:600 14px var(--body)}
 @media (max-width:1180px){.side button.qf-link{display:none}}
 @media print{.qf-tour,.qf-tour-ring,.qf-tour-block,.qf-banner,#theme-btn,.qf-foot{display:none!important}}
+
+/* ===== F: separadores ===== */
+.side .qtabs{display:grid;gap:4px}
+.side .qtabs button{display:flex;flex-direction:row;align-items:center;gap:10px;min-height:44px;padding:0 12px;border:1px solid transparent;background:transparent;border-radius:10px;font-weight:500;text-align:left}
+.side .qtabs button:hover{border-color:var(--line);background:var(--panel)}
+.side .qtabs button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:700;border-color:transparent}
+.qt-l{flex:1;min-width:0}
+.qt-badge{min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:10px;background:#b3261e;color:#fff;font:700 12px/20px var(--body);text-align:center}
+.qt-savebtn,.qt-live,.qtabbar{display:none}
+@media screen{
+  body[data-qt]:not([data-qt="dados"]) #form{display:none}
+  body[data-qt="dados"] #res>[data-tab]:not([data-tab~="dados"]),
+  body[data-qt="resultado"] #res>[data-tab]:not([data-tab~="resultado"]),
+  body[data-qt="analise"] #res>[data-tab]:not([data-tab~="analise"]),
+  body[data-qt="pagamentos"] #res>[data-tab]:not([data-tab~="pagamentos"]),
+  body[data-qt="notas"] #res>[data-tab]:not([data-tab~="notas"]),
+  body[data-qt="guardadas"] #res>[data-tab]:not([data-tab~="guardadas"]){display:none}
+  body[data-qt]:not([data-qt="dados"]) .grid{grid-template-columns:minmax(0,1fr)}
+  body[data-qt] #res>[data-tab]:first-child{margin-top:0}
+}
+@media (max-width:1180px){
+  .side .qtabs{grid-column:1/-1;grid-template-columns:repeat(6,minmax(0,1fr))}
+  .side .qtabs button{justify-content:center;gap:6px;padding:0 6px;font-size:14px}
+  .side .qtabs .qt-l{flex:none}
+}
+@media (max-width:860px){
+  .side .qtabs{display:none}
+  .mbar{display:none!important}
+  .wrap{padding-bottom:calc(86px + env(safe-area-inset-bottom,0px))}
+  header .sub,.h1-sub{display:none}
+  .disc-top{cursor:pointer;margin-bottom:12px}
+  .disc-top:not(.open) p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .qt-savebtn{display:inline-grid}
+  body[data-qt="dados"] #res{display:none}
+  .qt-live{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;width:100%;margin:0 0 14px;padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+  .qt-live-k{grid-column:1;font:700 11.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .qt-live-n{grid-column:1;font-weight:600;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .qt-live-v{grid-column:2;grid-row:1/3;align-self:center;font:600 17px var(--mono);color:var(--good)}
+  .qtabbar{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--panel);border-top:1px solid var(--line);
+    padding:6px max(4px,env(safe-area-inset-left,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(4px,env(safe-area-inset-right,0px));box-shadow:0 -6px 16px -12px rgba(10,20,40,.35)}
+  .qtabbar button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;border:0;background:none;color:var(--muted);font:500 11.5px var(--body);cursor:pointer;padding:0}
+  .qtabbar button svg{padding:3px 14px;border-radius:999px;box-sizing:content-box}
+  .qtabbar button[aria-current="page"]{color:var(--accent);font-weight:700}
+  .qtabbar button[aria-current="page"] svg{background:var(--accent-soft)}
+  .qtabbar .qt-l{flex:none}
+  .qtabbar .qt-badge{position:absolute;top:2px;left:50%;margin-left:8px;min-width:18px;height:18px;font-size:11px;line-height:18px}
+}
+@media print{ .qtabbar,.qt-live,.qt-savebtn{display:none!important} }
+@media (min-width:1181px){ .side{max-height:calc(100vh - 32px);overflow-y:auto;overscroll-behavior:contain} }
+#form .stepper .st{padding:8px 6px;gap:6px;font-size:13.5px;justify-content:center}
+#form .stepper .st-t{overflow:visible;white-space:normal}
+@media (max-width:640px){
+  .wrap>header{margin-bottom:10px}
+  .side button:not(.qtabs button){padding:9px 4px;min-height:48px;justify-content:center}
+  .side .ni{display:none}
+}
 </style>
 
 </head>
@@ -595,6 +651,7 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
     <p class="sub">Indique quem investe e os valores da operação, e compare a carga fiscal em nome próprio, em nome do cônjuge, como empresário individual ou através de sociedade. Regras de 2026 em Portugal, com o efeito no Brasil para residentes fiscais brasileiros.</p>
   </div>
   <div class="actions">
+    <button class="icon-btn qt-savebtn" type="button" data-qtab="guardadas" aria-label="Simulações guardadas" title="Simulações guardadas"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></button>
     <div class="share">
       <button class="icon-btn" id="share-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="share-menu" aria-label="Exportar e partilhar" title="Exportar e partilhar">
         <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3"/><path d="M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>
@@ -623,16 +680,25 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
   <button type="button" id="m-flip" aria-pressed="true"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 15h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Comprar e vender</b><small>Compra, obras e revenda</small></span></button>
   <button type="button" id="m-ced" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 13h6m-2-2l2 2-2 2"/></svg></span><span class="nt"><b>Cedência de posição</b><small>Venda do contrato-promessa</small></span></button>
   <button type="button" id="m-rent" aria-pressed="false"><span class="ni"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"/><path d="M11 12l9-9"/><path d="M17 6l3 3"/><path d="M15 8l2 2"/></svg></span><span class="nt"><b>Comprar para arrendar</b><small>Rendas, obras e crédito</small></span></button>
-  <p class="side-h side-h2">Passos</p>
+  <p class="side-h side-h2">Separadores</p>
+  <nav class="qtabs" aria-label="Separadores">
+    <button type="button" data-qtab="dados"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="qt-l">Dados</span></button>
+    <button type="button" data-qtab="resultado"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg><span class="qt-l">Resultado</span></button>
+    <button type="button" data-qtab="analise"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="qt-l">Análise</span></button>
+    <button type="button" data-qtab="pagamentos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="qt-l">Pagamentos</span></button>
+    <button type="button" data-qtab="notas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg><span class="qt-l">Notas</span><span class="qt-badge" hidden></span></button>
+    <button type="button" data-qtab="guardadas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="qt-l">Guardadas</span></button>
+  </nav>
+  <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
+</nav>
+<div class="grid">
+<form class="panel" id="form" autocomplete="off" data-tab="dados">
+  <button type="button" class="qt-live" data-qtab="resultado"><span class="qt-live-k">Resultado ao vivo</span><span class="qt-live-n" id="qt-live-n">—</span><span class="qt-live-v" id="qt-live-v">—</span></button>
   <nav class="stepper" aria-label="Passos da simulação">
     <button type="button" class="st" data-go="1"><span class="st-n">1</span><span class="st-t">Titulares</span></button>
     <button type="button" class="st" data-go="2"><span class="st-n">2</span><span class="st-t">Operação</span></button>
     <button type="button" class="st" data-go="3"><span class="st-n">3</span><span class="st-t">Resultados</span></button>
   </nav>
-  <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
-</nav>
-<div class="grid">
-<form class="panel" id="form" autocomplete="off">
   <section class="fstep" data-step="1">
   <h2 class="step">1 · Quem investe</h2>
   <select id="casal" hidden aria-hidden="true" tabindex="-1"><option value="nao">nao</option><option value="sim">sim</option></select>
@@ -1014,6 +1080,13 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
 </div>
 </div>
 
+<nav class="qtabbar" aria-label="Separadores">
+  <button type="button" data-qtab="dados"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></svg><span class="qt-l">Dados</span></button>
+  <button type="button" data-qtab="resultado"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/></svg><span class="qt-l">Resultado</span></button>
+  <button type="button" data-qtab="analise"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="qt-l">Análise</span></button>
+  <button type="button" data-qtab="pagamentos"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="qt-l">Pagamentos</span></button>
+  <button type="button" data-qtab="notas"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg><span class="qt-l">Notas</span><span class="qt-badge" hidden></span></button>
+</nav>
 <a class="mbar" id="mbar" href="#res"><span class="mb-k">Melhor cenário</span><span class="mb-n" id="mbn">—</span><span class="mb-v" id="mbv">—</span></a>
 <script>
 // Datas por defeito contadas a partir de hoje (data da compra = dia atual)
@@ -1640,7 +1713,7 @@ async function sharePdfNative(text){ if(!navigator.share||!navigator.canShare) r
   try{ const r=await buildPdf(), f=new File([r.blob],r.filename,{type:"application/pdf"}); if(!navigator.canShare({files:[f]})) return false;
     await navigator.share({files:[f],title:"QuantoFica – simulação",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
 async function shareAct(act){ const msg=$("exp-msg"); closeMenu();
-  if(act==="save"){ $("saves").scrollIntoView({behavior:"smooth",block:"start"}); setTimeout(()=>$("save-name").focus(),350); return; }
+  if(act==="save"){ qtGo("guardadas",true); $("saves").scrollIntoView({behavior:"smooth",block:"start"}); setTimeout(()=>$("save-name").focus(),350); return; }
   if(act==="pdf") return exportPdf(); if(act==="xlsx") return exportXlsx();
   const text=summaryText();
   if(act==="copy"){ try{ await navigator.clipboard.writeText(text); msg.textContent="Resumo copiado. Pode colá-lo em qualquer app."; }catch(e){ msg.textContent="Não foi possível copiar automaticamente nesta vista."; } return; }
@@ -2538,9 +2611,9 @@ qaBox(); if(LAST) qaSchedule();
   /* ---------- 3. Guia de primeira utilização ---------- */
   const STEPS=[
     {els:()=>["m-flip","m-ced","m-rent"].map($), t:"Escolha a operação", p:"Comece por indicar o que vai fazer: comprar e vender, ceder a posição de um contrato-promessa ou comprar para arrendar."},
-    {els:()=>[document.querySelector(".side .stepper")], t:"Siga os três passos", p:"Em Titulares indica quem investe; em Operação, os valores do negócio; em Resultados compara os cenários, do melhor para o pior. Tudo se recalcula enquanto escreve."},
+    {els:()=>[document.querySelector(innerWidth<=860?".qtabbar":".side .qtabs")], t:"Navegue pelos separadores", p:"Em Dados indica quem investe e os valores do negócio; em Resultado compara os cenários; em Análise vê se o negócio compensa; em Pagamentos tem o calendário dos impostos; em Notas os alertas e as notas legais. Tudo se recalcula enquanto escreve."},
     {els:()=>[$("share-btn")], t:"Exporte e partilhe", p:"Aqui cria o relatório em PDF ou Excel, envia por e-mail ou WhatsApp, ou copia um link que abre esta simulação com os mesmos valores."},
-    {els:()=>[$("saves")], t:"Guarde e compare", p:"Dê um nome à simulação e guarde-a neste dispositivo. Marque duas ou mais simulações guardadas para as comparar lado a lado."}];
+    {els:()=>[document.querySelector(innerWidth<=860?".qt-savebtn":'.side .qtabs [data-qtab="guardadas"]')], t:"Guarde e compare", p:"Em Guardadas dá um nome à simulação e guarda-a neste dispositivo. Marque duas ou mais simulações guardadas para as comparar lado a lado."}];
   let T=null;
   function rectOf(els){ const rs=els.filter(Boolean).map(e=>e.getBoundingClientRect()).filter(r=>r.width||r.height); if(!rs.length) return null;
     const l=Math.min(...rs.map(r=>r.left)), t=Math.min(...rs.map(r=>r.top)), r=Math.max(...rs.map(r=>r.right)), b=Math.max(...rs.map(r=>r.bottom)); return {left:l,top:t,right:r,bottom:b,width:r-l,height:b-t}; }
@@ -2588,6 +2661,33 @@ qaBox(); if(LAST) qaSchedule();
   (function(){ let seen=true; try{ seen=!!localStorage.getItem("qf-tour"); }catch(e){} if(seen) return;
     setTimeout(()=>{ if(!document.hidden&&!matchMedia("print").matches) openTour(); },700); })();
 })();
+
+// ===== F: separadores (Dados, Resultado, Análise, Pagamentos, Notas, Guardadas) =====
+var QT="dados";
+const QT_TABS=["dados","resultado","analise","pagamentos","notas","guardadas"];
+function qtTag(){ const res=$("res"); if(!res) return; const map={qa:"analise","c-cal":"pagamentos","c-brq":"pagamentos",saves:"guardadas",notes:"notas",legal:"notas"};
+  [...res.children].forEach(el=>{ if(el.dataset.tab) return;
+    el.dataset.tab=map[el.id]||(el.classList.contains("disc-full")?"notas":(el.classList.contains("best")||el.classList.contains("panel"))&&!el.id?"resultado dados":"resultado"); }); }
+function qtBadge(){ const n=document.querySelectorAll("#notes .warn").length; document.querySelectorAll(".qt-badge").forEach(b=>{ b.hidden=!n; b.textContent=n; });
+  document.querySelectorAll('[data-qtab="notas"]').forEach(b=>b.setAttribute("aria-label",n?`Notas (${n} alerta${n>1?"s":""})`:"Notas")); }
+function qtLive(){ if(!LAST||!LAST.best1) return; const n=$("qt-live-n"), v=$("qt-live-v"); if(n) n.textContent=txt(LAST.best1.name); if(v) v.textContent=eur(LAST.best1.net)+(LAST.unit||""); }
+function qtGo(t,quiet){ if(!QT_TABS.includes(t)) t="dados"; QT=t; qtTag(); document.body.dataset.qt=t;
+  document.querySelectorAll("[data-qtab]").forEach(b=>{ if(b.classList.contains("qt-live")) return; if(b.dataset.qtab===t) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current"); });
+  try{ localStorage.setItem("qf-tab",t); }catch(e){}
+  if(t==="analise"&&typeof qaEnsure==="function"){ try{ qaEnsure(); }catch(e){} }
+  if(!quiet){ const g=document.querySelector(".grid"); if(g){ const top=g.getBoundingClientRect().top+scrollY-stickOff(); if(scrollY>top+2) scrollTo({top:Math.max(0,top),behavior:"auto"}); } } }
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-qtab]"); if(b){ e.preventDefault(); qtGo(b.dataset.qtab); } });
+// Ligações internas (notas, simulações guardadas): abrem primeiro o separador certo
+document.addEventListener("click",e=>{ const a=e.target.closest('a[href^="#"]'); if(!a||a.classList.contains("mbar")) return; const id=decodeURIComponent(a.getAttribute("href").slice(1)); if(!id) return;
+  const el=document.getElementById(id); if(!el) return; const box=el.closest("#res>[data-tab]"), t=el.closest("#form")?"dados":box?box.dataset.tab.split(" ")[0]:null;
+  if(!t||(box&&box.dataset.tab.split(" ").includes(QT))||t===QT) return;
+  e.preventDefault(); e.stopPropagation(); qtGo(t,true); const d=el.tagName==="DETAILS"?el:el.closest("details"); if(d) d.open=true;
+  requestAnimationFrame(()=>scrollToEl(el)); },true);
+{ const _gs=goStep; goStep=function(n,q){ if(n===3){ qtGo("resultado"); return; } if(QT!=="dados") qtGo("dados",true); return _gs(n,q); }; }
+{ const _ps=paintSteps; paintSteps=function(c){ return _ps(c===3?STEP:c); }; }
+{ const _cF=calc; calc=function(){ const r=_cF.apply(this,arguments); qtTag(); qtLive(); qtBadge(); setTimeout(()=>{ qtTag(); qtBadge(); },0); return r; }; }
+document.querySelector(".disc-top")?.addEventListener("click",e=>{ if(innerWidth<=860&&!e.target.closest("a")) e.currentTarget.classList.toggle("open"); });
+(function(){ let t="dados"; try{ t=localStorage.getItem("qf-tab")||"dados"; }catch(e){} qtTag(); qtLive(); qtBadge(); qtGo(t,true); paintSteps(STEP); })();
 </script>
 
 <script>
