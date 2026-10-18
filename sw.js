@@ -1,9 +1,9 @@
 // QuantoFica: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "quantofica-2026-10-18d";
+const VERSION = "quantofica-2026-10-18e";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
-  "./icons/icon-192.png", "./icons/icon-512.png", "./icons/maskable-512.png",
-  "./icons/apple-touch-icon.png", "./icons/favicon-32.png"];
+  "./icons/icon-192.png?v=2", "./icons/icon-512.png?v=2", "./icons/maskable-512.png?v=2",
+  "./icons/apple-touch-icon.png?v=2", "./icons/favicon-32.png?v=2"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(CORE)).then(() => self.skipWaiting()));
