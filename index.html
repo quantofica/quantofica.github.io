@@ -1021,6 +1021,33 @@ html.dg-open,html.dg-open body{overflow:hidden}
 /* ===== Q: sair da pré-visualização da captação ===== */
 .ld-band{flex-wrap:wrap}
 .ld-exit{margin-left:auto;min-height:44px;padding:0 16px;border-radius:12px;border:1px solid currentColor;background:rgba(255,255,255,.15);color:inherit;font:700 14px var(--body);cursor:pointer;flex:none}
+
+/* ===== R: marca da agência em destaque no cabeçalho ===== */
+.agb-card{display:none}
+@media (min-width:861px){
+  :root[data-agb="1"] .wrap>header{flex-wrap:nowrap;align-items:center;padding:16px 22px}
+  :root[data-agb="1"] .wrap>header .sub{display:none}
+  :root[data-agb="1"] .wrap>header .agb-hb{display:none}
+  :root[data-agb="1"] .agb-card{display:flex;align-items:center;gap:16px;margin-left:auto;margin-right:8px;background:#fff;color:#18212e;border-radius:18px;padding:10px 20px 10px 12px;box-shadow:0 10px 26px -14px rgba(0,0,0,.55);min-width:0;max-width:460px}
+  .agb-card img{height:56px;max-width:170px;object-fit:contain;flex:none}
+  .agb-card .agb-ct{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .agb-card small{font:700 11.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:#5b6678}
+  .agb-card b{font:800 20px/1.15 var(--body);color:#18212e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .agb-card span.agb-cs{font:500 13.5px var(--body);color:#44505f;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  :root[data-agb="1"] .wrap>header .actions{flex:none}
+}
+.agb-card small{white-space:nowrap}
+@media (min-width:861px) and (max-width:1180px){ .agb-card img{height:46px;max-width:120px} .agb-card span.agb-cs{display:none} .agb-card b{font-size:17px} :root[data-agb="1"] .wrap>header .h1-sub{display:none} }
+@media (max-width:860px){
+  :root[data-agb="1"] .wrap>header .agb-hb{display:none}
+  :root[data-agb="1"] .agb-card{display:flex;align-items:center;gap:12px;background:#fff;color:#18212e;border-radius:14px;padding:8px 14px 8px 8px;box-shadow:0 8px 20px -12px rgba(0,0,0,.5);min-width:0;max-width:100%;box-sizing:border-box;overflow:hidden}
+  .agb-card small{white-space:normal}
+  .agb-card img{height:42px;max-width:120px;object-fit:contain;flex:none}
+  .agb-card .agb-ct{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .agb-card small{font:700 10.5px var(--body);letter-spacing:.08em;text-transform:uppercase;color:#5b6678}
+  .agb-card b{font:800 16px/1.15 var(--body);color:#18212e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .agb-card span.agb-cs{display:none}
+}
 </style>
 
 </head>
@@ -4131,6 +4158,15 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   setTimeout(show, stored?1500:250);
   window.qfDemoGate={show,hide};
 })();
+
+// ===== R: marca da agência em destaque no cabeçalho =====
+{ const _ah=agbHeader; agbHeader=function(){ _ah.apply(this,arguments); const hd=document.querySelector(".wrap>header"); if(!hd) return;
+    let c=hd.querySelector(".agb-card"); const on=agbHas(); document.documentElement.dataset.agb=on?"1":"0";
+    if(!on){ if(c) c.remove(); return; }
+    if(!c){ c=document.createElement("div"); c.className="agb-card"; const act=hd.querySelector(".actions"); act?hd.insertBefore(c,act):hd.appendChild(c); }
+    const sub=[AGB.cons,AGB.tel||AGB.email].filter(Boolean).join(" · ");
+    c.innerHTML=`${AGB.logo?`<img src="${AGB.logo}" alt="Logótipo de ${esc(AGB.name)}">`:""}<div class="agb-ct"><small>Simulação preparada por</small><b>${esc(AGB.name)}</b>${sub?`<span class="agb-cs">${esc(sub)}</span>`:""}</div>`; };
+  try{ agbHeader(); }catch(e){} addEventListener("qf-tier",()=>{ try{ agbHeader(); }catch(e){} }); }
 </script>
 
 <script>
