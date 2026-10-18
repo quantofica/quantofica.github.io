@@ -805,19 +805,26 @@ table.qcmp td.win-c{background:var(--good-soft);color:var(--good);font-weight:70
 
 <a class="mbar" id="mbar" href="#res"><span class="mb-k">Melhor cenário</span><span class="mb-n" id="mbn">—</span><span class="mb-v" id="mbv">—</span></a>
 <script>
+// Datas por defeito contadas a partir de hoje (data da compra = dia atual)
+const isoD=dt=>dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+String(dt.getDate()).padStart(2,"0");
+const dPlus=m=>{ const t=new Date(); const d=new Date(t.getFullYear(),t.getMonth()+m,1); d.setDate(Math.min(t.getDate(),new Date(d.getFullYear(),d.getMonth()+1,0).getDate())); return isoD(d); };
+const TODAY=dPlus(0);
 const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"0.23",venda:360000,com:4,meses:10,imi:400,
   cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"A",rel:"conjuge",quota:50,
   casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
-  dced:"2026-09-01",
+  dced:dPlus(6),
   rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
-  pagas:[{d:"2026-03-02",desc:"Sinal",v:25000},{d:"2026-06-15",desc:"Reforço do sinal",v:10000},{d:"2026-12-15",desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
-  recebidas:[{d:"2026-09-01",desc:"Assinatura da cedência",v:20000},{d:"2026-11-30",desc:"Na escritura",v:45000}]};
+  pagas:[{d:TODAY,desc:"Sinal",v:25000},{d:dPlus(3),desc:"Reforço do sinal",v:10000},{d:dPlus(9),desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
+  recebidas:[{d:dPlus(6),desc:"Assinatura da cedência",v:20000},{d:dPlus(8),desc:"Na escritura",v:45000}]};
 const KEY="sim-imob-pt-v8";
 const LISTS=["pagas","recebidas"];
 const ids=Object.keys(DEF).filter(k=>k!=="mode"&&!LISTS.includes(k));
 const clone=o=>JSON.parse(JSON.stringify(o));
 let state=clone(DEF);
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s) state={...clone(DEF),...s};}catch(e){}
+// Atualiza as datas do exemplo antigo (fixas em 2026) para as novas, contadas a partir de hoje
+(function(){ const OLD={"2026-03-02":TODAY,"2026-06-15":dPlus(3),"2026-12-15":dPlus(9),"2026-09-01":dPlus(6),"2026-11-30":dPlus(8)};
+  if(state.dced in OLD) state.dced=OLD[state.dced]; LISTS.forEach(n=>(state[n]||[]).forEach(t=>{ if(t.d in OLD) t.d=OLD[t.d]; })); })();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}};
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function renderList(name){
@@ -1174,7 +1181,7 @@ $("form").addEventListener("input",e=>{const d=e.target.dataset;
   read();calc();});
 $("form").addEventListener("change",e=>{if(["origem","clausula","dced"].includes(e.target.id)){read();calc();}});
 $("form").addEventListener("click",e=>{const b=e.target.closest("button"); if(!b) return;
-  if(b.dataset.add){state[b.dataset.add].push({d:"",desc:"",v:0}); renderList(b.dataset.add); save(); calc();
+  if(b.dataset.add){state[b.dataset.add].push({d:dPlus(0),desc:"",v:0}); renderList(b.dataset.add); save(); calc();
     const L=state[b.dataset.add]; const el=document.getElementById(`${b.dataset.add}-${L.length-1}-desc`); el&&el.focus();}
   if(b.dataset.del){state[b.dataset.del].splice(+b.dataset.i,1); renderList(b.dataset.del); save(); calc();}});
 $("form").addEventListener("submit",e=>e.preventDefault());
@@ -1231,7 +1238,7 @@ $("reset").addEventListener("click",()=>{ const b=$("reset");
   if(!b.classList.contains("armed")){ b.classList.add("armed"); b.textContent="Tocar de novo para confirmar"; clearTimeout(armT); armT=setTimeout(()=>{b.classList.remove("armed"); b.textContent="Repor valores a zero";},4000); return; }
   clearTimeout(armT); b.classList.remove("armed"); b.textContent="Repor valores a zero";
   const z=clone(DEF); Object.keys(z).forEach(k=>{ if(typeof z[k]==="number") z[k]=0; });
-  z.pagas=[]; z.recebidas=[]; z.nA=""; z.nB=""; z.dced=""; z.mode=state.mode; state=z; save(); fill();
+  z.pagas=[]; z.recebidas=[]; z.nA=""; z.nB=""; z.dced=dPlus(0); z.mode=state.mode; state=z; save(); fill();
   $("exp-msg").textContent="Valores repostos a zero.";
 });
 // ======== Exportação ========
