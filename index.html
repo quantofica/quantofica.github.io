@@ -2093,7 +2093,16 @@ function summaryText(){ if(!LAST) return ""; const st=stamp(), u=LAST.unit?" por
   L.push("","Cenários (líquido | impostos):"); LAST.order.forEach((s,i)=>L.push(`${i+1}. ${txt(s.name)}: ${eur(s.net)}${u} | ${eur(s.taxes)}`));
   if(LAST.sumPairs&&LAST.sumPairs.length){ L.push("","Resumo:"); LAST.sumPairs.forEach(p=>L.push(`• ${p[0]}: ${p[1]}`)); }
   L.push("","Aviso: "+DISC); return L.join("\n").replace(/[\u202F\u00A0]/g," "); }
-function openLink(href){ const a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove(); }
+// WhatsApp: no telemóvel abre a app; no computador abre o WhatsApp Web (o wa.me redireciona para api.whatsapp.com, que alguns navegadores e janelas incorporadas bloqueiam)
+function qfIsMobile(){ return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||(navigator.maxTouchPoints>1&&/Macintosh/.test(navigator.userAgent)); }
+function qfWaFix(href){ const m=/^https:\/\/wa\.me\/(\d*)\/?(?:\?text=(.*))?$/.exec(href||""); if(!m) return href; const ph=m[1]||"", tx=m[2]||"";
+  if(qfIsMobile()) return "whatsapp://send?"+(ph?"phone="+ph+"&":"")+"text="+tx;
+  return "https://web.whatsapp.com/send?"+(ph?"phone="+ph+"&":"")+"text="+tx; }
+function qfWaCopy(href){ const m=/[?&]text=([^&]*)/.exec(href||""); if(!m) return; let t=""; try{ t=decodeURIComponent(m[1]); }catch(e){ return; }
+  try{ navigator.clipboard&&navigator.clipboard.writeText(t).catch(()=>{}); }catch(e){}
+  const msg=document.getElementById("exp-msg"); if(msg) setTimeout(()=>{ msg.textContent="Se o WhatsApp não abrir, a mensagem já está copiada: cole-a numa conversa."; },400); }
+function openLink(href){ if(/^https:\/\/wa\.me\//.test(href||"")){ qfWaCopy(href); href=qfWaFix(href); if(/^whatsapp:/.test(href)){ location.href=href; return; } }
+  const a=document.createElement("a"); a.href=href; a.target="_blank"; a.rel="noopener"; document.body.appendChild(a); a.click(); a.remove(); }
 async function sharePdfNative(text){ if(!navigator.share||!navigator.canShare) return false;
   try{ const r=await buildPdf(), f=new File([r.blob],r.filename,{type:"application/pdf"}); if(!navigator.canShare({files:[f]})) return false;
     await navigator.share({files:[f],title:"QuantoFica – simulação",text}); return true; }catch(e){ return e&&e.name==="AbortError"; } }
@@ -3528,7 +3537,7 @@ function agbValidShared(x){ if(!x||typeof x!=="object"||Array.isArray(x)) return
 function H_linkIn(raw){ const o=agbValidShared(raw&&raw._ag); const old=document.querySelector(".agb-shared"); if(old) old.remove(); if(!o) return;
   const b=document.createElement("div"); b.className="agb-shared"; b.setAttribute("role","region"); b.setAttribute("aria-label","Agência que preparou a simulação");
   if(o.k){ const {L,D}=agbPalette(o.k), dark=matchMedia("(prefers-color-scheme: dark)").matches&&document.documentElement.dataset.theme!=="light"||document.documentElement.dataset.theme==="dark"; b.style.setProperty("--agb-sc",agbRgbToHex((dark?D:L).accent)); }
-  const links=[o.t&&`<a href="tel:${esc(agbDigits(o.t))}">Ligar ${esc(o.t)}</a>`,o.t&&agbWa(o.t)&&`<a href="https://wa.me/${agbWa(o.t)}" target="_blank" rel="noopener">WhatsApp</a>`,
+  const links=[o.t&&`<a href="tel:${esc(agbDigits(o.t))}">Ligar ${esc(o.t)}</a>`,o.t&&agbWa(o.t)&&`<a href="https://wa.me/${agbWa(o.t)}" target="_blank" rel="noopener" onclick="event.preventDefault();openLink(this.href)">WhatsApp</a>`,
     o.e&&`<a href="mailto:${esc(o.e)}">${esc(o.e)}</a>`,o.w&&`<a href="${esc(agbSiteHref(o.w))}" target="_blank" rel="noopener">Site</a>`].filter(Boolean).join("");
   b.innerHTML=`<p>Simulação preparada por <strong>${esc(o.n)}</strong>${o.c?" · "+esc(o.c):""}${o.a?" · "+esc(o.a):""}${o.l?" · AMI n.º "+esc(o.l):""}</p>${links?`<div class="agb-sl">${links}</div>`:""}<button type="button" class="agb-x" aria-label="Fechar faixa da agência">×</button>`;
   b.querySelector(".agb-x").onclick=()=>b.remove();
@@ -3874,7 +3883,7 @@ agbRefresh();
   function band(html){ let b=document.querySelector(".qf-banner");
     if(!b){ b=document.createElement("div"); b.className="qf-banner"; b.setAttribute("role","status"); const h=document.querySelector(".wrap>header"); h?h.after(b):document.body.prepend(b); }
     b.innerHTML=html+'<button type="button" class="qf-x" aria-label="Fechar aviso">×</button>'; b.querySelector(".qf-x").onclick=()=>b.remove(); return b; }
-  function popup(url){ let w=null; try{ w=window.open(url,"_blank","noopener"); }catch(e){} if(!w&&!/^https?:/.test(url)) openLink(url); return w; }
+  function popup(url){ if(/^https:\/\/wa\.me\//.test(url)){ openLink(url); return true; } let w=null; try{ w=window.open(url,"_blank","noopener"); }catch(e){} if(!w&&!/^https?:/.test(url)) openLink(url); return w; }
 
   /* =====================================================================
      1. Agência: configuração e link público
