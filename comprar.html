@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QuantoFica · Comprar</title>
+<meta name="description" content="Compre o QuantoFica: plano Cliente (compra única) ou plano Agência (mensalidade).">
+<meta name="theme-color" content="#1a4787">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=2">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap">
+<style>
+:root{--bg:#f3f5f8;--panel:#fff;--ink:#18212e;--muted:#5b6678;--line:#d9dfe8;--accent:#1d4f91;--accent-soft:#e3ecf8;--good:#1d7a4a;--warn:#9a5b00;--warn-soft:#fdf3e2;
+  --display:"Literata",Georgia,serif;--body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1017;--panel:#151c27;--ink:#f2f5f9;--muted:#b9c3d2;--line:#344155;--accent:#8db6f2;--accent-soft:#1d2c44;--good:#5cc48f;--warn:#e0a24a;--warn-soft:#2b2110;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--body);-webkit-text-size-adjust:100%}
+.wrap{max-width:1040px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 48px max(16px,env(safe-area-inset-left,0px))}
+p{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#2a63b0 0%,#1a4787 55%,#0f2e5c 100%);color:#fff;border-radius:22px;padding:22px;box-shadow:0 14px 30px -18px rgba(10,30,70,.6)}
+.hero::before{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(94,240,160,.32),rgba(94,240,160,0) 70%)}
+.hero>*{position:relative}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.brand svg{width:48px;height:48px;flex:none;filter:drop-shadow(0 6px 10px rgba(5,20,50,.45))}
+.wm{font-family:var(--display);font-size:28px;letter-spacing:-.02em}.wm b{color:#6ff0aa;font-weight:700}.wm span{font-weight:500}
+.hero h1{font-family:var(--display);font-weight:700;font-size:30px;line-height:1.15;margin:18px 0 6px;text-wrap:balance}
+.hero p{margin:0;color:rgba(255,255,255,.88);max-width:62ch;text-align:left}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:20px;margin-top:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}.hero h1{font-size:25px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+h2{font-family:var(--display);font-size:21px;margin:0 0 14px}
+.plans{display:grid;gap:12px}
+.plan{position:relative;display:block;border:2px solid var(--line);border-radius:16px;padding:16px 16px 14px;cursor:pointer;background:var(--panel)}
+.plan input{position:absolute;opacity:0;pointer-events:none}
+.plan:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.plan:has(input:focus-visible){outline:3px solid var(--accent);outline-offset:2px}
+.plan-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.plan-h b{font-size:18px}
+.price{font:600 22px var(--mono);color:var(--accent)}
+.price small{font:500 13px var(--body);color:var(--muted)}
+.tag{display:inline-block;font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--good);background:color-mix(in srgb,var(--good) 14%,transparent);border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.plan ul{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:5px;font-size:14.5px}
+.plan li{display:flex;gap:8px}.plan li::before{content:"✓";color:var(--good);font-weight:700}
+.plan .sub{font-size:14px;color:var(--muted);margin-top:2px}
+form{display:grid;gap:14px}
+label.f{display:grid;gap:6px;font-weight:600;font-size:14.5px}
+label.f small{font-weight:400;color:var(--muted)}
+input[type=text],input[type=email],input[type=tel]{width:100%;min-height:48px;border:1px solid #c9d2de;border-radius:12px;padding:0 14px;font:500 16px var(--body);color:var(--ink);background:var(--bg)}
+input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:520px){.row2{grid-template-columns:minmax(0,1fr)}}
+details.fat{border:1px dashed var(--line);border-radius:12px;padding:10px 14px}
+details.fat summary{cursor:pointer;font-weight:600;color:var(--accent);min-height:28px}
+details.fat[open] summary{margin-bottom:10px}
+details.fat .row2{margin-top:6px}
+.chk{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;line-height:1.45}
+.chk input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--accent)}
+.sum{display:flex;justify-content:space-between;align-items:baseline;border-top:2px solid var(--ink);padding-top:12px;font-weight:700}
+.sum span:last-child{font:600 22px var(--mono)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:54px;border:0;border-radius:14px;background:linear-gradient(180deg,#2a63b0,#1a4787);color:#fff;font:700 17px var(--body);cursor:pointer;box-shadow:0 10px 20px -12px rgba(26,71,135,.9)}
+.btn:disabled{opacity:.6;cursor:wait}
+.secure{display:flex;gap:8px;justify-content:center;align-items:center;font-size:13.5px;color:var(--muted);text-align:center}
+.err{display:none;color:#b3261e;font-size:14px;font-weight:600}
+.err.on{display:block}
+.note{background:var(--warn-soft);border:1px solid var(--warn);border-radius:12px;padding:12px 14px;font-size:14.5px}
+.note[hidden]{display:none}
+.steps{margin:0;padding-left:20px;display:grid;gap:6px;font-size:15px}
+.faq details{border-top:1px solid var(--line);padding:12px 0}
+.faq summary{cursor:pointer;font-weight:600;min-height:28px}
+.faq p{margin:8px 0 0;font-size:15px;color:var(--ink)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+footer{margin-top:24px;font-size:13px;color:var(--muted);text-align:center}
+footer a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <a class="brand" href="./" aria-label="Voltar ao QuantoFica">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="b" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#d3dcea"/></linearGradient><linearGradient id="r" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fe08f"/><stop offset="1" stop-color="#1c9a57"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="rgba(255,255,255,.14)"/><path d="M20 42 L50 16 L80 42 Z" fill="url(#r)"/><rect x="26" y="40" width="48" height="46" rx="7" fill="url(#b)"/><rect x="32" y="46" width="36" height="12" rx="3" fill="#173968"/><rect x="32" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="45.5" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="59" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="32" y="72" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="45.5" y="72" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="59" y="72" width="9" height="7" rx="2" fill="#f28c28"/></svg>
+      <span class="wm"><span>Quanto</span><b>Fica</b></span>
+    </a>
+    <h1>Desbloqueie o QuantoFica completo</h1>
+    <p>Todos os cenários, o cálculo passo a passo, a análise do negócio, o calendário de impostos e os relatórios em PDF e Excel.</p>
+  </header>
+
+  <div class="grid">
+    <section class="panel" aria-labelledby="h-plano">
+      <h2 id="h-plano">1 · Escolha o plano</h2>
+      <div class="plans" role="radiogroup" aria-labelledby="h-plano">
+        <label class="plan">
+          <input type="radio" name="plano" value="cliente" checked>
+          <div class="plan-h"><b>Cliente</b><span class="price" id="p-cliente">29 €</span></div>
+          <div class="sub">Compra única · para uso pessoal · sem mensalidade</div>
+          <ul>
+            <li>Todos os cenários com impostos e taxa efetiva</li>
+            <li>“Ver cálculo” passo a passo e notas legais</li>
+            <li>Análise do negócio e calendário de pagamentos</li>
+            <li>Relatórios em PDF e Excel, partilha por link</li>
+            <li>Simulações guardadas e comparação</li>
+          </ul>
+        </label>
+        <label class="plan">
+          <input type="radio" name="plano" value="agencia">
+          <div class="plan-h"><b>Agência <span class="tag">Profissional</span></b><span class="price" id="p-agencia">24,90 € <small>/mês</small></span></div>
+          <div class="sub">Mensalidade · cancele quando quiser</div>
+          <ul>
+            <li>Tudo o que o plano Cliente inclui</li>
+            <li>Marca própria: logótipo, contactos e cores nos relatórios e na app</li>
+            <li>Carteira de clientes com imóveis e estado do negócio</li>
+            <li>Proposta comparativa de imóveis em PDF</li>
+            <li>Página de captação de contactos com link e código QR</li>
+          </ul>
+        </label>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-dados">
+      <h2 id="h-dados">2 · Os seus dados</h2>
+      <form id="buy" novalidate>
+        <label class="f">Nome<input type="text" id="nome" autocomplete="name" required></label>
+        <label class="f">E-mail <small>— é para aqui que enviamos a chave de licença</small><input type="email" id="email" autocomplete="email" inputmode="email" required></label>
+        <label class="f" id="f-ag" hidden>Nome da agência<input type="text" id="agencia" autocomplete="organization"></label>
+        <label class="f">Telemóvel <small>(opcional)</small><input type="tel" id="tel" autocomplete="tel" inputmode="tel"></label>
+        <details class="fat">
+          <summary>Quero fatura com NIF</summary>
+          <div class="row2">
+            <label class="f">NIF<input type="text" id="nif" inputmode="numeric" maxlength="12"></label>
+            <label class="f">Nome fiscal<input type="text" id="nfiscal"></label>
+          </div>
+        </details>
+        <div class="hp" aria-hidden="true"><label>Não preencher<input type="text" id="site" tabindex="-1" autocomplete="off"></label></div>
+        <label class="chk"><input type="checkbox" id="termos" required><span>Li e aceito os <a href="#termos-txt">termos de utilização</a> e a <a href="#privacidade">política de privacidade</a>.</span></label>
+        <div class="sum"><span id="sum-l">Total · compra única</span><span id="sum-v">29 €</span></div>
+        <p class="err" id="err" role="alert"></p>
+        <button class="btn" type="submit" id="go">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          Continuar para pagamento seguro
+        </button>
+        <div class="secure">Pagamento processado pelo Stripe · cartão, Apple Pay, Google Pay ou MB WAY</div>
+        <div class="note" id="off" hidden></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:20px" aria-labelledby="h-depois">
+    <h2 id="h-depois">Depois de pagar</h2>
+    <ol class="steps">
+      <li>Recebe por e-mail a sua <b>chave de licença</b> (normalmente em minutos, no máximo em 24 horas úteis).</li>
+      <li>Abra o QuantoFica, toque no <b>ícone da chave</b> no topo e cole a chave.</li>
+      <li>Toque em <b>Ativar</b>. Pronto: o plano fica ativo neste dispositivo.</li>
+    </ol>
+  </section>
+
+  <section class="panel faq" style="margin-top:20px" aria-labelledby="h-faq">
+    <h2 id="h-faq">Perguntas frequentes</h2>
+    <details><summary>Posso usar em mais de um dispositivo?</summary><p>Sim. A chave pode ser ativada nos seus dispositivos pessoais (por exemplo, telemóvel e computador). Não a partilhe com terceiros.</p></details>
+    <details><summary>Como cancelo a mensalidade da Agência?</summary><p>Pelo link de gestão da subscrição que o Stripe envia por e-mail, ou respondendo ao e-mail da chave. O plano mantém-se até ao fim do mês já pago.</p></details>
+    <details><summary>O QuantoFica substitui um contabilista?</summary><p>Não. O QuantoFica produz estimativas indicativas. Antes de qualquer decisão, consulte um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito.</p></details>
+    <details id="termos-txt"><summary>Termos de utilização</summary><p>A licença concede o direito pessoal e intransmissível de usar o QuantoFica no plano adquirido. O plano Cliente é uma compra única; o plano Agência é uma subscrição mensal renovável, cancelável a qualquer momento, sem reembolso do mês em curso. Os resultados são estimativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Tem 14 dias para pedir o reembolso do plano Cliente se não tiver ficado satisfeito.</p></details>
+    <details id="privacidade"><summary>Política de privacidade</summary><p>Usamos o nome, o e-mail, o telemóvel e os dados de faturação apenas para processar a compra, enviar a chave de licença, emitir a fatura e prestar apoio. O pagamento é tratado pelo Stripe; não recebemos os dados do seu cartão. As simulações ficam guardadas apenas no seu dispositivo. Pode pedir o acesso, a correção ou a eliminação dos seus dados a qualquer momento, por e-mail.</p></details>
+  </section>
+
+  <footer><a href="./">← Voltar ao QuantoFica</a> · <a id="contact-l" href="#">Contacto</a></footer>
+</div>
+
+<script>
+// ===== Configuração (altere aqui) =====
+// Links de pagamento do Stripe (Payment Links). Vazio = pagamento ainda não ativo.
+const STRIPE={ cliente:"", agencia:"" };
+// URL da aplicação Web do Google Apps Script que grava na folha Google (o mesmo do app). Vazio = não grava.
+const SHEET_URL="";
+const PRICES={ cliente:{v:"29 €",l:"Total · compra única"}, agencia:{v:"24,90 €/mês",l:"Total · por mês"} };
+const CONTACT="quantofica@[defina]";
+
+const $=id=>document.getElementById(id);
+const plano=()=>document.querySelector('input[name=plano]:checked').value;
+$("p-cliente").textContent=PRICES.cliente.v; $("p-agencia").innerHTML=PRICES.agencia.v.replace("/mês"," <small>/mês</small>");
+$("contact-l").href="mailto:"+CONTACT;
+function sync(){ const p=plano(); $("sum-l").textContent=PRICES[p].l; $("sum-v").textContent=PRICES[p].v; $("f-ag").hidden=p!=="agencia"; $("off").hidden=true; }
+document.querySelectorAll('input[name=plano]').forEach(r=>r.addEventListener("change",sync));
+const q=new URLSearchParams(location.search); if(q.get("plano")==="agencia") document.querySelector('input[value=agencia]').checked=true;
+if(q.get("email")) $("email").value=q.get("email");
+try{ const prev=JSON.parse(localStorage.getItem("qf-demo-lead")||"null"); if(prev){ if(!$("nome").value) $("nome").value=prev.nome||""; if(!$("email").value) $("email").value=prev.email||""; if(!$("tel").value) $("tel").value=prev.telefone||""; } }catch(e){}
+sync();
+const okMail=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function send(data){ if(!SHEET_URL) return Promise.resolve();
+  return Promise.race([fetch(SHEET_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(data)}).catch(()=>{}), new Promise(r=>setTimeout(r,1800))]); }
+document.addEventListener("click",e=>{ const l=e.target.closest('a[href^="#"]'); if(!l) return; const d=document.getElementById(l.getAttribute("href").slice(1)); if(d&&d.tagName==="DETAILS"){ e.preventDefault(); d.open=true; d.scrollIntoView({behavior:"smooth",block:"center"}); } });
+$("buy").addEventListener("submit",async e=>{ e.preventDefault(); const err=$("err"); err.classList.remove("on");
+  const p=plano(), nome=$("nome").value.trim(), email=$("email").value.trim();
+  const fail=(m,el)=>{ err.textContent=m; err.classList.add("on"); el&&el.focus(); };
+  if(nome.length<2) return fail("Indique o seu nome.",$("nome"));
+  if(!okMail(email)) return fail("Indique um e-mail válido — é para lá que enviamos a chave.",$("email"));
+  if(p==="agencia"&&$("agencia").value.trim().length<2) return fail("Indique o nome da agência.",$("agencia"));
+  const nif=$("nif").value.replace(/\s/g,""); if(nif&&!/^\d{9}$/.test(nif)) return fail("O NIF português tem 9 algarismos.",$("nif"));
+  if(!$("termos").checked) return fail("Para continuar, aceite os termos e a política de privacidade.",$("termos"));
+  if($("site").value) return; // robô
+  const ref="QF"+Date.now().toString(36).toUpperCase()+Math.random().toString(36).slice(2,5).toUpperCase();
+  const data={tipo:"compra",plano:p,nome,email,telefone:$("tel").value.trim(),agencia:$("agencia").value.trim(),nif,nome_fiscal:$("nfiscal").value.trim(),referencia:ref,data:new Date().toISOString(),origem:location.host};
+  try{ localStorage.setItem("qf-buy",JSON.stringify(data)); }catch(e){}
+  const btn=$("go"); btn.disabled=true; await send(data); btn.disabled=false;
+  const link=STRIPE[p];
+  if(!link){ const off=$("off"); off.hidden=false; off.innerHTML='<b>O pagamento online ainda não está ativo.</b> Os seus dados ficaram registados; vamos contactá-lo por e-mail com os passos para concluir a compra. Também pode escrever para <a href="mailto:'+CONTACT+'?subject='+encodeURIComponent("Compra QuantoFica — plano "+(p==="agencia"?"Agência":"Cliente")+" ("+ref+")")+'">'+CONTACT+'</a>.'; return; }
+  const u=new URL(link); u.searchParams.set("prefilled_email",email); u.searchParams.set("client_reference_id",ref);
+  location.href=u.toString(); });
+</script>
+</body>
+</html>

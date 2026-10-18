@@ -987,6 +987,36 @@ html:root[data-agc] .wrap>header{background:linear-gradient(135deg,var(--agb-bar
   .wrap>header .exp-msg:empty{display:none}
 }
 @media (max-width:370px){ .wm{font-size:23px} .app-logo{width:38px;height:38px}  .wrap>header .icon-btn,.wrap>header #g-plan-btn,.wrap>header #reset{width:38px;height:38px} }
+
+/* ===== P: página de captura da demo ===== */
+.dg{position:fixed;inset:0;z-index:200;overflow-y:auto;background:linear-gradient(160deg,#2a63b0 0%,#1a4787 50%,#0c2550 100%);color:#fff;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.dg::before{content:"";position:fixed;right:-90px;top:-90px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(94,240,160,.3),rgba(94,240,160,0) 70%);pointer-events:none}
+.dg-in{position:relative;max-width:460px;margin:0 auto;display:grid;gap:18px}
+.dg-brand{display:flex;align-items:center;gap:12px}
+.dg-brand svg{width:52px;height:52px;flex:none;filter:drop-shadow(0 6px 10px rgba(5,20,50,.45))}
+.dg h2{font-family:var(--display);font-size:28px;line-height:1.15;margin:4px 0 0;color:#fff;text-wrap:balance}
+.dg-lead{margin:6px 0 0;color:rgba(255,255,255,.88);font-size:15.5px;text-align:left}
+.dg-pts{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:15px}
+.dg-pts li{display:flex;gap:10px;align-items:flex-start;text-align:left}.dg-pts li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#6ff0aa;color:#0b4a2a;font:800 13px/22px var(--body);text-align:center}
+.dg-card{background:var(--panel);color:var(--ink);border-radius:20px;padding:20px;display:grid;gap:12px;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+.dg-card h3{margin:0;font-family:var(--display);font-size:19px}
+.dg-card label.dg-f{display:grid;gap:6px;font-weight:600;font-size:14.5px}
+.dg-card label.dg-f small{font-weight:400;color:var(--muted)}
+.dg-card input[type=text],.dg-card input[type=email],.dg-card input[type=tel],.dg-card select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:12px;padding:0 14px;font:500 16px var(--body);color:var(--ink);background:var(--bg)}
+.dg-chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.45}
+.dg-chk input{width:22px;height:22px;flex:none;margin-top:1px;accent-color:var(--accent)}
+.dg-btn{min-height:54px;border:0;border-radius:14px;background:linear-gradient(180deg,#2a63b0,#1a4787);color:#fff;font:700 17px var(--body);cursor:pointer;box-shadow:0 10px 20px -12px rgba(26,71,135,.9)}
+.dg-btn:disabled{opacity:.6}
+.dg-err{color:#b3261e;font-size:14px;font-weight:600;margin:0}
+.dg-err:empty{display:none}
+.dg-alt{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;font-size:14.5px}
+.dg-alt button,.dg-alt a{background:none;border:0;color:#fff;text-decoration:underline;font:600 14.5px var(--body);cursor:pointer;min-height:40px;padding:0 4px}
+.dg-priv{font-size:13px;color:var(--muted)}
+.dg-priv summary{cursor:pointer;color:var(--accent);font-weight:600}
+.dg-priv p{margin:6px 0 0;text-align:justify}
+.dg-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+html.dg-open,html.dg-open body{overflow:hidden}
+@media print{.dg{display:none!important}}
 </style>
 
 </head>
@@ -3059,7 +3089,7 @@ function qfSetLicense(lic){ QF_LIC=Object.assign({tier:"demo"},lic||{}); if(!QF_
 document.documentElement.dataset.tier="demo";
 // ===== G: licenças, modo demo e planos =====
 // Preços e ligações de compra (Stripe, Gumroad, Lemon Squeezy…): altere aqui. Com url vazia, o botão "Comprar" abre um e-mail para QF_SHOP.contact.
-const QF_SHOP={cliente:{price:"29 €",url:""},agencia:{price:"24,90 €/mês",url:""},contact:"quantofica@[defina]"};
+const QF_SHOP={cliente:{price:"29 €",url:"https://quantofica.github.io/comprar.html?plano=cliente"},agencia:{price:"24,90 €/mês",url:"https://quantofica.github.io/comprar.html?plano=agencia"},contact:"quantofica@[defina]"};
 (function(){
   // Chave PÚBLICA (só verifica). A chave privada fica apenas no gerador de chaves do dono.
   const QF_PUB_JWK={"kty":"EC","crv":"P-256","x":"5cTYgA8Tw2OtqscPsp9SqCy-mRB3y-YjM3ypKzMIslU","y":"ekZF0b3_Vz4NfL3bdphzk_hCe8XwbJFUY-R8zfB54GI"};
@@ -4028,6 +4058,61 @@ agbRefresh();
 // ===== N: mensagens curtas desaparecem sozinhas =====
 (function(){ const m=$("exp-msg"); if(!m) return; let t=null;
   new MutationObserver(()=>{ clearTimeout(t); const v=m.textContent.trim(); if(!v||/^A preparar/.test(v)) return; t=setTimeout(()=>{ if(m.textContent.trim()===v) m.textContent=""; },3500); }).observe(m,{childList:true,characterData:true,subtree:true}); })();
+
+// ===== P: página de captura da demo =====
+// URL da aplicação Web do Google Apps Script que grava os contactos numa folha Google. Vazio = só guarda neste dispositivo.
+const QF_SHEET_URL="";
+(function(){
+  const HASH0=location.hash; const invited=/^#(s|lead)=/.test(HASH0);
+  const has=()=>{ try{ return !!localStorage.getItem("qf-demo-lead"); }catch(e){ return false; } };
+  let el=null, last=null, shown=false;
+  const LOGO='<svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="dgb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#d3dcea"/></linearGradient><linearGradient id="dgr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4fe08f"/><stop offset="1" stop-color="#1c9a57"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="rgba(255,255,255,.14)"/><path d="M20 42 L50 16 L80 42 Z" fill="url(#dgr)"/><rect x="26" y="40" width="48" height="46" rx="7" fill="url(#dgb)"/><rect x="32" y="46" width="36" height="12" rx="3" fill="#173968"/><rect x="32" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="45.5" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="59" y="62" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="32" y="72" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="45.5" y="72" width="9" height="7" rx="2" fill="#c4cfe0"/><rect x="59" y="72" width="9" height="7" rx="2" fill="#f28c28"/></svg>';
+  function build(){ el=document.createElement("div"); el.className="dg"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-labelledby","dg-t");
+    el.innerHTML=`<div class="dg-in">
+      <div class="dg-brand">${LOGO}<span class="wm" style="font-size:28px"><span class="wm-a">Quanto</span><span class="wm-b">Fica</span></span></div>
+      <div><h2 id="dg-t">Quanto lhe fica, depois dos impostos?</h2>
+      <p class="dg-lead">Simule a compra e venda, a cedência de posição ou o arrendamento de um imóvel em Portugal e veja qual é a estrutura que paga menos impostos.</p></div>
+      <ul class="dg-pts"><li>Pessoa singular, empresário individual ou sociedade, lado a lado</li><li>Regras de 2026 em Portugal e efeito no Brasil</li><li>Resultado na hora, enquanto escreve</li></ul>
+      <form class="dg-card" novalidate>
+        <h3>Experimente grátis</h3>
+        <label class="dg-f">Nome<input type="text" name="nome" autocomplete="name" required></label>
+        <label class="dg-f">E-mail<input type="email" name="email" autocomplete="email" inputmode="email" required></label>
+        <label class="dg-f">Telemóvel <small>(opcional)</small><input type="tel" name="tel" autocomplete="tel" inputmode="tel"></label>
+        <label class="dg-f">Sou…<select name="perfil"><option value="">Escolha uma opção</option><option>Particular a comprar ou vender casa</option><option>Investidor imobiliário</option><option>Profissional imobiliário (agência, consultor)</option><option>Contabilista ou advogado</option><option>Outro</option></select></label>
+        <div class="dg-hp" aria-hidden="true"><label>Não preencher<input type="text" name="site" tabindex="-1" autocomplete="off"></label></div>
+        <label class="dg-chk"><input type="checkbox" name="rgpd" required><span>Autorizo o QuantoFica a tratar os meus dados para me dar acesso à demonstração e responder a pedidos de informação.</span></label>
+        <label class="dg-chk"><input type="checkbox" name="mkt"><span>Quero receber novidades e dicas sobre impostos no imobiliário (opcional).</span></label>
+        <p class="dg-err" role="alert"></p>
+        <button class="dg-btn" type="submit">Começar a simular</button>
+        <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail.</p></details>
+      </form>
+      <div class="dg-alt"><button type="button" data-dg="key">Já tenho uma chave de licença</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
+    </div>`;
+    document.body.appendChild(el);
+    const f=el.querySelector("form"), err=el.querySelector(".dg-err");
+    f.addEventListener("submit",e=>{ e.preventDefault(); err.textContent=""; const v=n=>(f.elements[n].value||"").trim();
+      const nome=v("nome"), email=v("email");
+      if(nome.length<2){ err.textContent="Indique o seu nome."; f.elements.nome.focus(); return; }
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent="Indique um e-mail válido."; f.elements.email.focus(); return; }
+      if(!f.elements.rgpd.checked){ err.textContent="Para continuar, autorize o tratamento dos dados."; f.elements.rgpd.focus(); return; }
+      if(v("site")) return;
+      const lead={tipo:"demo",nome,email,telefone:v("tel"),perfil:v("perfil"),rgpd:true,marketing:f.elements.mkt.checked,data:new Date().toISOString(),origem:location.host||"artefacto",ua:navigator.userAgent.slice(0,140)};
+      try{ localStorage.setItem("qf-demo-lead",JSON.stringify(lead)); }catch(x){}
+      if(QF_SHEET_URL){ try{ fetch(QF_SHEET_URL,{method:"POST",mode:"no-cors",keepalive:true,headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(lead)}).catch(()=>{}); }catch(x){} }
+      hide(); const m=$("exp-msg"); if(m) m.textContent="Bem-vindo, "+nome.split(" ")[0]+"! Já pode simular."; });
+    el.addEventListener("click",e=>{ const b=e.target.closest("[data-dg]"); if(!b) return;
+      if(b.dataset.dg==="key"){ e.preventDefault(); hide(true); if(typeof window.qfPlans==="function") window.qfPlans({reason:"key"}); else { const pb=$("g-plan-btn"); pb&&pb.click(); } } });
+    el.addEventListener("keydown",e=>{ if(e.key!=="Tab") return; const fs=[...el.querySelectorAll("input:not([tabindex='-1']),select,button,a,summary")].filter(x=>x.offsetParent); if(!fs.length) return;
+      const a=fs[0], z=fs[fs.length-1]; if(e.shiftKey&&document.activeElement===a){ e.preventDefault(); z.focus(); } else if(!e.shiftKey&&document.activeElement===z){ e.preventDefault(); a.focus(); } }); }
+  function show(){ if(shown||has()||invited) return; if(typeof qfTier==="function"&&qfTier()!=="demo") return; if(!el) build(); shown=true; last=document.activeElement; el.hidden=false; document.documentElement.classList.add("dg-open"); setTimeout(()=>{ const i=el.querySelector("input[name=nome]"); i&&i.focus(); },60); }
+  function hide(temp){ if(!el) return; el.hidden=true; document.documentElement.classList.remove("dg-open"); shown=false; if(temp) window.__dgAfterKey=true; else if(last&&last.focus) last.focus(); }
+  addEventListener("qf-tier",e=>{ const t=e.detail&&e.detail.tier; if(t&&t!=="demo"){ if(el&&!el.hidden) hide(); } else if(t==="demo"&&!window.__dgAfterKey) setTimeout(show,50); });
+  // Se o diálogo da chave fechar sem ativar uma licença, a captura volta a aparecer
+  document.addEventListener("close",e=>{ if(window.__dgAfterKey&&e.target&&e.target.tagName==="DIALOG"){ window.__dgAfterKey=false; setTimeout(show,80); } },true);
+  let stored=false; try{ stored=!!localStorage.getItem("qf-license"); }catch(e){}
+  setTimeout(show, stored?1500:250);
+  window.qfDemoGate={show,hide};
+})();
 </script>
 
 <script>

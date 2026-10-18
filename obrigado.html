@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QuantoFica · Obrigado</title>
+<meta name="theme-color" content="#1a4787">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=2">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,700&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#f3f5f8;--panel:#fff;--ink:#18212e;--muted:#5b6678;--line:#d9dfe8;--accent:#1d4f91;--good:#1d7a4a;--display:"Literata",Georgia,serif;--body:"Public Sans",system-ui,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1017;--panel:#151c27;--ink:#f2f5f9;--muted:#b9c3d2;--line:#344155;--accent:#8db6f2;--good:#5cc48f;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 var(--body)}
+.wrap{max-width:640px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) 16px 48px}
+.hero{position:relative;overflow:hidden;background:linear-gradient(135deg,#2a63b0 0%,#1a4787 55%,#0f2e5c 100%);color:#fff;border-radius:22px;padding:28px 22px;text-align:center}
+.hero::before{content:"";position:absolute;right:-60px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(94,240,160,.35),rgba(94,240,160,0) 70%)}
+.hero>*{position:relative}
+.ok{width:64px;height:64px;border-radius:50%;background:#6ff0aa;color:#0b4a2a;display:grid;place-items:center;margin:0 auto 12px}
+h1{font-family:var(--display);font-size:28px;margin:0 0 6px}
+.hero p{margin:0;color:rgba(255,255,255,.9)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:18px}
+h2{font-family:var(--display);font-size:20px;margin:0 0 10px}
+ol{margin:0;padding-left:22px;display:grid;gap:8px}
+p{text-align:justify}
+.btn{display:flex;align-items:center;justify-content:center;min-height:52px;border-radius:14px;background:linear-gradient(180deg,#2a63b0,#1a4787);color:#fff;font:700 17px var(--body);text-decoration:none;margin-top:18px}
+.muted{color:var(--muted);font-size:14.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="ok"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
+    <h1>Pagamento recebido. Obrigado!</h1>
+    <p id="sub">O seu plano QuantoFica está a caminho.</p>
+  </header>
+  <section class="panel">
+    <h2>Próximos passos</h2>
+    <ol>
+      <li>Vai receber por e-mail a sua <b>chave de licença</b><span id="em"></span>, normalmente em minutos e no máximo em 24 horas úteis. Veja também a pasta de spam.</li>
+      <li>Abra o QuantoFica e toque no <b>ícone da chave</b> no topo.</li>
+      <li>Cole a chave e toque em <b>Ativar</b>.</li>
+    </ol>
+    <a class="btn" href="./">Abrir o QuantoFica</a>
+    <p class="muted" id="ref"></p>
+  </section>
+</div>
+<script>
+const q=new URLSearchParams(location.search); let b=null; try{ b=JSON.parse(localStorage.getItem("qf-buy")||"null"); }catch(e){}
+const p=q.get("plano")||(b&&b.plano);
+if(p==="agencia") document.getElementById("sub").textContent="Bem-vindo ao plano Agência do QuantoFica.";
+else if(p==="cliente") document.getElementById("sub").textContent="Bem-vindo ao plano Cliente do QuantoFica.";
+if(b&&b.email) document.getElementById("em").textContent=" em "+b.email;
+if(b&&b.referencia) document.getElementById("ref").textContent="Referência da compra: "+b.referencia+". Indique-a se precisar de ajuda.";
+</script>
+</body>
+</html>
