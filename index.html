@@ -1052,8 +1052,6 @@ html.dg-open,html.dg-open body{overflow:hidden}
 
 </head>
 <body>
-
-
 <div class="wrap" lang="pt-PT">
 <header>
   <div>
@@ -1258,6 +1256,9 @@ html.dg-open,html.dg-open body{overflow:hidden}
     <div class="f"><label for="derrama">Derrama municipal (%)</label><input id="derrama" type="number" min="0" max="1.5" step="0.1"></div>
     <div class="f"><label for="ano">Ano do lucro</label><select id="ano"><option value="0.19">2026 (19%)</option><option value="0.18">2027 (18%)</option><option value="0.17">2028+ (17%)</option></select></div>
   </fieldset>
+  <fieldset><legend>Empresário em nome individual</legend>
+    <div class="f"><label for="ssreg">Segurança Social do empresário<small><a href="#nota-irs-b">como é calculada?</a></small></label><select id="ssreg"><option value="trim">Regime trimestral (20% das vendas)</option><option value="lucro">Lucro tributável (contabilidade organizada)</option><option value="isento">Sem contribuições (1.º ano de atividade ou isento)</option></select></div>
+  </fieldset>
   <div class="stepnav"><button type="button" class="btn-ghost" data-go="1">← Titulares</button><button type="button" class="btn-primary" data-go="3">Ver resultados →</button></div>
   </section>
 </form>
@@ -1373,7 +1374,13 @@ html.dg-open,html.dg-open body{overflow:hidden}
       <ul>
         <li><b>Regime:</b> o simulador assume contabilidade organizada, com lucro real (arts. 28.º e 32.º do CIRS). No regime simplificado, 15% das vendas de mercadorias é tributado (art. 31.º), o que numa venda de imóvel costuma ser pior.</li>
         <li><b>Vantagem:</b> permite a isenção de IMT de compra para revenda (art. 7.º do CIMT) se a atividade estiver declarada antes da compra.</li>
-        <li><b>Segurança Social, não incluída:</b> trabalhadores independentes pagam 21,4% sobre o rendimento relevante, que na venda de mercadorias é 20% das vendas, com limite mensal (Código Contributivo, arts. 162.º e 168.º). Há isenção nos primeiros 12 meses de atividade. Pode pesar vários milhares de euros por ano.</li>
+        <li><b>Segurança Social, incluída:</b> o empresário em nome individual com atividade comercial paga <b>25,2%</b> (21,4% nos restantes trabalhadores independentes; arts. 162.º, 163.º e 168.º do Código Contributivo). Escolha o regime nos dados:
+          <ul>
+            <li><b>Regime trimestral (padrão):</b> o rendimento relevante é 20% das vendas do trimestre. A base mensal é um terço desse valor, até 12 IAS (6.445,56 € em 2026, com o IAS a 537,13 €), e paga-se durante 3 meses. Numa venda, o máximo ronda 4.900 €. Rendas e mais-valias não contam. Na cedência de posição usa-se também 20% do valor recebido; se a Segurança Social a tratar como prestação de serviços, seriam 70%.</li>
+            <li><b>Lucro tributável:</b> com contabilidade organizada, a base mensal é o lucro tributável do ano anterior a dividir por 12, entre 1,5 e 12 IAS, paga durante os 12 meses do ano seguinte. Só se aplica se a atividade continuar aberta; pode chegar a cerca de 19.500 € por ano.</li>
+            <li><b>Sem contribuições:</b> o enquadramento só produz efeitos no 12.º mês após o início da atividade, por isso uma primeira operação concluída dentro desse prazo pode não pagar. Há também isenções, por exemplo para pensionistas e para quem acumula com trabalho por conta de outrem, com rendimento relevante abaixo de 4 IAS por mês (art. 157.º).</li>
+          </ul>
+          A contribuição não reduz o IRS no simulador. Não residentes: não incluída, depende do país onde estão segurados. Pode haver uma contribuição mínima de 20 € por mês nos meses sem vendas, não incluída.</li>
         <li><b>Risco:</b> a AT pode requalificar como categoria B mais-valias repetidas declaradas em categoria G.</li>
       </ul>
     </details>
@@ -1510,7 +1517,7 @@ const isoD=dt=>dt.getFullYear()+"-"+String(dt.getMonth()+1).padStart(2,"0")+"-"+
 const dPlus=m=>{ const t=new Date(); const d=new Date(t.getFullYear(),t.getMonth()+m,1); d.setDate(Math.min(t.getDate(),new Date(d.getFullYear(),d.getMonth()+1,0).getDate())); return isoD(d); };
 const TODAY=dPlus(0);
 const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"0.23",venda:360000,com:4,meses:10,imi:400,
-  cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",socio:"A",rel:"conjuge",quota:50,
+  cpcv:250000,cvpt:0,clausula:"sem",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",ssreg:"trim",socio:"A",rel:"conjuge",quota:50,
   casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:dPlus(6),
   rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
@@ -1556,6 +1563,16 @@ document.addEventListener("input",e=>{ const el=e.target; if(el&&el.dataset&&el.
 const sumL=L=>L.reduce((a,t)=>a+(parseFloat(t.v)||0),0);
 const $=id=>document.getElementById(id);
 const eur=v=>new Intl.NumberFormat("pt-PT",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(Math.round(v));
+// Segurança Social do empresário em nome individual (Código Contributivo; IAS 2026: Portaria 480-A/2025/1)
+const IAS=537.13, SS_TX=.252;
+function ssENI(p,rev,lucro,rentMode){ const reg=state.ssreg||"trim", L=(l,v,c="")=>({l,v,c});
+  if(p.nr) return {v:0,lines:[L("Segurança Social portuguesa não incluída: não residente (depende do país onde está segurado)",0,"sub")],reg:"nr"};
+  if(reg==="isento") return {v:0,lines:[L("Segurança Social: sem contribuições (1.º ano de atividade ou isenção, conforme os dados)",0,"sub")],reg};
+  if(reg==="lucro"){ const b=Math.min(12*IAS,Math.max(1.5*IAS,Math.max(0,lucro)/12)), v=12*b*SS_TX;
+    return {v,lines:[L(`− Segurança Social: 25,2% × 12 meses sobre ${eur(b)}/mês (lucro tributável ÷ 12, entre 1,5 e 12 IAS), paga no ano seguinte`,-v,"tax")],reg}; }
+  if(rentMode) return {v:0,lines:[L("Segurança Social (regime trimestral): rendas e mais-valias não contam para o rendimento relevante",0,"sub")],reg};
+  const rel=.2*Math.max(0,rev), b=Math.min(12*IAS,rel/3), v=3*b*SS_TX;
+  return {v,lines:[L(`− Segurança Social: 25,2% × 3 meses sobre ${eur(b)}/mês (20% das vendas de ${eur(rev)} ÷ 3${rel/3>12*IAS?", limitado a 12 IAS":""})`,-v,"tax")],reg}; }
 const pct=v=>{ if(!isFinite(v)) return "—"; const r=Math.round(v*1000)/10; return (r===0?0:r).toLocaleString("pt-PT",{maximumFractionDigits:1})+"%"; };
 
 /* IRS 2026, art. 68.º CIRS (limites atualizados em 3,51%) + taxa adicional de solidariedade */
@@ -1717,13 +1734,14 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
     const prof=rendaA-opex-imi-juros-aimi-fixed-depr-consY1, tx=Math.max(0,prof-(rendaA-rentTax));
     let t, line; if(TIT.jc(p)){t=incJ(tx); line=L(`IRS do casal (conjunta): ${eur(JB)} → ${eur(JB+tx)}`,-t,"tax");} else if(p.nr){t=.25*tx; line=L(`IRS de ${p.name} (não residente): 25% sobre ${eur(tx)}`,-t,"tax");} else {t=inc(p.base,tx); line=L(`IRS de ${p.name}: ${eur(p.base)} → ${eur(p.base+tx)} de rendimento coletável`,-t,"tax");}
     const b=brTop(p,Math.max(0,prof),t,.275,"rendimento de atividade"), br=b?b.t:0;
-    const net=preTax-imi-aimi-fixed-t-br;
-    sc.push({key,name,det:`Na compra: IMT + Selo ${eur(imtE+is)} · lucro 100% englobado; sem Segurança Social`,taxes:imi+aimi+t+br,net,
+    const ss=ssENI(p,0,tx,true), net=preTax-imi-aimi-fixed-t-br-ss.v;
+    sc.push({key,name,det:`Na compra: IMT + Selo ${eur(imtE+is)} · lucro 100% englobado`+(ss.v?` · Segurança Social ${eur(ss.v)}`:""),taxes:imi+aimi+t+br+ss.v,net,
       lines:[hd("Lucro (categoria B, contabilidade organizada)"),...opexLines(),...(juros?[L("− Juros do crédito",-juros)]:[]),...(aimi?[L("− AIMI",-aimi)]:[]),L("− Contabilidade",-fixed),
         L("− Amortização do imóvel",-depr),...(consY1?[L("− Obras de conservação (1.º ano)",-consY1)]:[]),...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),
         L("= Lucro tributável (100% englobado)",tx,"tot"),hd("Imposto"),line,...(b?[b.line]:[]),
-        hd("Dinheiro no ano"),L("= Líquido por ano (antes de Segurança Social)",net,"tot"),yieldL(net,imtE),
-        hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtE+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),L("= Total anual",imi+aimi+t+br,"tot")]});};
+        hd("Segurança Social"),...ss.lines,
+        hd("Dinheiro no ano"),L("= Líquido por ano",net,"tot"),yieldL(net,imtE),
+        hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtE+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),...(ss.v?[L("Segurança Social",ss.v)]:[]),L("= Total anual",imi+aimi+t+br+ss.v,"tot")]});};
   TIT.eni.forEach(x=>eni(x.key,x.p,x.casal?"Empresário em nome individual (casal, tributação conjunta)":`Empresário em nome individual (${x.p.name})`));
   // Capital do empréstimo e rentabilidade
   sc.forEach(s=>{ const i=s.lines.findIndex(x=>x.c==="tot"&&/^= (Líquido|Fica)/.test(x.l));
@@ -1862,12 +1880,12 @@ function calcBase(){
   const eni=(key,p,name)=>{
     const imtE=p.nr?imtNR:imtCo, profB=G0-imtE-imiPS-fixed, P=Math.max(0,profB);
     let t, line; if(TIT.jc(p)){ t=incJ(P); line=lineJ(P,t); } else if(p.nr){ t=.25*P; line=L(`IRS de ${p.name} (não residente): 25% sobre ${eur(P)}`,-t,"tax"); } else { t=inc(p.base,P); line=lineP(p,P,t); }
-    const b=brTop(p,P,t,.275,"rendimento de atividade"), br=b?b.t:0;
-    sc.push({key,name,det:(p.nr?"Não residente: 25% sobre o lucro":"Lucro 100% englobado")+"; sem Segurança Social",taxes:imtE+isPS+imiPS+t+br,net:profB-t-br,
+    const b=brTop(p,P,t,.275,"rendimento de atividade"), br=b?b.t:0, ss=ssENI(p,real[1],profB,false), nE=profB-t-br-ss.v;
+    sc.push({key,name,det:(p.nr?"Não residente: 25% sobre o lucro":"Lucro 100% englobado")+(ss.v?` · Segurança Social ${eur(ss.v)}`:ss.reg==="isento"?" · sem Segurança Social (opção)":""),taxes:imtE+isPS+imiPS+t+br+ss.v,net:nE,
     lines:[hd("Lucro (categoria B, contabilidade organizada)"),L(real[0],real[1]),...minus(items),L(p.nr?"− IMT (7,5%, não residente)":imtE?"− IMT":"− IMT (isento: compra para revenda)",-imtE),
       ...(imiPS?[L("− IMI",-imiPS)]:[]),L("− Contabilidade",-fixed),L("= Lucro tributável (100% englobado)",profB,"tot"),
-      hd("Imposto"),line,...(b?[b.line]:[]),L("= Líquido disponível (antes de Segurança Social)",profB-t-br,"tot"),
-      hd("Impostos pagos"),L("IMT",imtE),...(isPS?[L("Imposto do Selo",isPS)]:[]),...(imiPS?[L("IMI",imiPS)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),L("= Total",imtE+isPS+imiPS+t+br,"tot")]});};
+      hd("Imposto"),line,...(b?[b.line]:[]),hd("Segurança Social"),...ss.lines,L("= Líquido disponível",nE,"tot"),
+      hd("Impostos pagos"),L("IMT",imtE),...(isPS?[L("Imposto do Selo",isPS)]:[]),...(imiPS?[L("IMI",imiPS)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),...(ss.v?[L("Segurança Social",ss.v)]:[]),L("= Total",imtE+isPS+imiPS+t+br+ss.v,"tot")]});};
   TIT.eni.forEach(x=>eni(x.key,x.p,x.casal?"Empresário em nome individual (casal, tributação conjunta)":`Empresário em nome individual (${x.p.name})`));
 
   renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"",assume:"sociedade com atividade de compra para revenda (isenção de IMT e de IMI até ao 3.º ano), IRC de 15% nos primeiros 50.000 €"});
@@ -2748,6 +2766,10 @@ qaBox(); if(LAST) qaSchedule();
       ev(new Date(Y+1,4,20),"Dividendo e retenção na fonte",ret,`Distribuição assumida em abril de ${Y+1}, depois da aprovação das contas (até 31 de março). A sociedade retém o imposto e entrega-o ao Estado até ao dia 20 do mês seguinte.`,"div",{when:"abr–mai"});
       if(s.key==="c3"){ const ac=tot-ret; if(Math.abs(ac)>=1) ev(new Date(Y+2,5,30),ac>0?"IRS: acerto do englobamento dos dividendos":"IRS: reembolso estimado do englobamento",ac,`Na declaração de ${Y+2} (rendimentos de ${Y+1}), a retenção de ${eur(ret)} é descontada ao IRS do englobamento (${eur(tot)}).`,"irs",{when:"abr–jun"}); } };
     const br=T["Imposto no Brasil"]||0;
+    const ssEv=(d)=>{ const v=T["Segurança Social"]||0; if(k!=="eni"||v<1) return;
+      if(S.ssreg==="lucro"){ const Y1=d.getFullYear()+1; ev(new Date(Y1,0,20),`Segurança Social de ${Y1} (12 prestações)`,v,`Contabilidade organizada: a base é o lucro tributável de ${Y1-1} ÷ 12. Paga-se entre os dias 10 e 20 de cada mês, de janeiro a dezembro de ${Y1}, ${eur(v/12)} por mês, se a atividade continuar aberta.`,"ss",{when:"jan–dez"}); return; }
+      const qEnd=Math.floor(d.getMonth()/3)*3+2, decl=new Date(d.getFullYear(),qEnd+2,0);
+      [1,2,3].forEach(i=>ev(new Date(d.getFullYear(),qEnd+1+i,20),`Segurança Social (${i}/3)`,v/3,i===1?`Declaração trimestral até ${fD(decl)}, com 20% das vendas do trimestre como rendimento relevante. A contribuição de 25,2% paga-se entre os dias 10 e 20 de cada um dos três meses seguintes.`:"","ss")); };
     if(m==="flip"){ const P=D.P, sale=D.sale, Y=D.Y, imtV=T["IMT"]||0, isV=T["Imposto do Selo"]||0, lim=addM(P,12);
       if(k==="ps"||(imtV>=1&&S.meses<=12)) ev(P,"IMT e Imposto do Selo",imtV+isV,"Pagos antes da escritura (declaração Modelo 1 do IMT); o notário pede o comprovativo.","buy");
       else { ev(P,imtV?"Imposto do Selo (IMT isento na compra)":"Imposto do Selo (IMT isento)",isV,`Isenção de IMT de compra para revenda: a revenda tem de ser escriturada até ${fD(lim)}${imtV?"":`, ou paga o IMT de ${eur(imtN)}`}.`,"buy",{keep:true});
@@ -2760,6 +2782,7 @@ qaBox(); if(LAST) qaSchedule();
       if(br>=1){ if(k==="ps") ev(lastBiz(sale.getFullYear(),sale.getMonth()+1),"Brasil: ganho de capital (GCAP)",br,"Para residentes fiscais no Brasil: imposto até ao último dia útil do mês seguinte ao da venda, com crédito do IRS português.","br",{brl:true});
         else if(k==="eni") ev(lastBiz(sale.getFullYear(),sale.getMonth()+1),"Brasil: carnê-leão",br,"Para residentes fiscais no Brasil: imposto mensal até ao último dia útil do mês seguinte ao do recebimento.","br",{brl:true});
         else ev(lastBiz(Y+2,4),"Brasil: dividendos na Declaração de Ajuste Anual",br,`Dividendos recebidos em ${Y+1}, declarados até ao fim de maio de ${Y+2} (Lei 14.754/2023), com crédito do imposto português.`,"br",{brl:true}); }
+      ssEv(sale);
       return {items,name:s.name,intro:`Compra a ${fD(P)} e venda prevista em ${fM(sale)}.`}; }
     if(m==="ced"){ const Y=D.Y, imtV=T["IMT"]||0, com=S.clausula==="com", viaCed=S.origem==="cedente";
       ev(com?D.cpcv:D.escr,"IMT",imtV,com?(viaCed?"Como cessionário, antes de assinar a cessão da posição (data da primeira tranche paga).":"Antes de assinar o contrato-promessa com cláusula de livre cedência (data da primeira tranche paga)."):"Sem cláusula: pago antes da escritura definitiva entre o vendedor e o novo comprador (data da última tranche recebida).","buy");
@@ -2768,6 +2791,7 @@ qaBox(); if(LAST) qaSchedule();
       else { ircEv(Y,sumL(S.recebidas||[])); divEv(Y); }
       if(br>=1){ if(k==="co") ev(lastBiz(Y+2,4),"Brasil: dividendos na Declaração de Ajuste Anual",br,`Dividendos recebidos em ${Y+1}, declarados até ao fim de maio de ${Y+2} (Lei 14.754/2023).`,"br",{brl:true});
         else ev(lastBiz(D.dc.getFullYear(),D.dc.getMonth()+1),k==="ps"?"Brasil: ganho de capital (GCAP)":"Brasil: carnê-leão",br,k==="ps"?"Imposto até ao último dia útil do mês seguinte ao da cedência. Se receber em prestações, paga-se em cada mês seguinte a um recebimento, na proporção do recebido.":"Imposto mensal até ao último dia útil do mês seguinte ao do recebimento.","br",{brl:true}); }
+      ssEv(D.dc);
       return {items,name:s.name,intro:`Cedência a ${fD(D.dc)}${S.clausula==="com"?`, contrato-promessa a ${fD(D.cpcv)}`:""}.`}; }
     // Arrendamento: compra e um ano típico de impostos
     { const P=D.P, Y=D.Y, buyK=Object.keys(T).find(x=>/^IMT/.test(x)), buyV=buyK?T[buyK]:0;
@@ -2781,7 +2805,7 @@ qaBox(); if(LAST) qaSchedule();
         else { const n=k==="ps"?Math.max(1,Math.round(S.ocup||12)):12; ev(lastBiz(Y,1),"Brasil: carnê-leão, todos os meses",br/n,`${n} pagamentos de cerca de ${eur(br/n)} (${eur(br)} por ano), até ao último dia útil do mês seguinte ao de cada renda.`,"br",{brl:true,when:"mensal",tot:br}); } }
       return {items,name:s.name,intro:`Compra a ${fD(P)}; impostos anuais do ano de arrendamento de ${Y}.`}; } }
 
-  const KC={buy:"var(--c-a1)",imi:"var(--c-c3)",irs:"var(--c-a2)",irc:"var(--c-c2)",div:"var(--c-a3)",br:"var(--c-c1)",adv:"var(--muted)",mark:"var(--accent)"};
+  const KC={buy:"var(--c-a1)",imi:"var(--c-c3)",irs:"var(--c-a2)",irc:"var(--c-c2)",div:"var(--c-a3)",br:"var(--c-c1)",ss:"var(--c-b)",adv:"var(--muted)",mark:"var(--accent)"};
   function ensurePanels(){ if($("c-cal")) return; const sv=$("saves");
     const a=document.createElement("div"); a.className="panel c-panel"; a.id="c-cal"; sv.before(a);
     const b=document.createElement("div"); b.className="panel c-panel"; b.id="c-brq"; sv.before(b); }
