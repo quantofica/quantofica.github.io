@@ -2516,7 +2516,7 @@ qaBox(); if(LAST) qaSchedule();
     return b; }
 
   /* ---------- 1. Partilhar por link ---------- */
-  const PUB="https://renatoreiscvm-max.github.io/simulador-pt/";
+  const PUB="https://quantofica.github.io/";
   const inArtifact=()=>!/^https?:$/.test(location.protocol)||!!window.claude;
   const baseUrl=()=>inArtifact()?PUB:location.href.split("#")[0];
   const b64e=u8=>{ let s=""; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); };
