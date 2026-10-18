@@ -648,6 +648,293 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
   .side button:not(.qtabs button){padding:9px 4px;min-height:48px;justify-content:center}
   .side .ni{display:none}
 }
+
+/* ===== L: licenças (núcleo) ===== */
+:root:not([data-tier="agencia"]) .qt-ag{display:none!important}
+.agency .ag-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.agency .ag-h h2{margin:0;font-family:var(--display);font-size:20px}
+.ag-tier{font:700 11.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);border-radius:99px;padding:3px 9px}
+.ag-slots{display:grid;gap:16px}
+@media (max-width:860px){ :root[data-tier="agencia"] .qtabbar{grid-template-columns:repeat(6,minmax(0,1fr))} :root[data-tier="agencia"] .qtabbar button{font-size:10.5px} :root[data-tier="agencia"] .qtabbar button svg{padding:3px 9px} }
+@media (max-width:1180px) and (min-width:861px){ :root[data-tier="agencia"] .side .qtabs{grid-template-columns:repeat(7,minmax(0,1fr))} }
+/* ===== G: licenças, modo demo e planos ===== */
+.g-lock-i{display:inline-block;flex:none;vertical-align:-2px}
+.g-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);font:600 15px var(--body);cursor:pointer;text-decoration:none}
+.g-btn.g-ghost{background:var(--panel);color:var(--accent)}
+.g-btn.g-danger{background:var(--panel);color:var(--warn);border-color:var(--warn)}
+.g-btn.g-danger.armed{background:var(--warn);color:var(--panel)}
+.g-btn[disabled]{opacity:.7;cursor:default;background:var(--panel);color:var(--muted);border-color:var(--line)}
+#g-plan-btn[data-paid]{background:var(--accent);color:var(--on-accent)}
+/* Faixa no topo */
+.g-strip{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0 0 14px;padding:6px 6px 6px 14px;border:1px solid color-mix(in srgb,var(--accent) 35%,var(--line));border-radius:12px;background:var(--accent-soft);color:var(--ink)}
+.g-strip[hidden]{display:none}
+.g-strip p{margin:0;flex:1 1 230px;font-size:14.5px;line-height:1.4;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.g-strip .g-lock-i{color:var(--accent);margin-right:4px}
+.g-strip.g-warn{background:var(--warn-soft);border-color:color-mix(in srgb,var(--warn) 50%,var(--line))}
+.g-strip.g-warn .g-lock-i{color:var(--warn)}
+.g-strip .g-btn{min-height:40px;padding:0 14px;font-size:14.5px}
+/* Valores ocultos na demonstração */
+.g-hid{display:inline-flex;align-items:center;gap:5px;color:var(--muted);user-select:none;-webkit-user-select:none}
+.g-fake{filter:blur(5px);font:600 14px var(--mono);opacity:.75}
+.g-blur{filter:blur(4px);opacity:.5}
+#rows .tog.g-tl{display:inline-flex;align-items:center;gap:6px;min-height:44px;margin-top:2px}
+#rows .tog.g-tl::after{content:none}
+#b2v .g-hid,#sum .g-hid{font-size:inherit}
+/* Cadeado nos separadores e no menu de partilha */
+.g-tl-i,.g-sm-l{display:none}
+:root[data-glock~="analise"] .g-tl-i[data-f="analise"],
+:root[data-glock~="pagamentos"] .g-tl-i[data-f="pagamentos"],
+:root[data-glock~="guardar"] .g-tl-i[data-f="guardar"]{display:inline-grid;place-items:center;color:var(--muted)}
+.side .qtabs .g-tl-i{margin-left:auto}
+@media (max-width:1180px){ .side .qtabs .g-tl-i{margin-left:0} }
+.qtabbar .g-tl-i,.qt-savebtn .g-tl-i{position:absolute;top:2px;left:50%;margin-left:7px;width:17px;height:17px;border-radius:50%;background:#fff;color:#1d4f91!important}
+.qtabbar button .g-tl-i svg,.qtabbar button[aria-current="page"] .g-tl-i svg{padding:0;background:none;border-radius:0}
+.qt-savebtn{position:relative}
+.qt-savebtn .g-tl-i{top:-4px;left:auto;right:-4px;margin:0;background:var(--accent);color:var(--on-accent)!important}
+#share-menu .g-locked .g-sm-l{display:inline-grid;margin-left:auto;color:var(--muted)}
+#share-menu button[data-act="plans"] .sm-i{color:var(--accent)}
+/* Painel de convite (Análise, Pagamentos, Guardadas) */
+.g-inv{display:none!important}
+:root[data-glock~="analise"] body[data-qt="analise"] #res>.g-inv,
+:root[data-glock~="pagamentos"] body[data-qt="pagamentos"] #res>.g-inv,
+:root[data-glock~="guardar"] body[data-qt="guardadas"] #res>.g-inv{display:block!important}
+:root[data-glock~="analise"] #res>[data-tab~="analise"]:not(.g-inv),:root[data-glock~="analise"] #qa,
+:root[data-glock~="pagamentos"] #res>[data-tab~="pagamentos"]:not(.g-inv),:root[data-glock~="pagamentos"] #c-cal,:root[data-glock~="pagamentos"] #c-brq,
+:root[data-glock~="guardar"] #res>[data-tab~="guardadas"]:not(.g-inv),:root[data-glock~="guardar"] #saves{display:none!important}
+.g-inv-in{display:grid;justify-items:center;gap:10px;max-width:520px;margin:0 auto;padding:22px 4px;text-align:center}
+.g-inv-ic{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.g-inv h2{margin:0;font:700 21px var(--display)}
+.g-inv p{margin:0;font-size:15px;line-height:1.5;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.g-inv .g-inv-k{font:700 12px var(--body);letter-spacing:.07em;text-transform:uppercase;color:var(--accent);text-align:center}
+.g-inv ul{margin:0;padding:0;list-style:none;display:grid;gap:6px;text-align:left;font-size:15px}
+.g-inv li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px}
+.g-inv li::before,.g-plan li::before{content:"✓";color:var(--good);font-weight:700}
+/* Diálogo "Planos e licença" */
+.g-dlg{width:min(1000px,calc(100vw - 16px));max-width:none;max-height:calc(100dvh - 16px);margin:auto;padding:0;border:1px solid var(--line);border-radius:16px;background:var(--panel);color:var(--ink);box-shadow:0 24px 60px rgba(10,20,40,.35);overflow:auto;overscroll-behavior:contain}
+.g-dlg:not([open]){display:none}
+.g-dlg::backdrop{background:rgba(8,16,30,.58)}
+.g-dlg-in{display:grid;gap:18px;padding:18px 18px 22px}
+.g-dlg-h{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.g-dlg-h h2{margin:0;font:700 22px var(--display)}
+.g-x{flex:none;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:400 26px/1 var(--body);cursor:pointer}
+.g-lead{display:flex;gap:10px;align-items:flex-start;margin:0;padding:12px 14px;border-radius:12px;background:var(--accent-soft);font-size:15px;line-height:1.45;text-align:justify}
+.g-lead .g-lock-i{color:var(--accent);margin-top:2px}
+.g-dlg h3{margin:0 0 8px;font:700 16px var(--display)}
+.g-cur{display:grid;gap:12px;border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+.g-cur-p{margin:0;font-size:15px;line-height:1.5}
+.g-cur-p b{font-size:16px}
+.g-note{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));font-size:14.5px;line-height:1.45;text-align:justify}
+.g-key{display:grid;gap:8px}
+.g-key label{font-weight:600;font-size:15px}
+.g-key small{color:var(--muted);font-size:14px;line-height:1.4}
+.g-key textarea{width:100%;box-sizing:border-box;min-height:84px;resize:vertical;font:14px/1.4 var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;text-align:left}
+.g-key textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.g-row{display:flex;flex-wrap:wrap;gap:8px}
+.g-msg{margin:0;min-height:1.4em;font-size:14.5px;line-height:1.45}
+.g-msg.ok{color:var(--good);font-weight:600}
+.g-msg.err{color:var(--warn);font-weight:600}
+.g-plans{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:820px){ .g-plans{grid-template-columns:minmax(0,1fr)} }
+.g-plan{display:flex;flex-direction:column;gap:10px;border:1px solid var(--line);border-radius:14px;padding:16px;background:var(--bg)}
+.g-plan.cur{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.g-plan-h{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.g-plan h4{margin:0;font:700 18px var(--display)}
+.g-tag{font:700 11px var(--body);letter-spacing:.06em;text-transform:uppercase;border-radius:99px;padding:3px 9px;background:var(--accent-soft);color:var(--accent)}
+.g-price{font:700 22px var(--mono)}
+.g-price small{display:block;font:500 13.5px var(--body);color:var(--muted);margin-top:2px}
+.g-plan ul{flex:1;margin:0;padding:0;list-style:none;display:grid;align-content:start;gap:6px;font-size:14.5px;line-height:1.4}
+.g-plan li{display:grid;grid-template-columns:18px minmax(0,1fr);gap:6px}
+.g-plan li.no{color:var(--muted)}
+.g-plan li.no::before{content:"–";color:var(--muted)}
+.g-plan .g-btn{width:100%}
+.g-fine{margin:10px 0 0;font-size:14px;color:var(--muted);line-height:1.45;text-align:justify}
+@media (max-width:640px){ .g-dlg{border-radius:14px} .g-dlg-in{padding:14px 14px 18px} .g-row .g-btn{flex:1 1 100%} }
+@media print{ .g-strip,.g-inv,#g-plan-btn,.g-dlg{display:none!important} }
+/* ===== H: marca própria da agência ===== */
+#ag-brand h3{margin:0 0 4px;font-family:var(--display);font-size:18px}
+#ag-brand .agb-p{margin:0 0 14px;color:var(--muted);font-size:14.5px;line-height:1.5;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+#ag-brand .agb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+#ag-brand .agb-f{display:flex;flex-direction:column;gap:5px;min-width:0}
+#ag-brand .agb-f.wide{grid-column:1/-1}
+#ag-brand .agb-f>label,#ag-brand .agb-lab{font-size:14.5px;font-weight:600;color:var(--ink)}
+#ag-brand .agb-f>label small{font-weight:400;color:var(--muted);font-size:14px}
+#ag-brand input[type="text"],#ag-brand input[type="tel"],#ag-brand input[type="email"],#ag-brand input[type="url"]{text-align:left;font:16px var(--body);min-height:44px}
+#ag-brand .agb-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#ag-brand input[type="color"]{width:56px;height:44px;padding:3px;border-radius:10px;cursor:pointer;flex:none}
+#ag-brand .agb-hex{font:500 14.5px var(--mono);color:var(--muted)}
+#ag-brand .agb-logo{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#ag-brand .agb-thumb{width:96px;height:56px;border:1px dashed var(--line);border-radius:10px;display:grid;place-items:center;background:#fff;overflow:hidden;flex:none}
+#ag-brand .agb-thumb img{max-width:88px;max-height:48px;object-fit:contain}
+#ag-brand .agb-thumb span{font-size:14px;color:#5b6678;text-align:center;line-height:1.1}
+#ag-brand .agb-file{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+#ag-brand .agb-btn{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;font-size:14.5px}
+#ag-brand .agb-msg{margin:6px 0 0;font-size:14px;color:var(--muted);text-align:justify;min-height:1em}
+#ag-brand .agb-msg.warn{color:var(--warn)}
+#ag-brand .agb-colors{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+#ag-brand .agb-ask{border:2px solid var(--agb-ask,var(--accent));border-radius:14px;padding:14px;margin:0 0 16px;background:var(--panel);display:grid;gap:12px}
+#ag-brand .agb-ask p{margin:0;font-size:15px;text-align:justify}
+#ag-brand .agb-ask .agb-q{font-weight:700;font-size:16px}
+#ag-brand .agb-demo{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+#ag-brand .agb-sw{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);flex:none}
+#ag-brand .agb-chip{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:10px;font:600 14.5px var(--body)}
+#ag-brand .agb-bar{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:10px;color:#fff;font:600 14px var(--body)}
+#ag-brand .agb-ask .agb-acts{display:flex;flex-wrap:wrap;gap:10px}
+#ag-brand .agb-ask .agb-acts button{flex:1 1 200px;min-height:44px}
+#ag-brand .agb-prev-h{margin:18px 0 8px;font:700 14px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+#ag-brand .agb-prev{background:#fff;color:#18212e;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+#ag-brand .agb-prev-top{height:6px}
+#ag-brand .agb-prev-b{display:flex;align-items:center;gap:12px;padding:12px 14px}
+#ag-brand .agb-prev-b img{max-height:44px;max-width:120px;object-fit:contain;flex:none}
+#ag-brand .agb-prev-t{min-width:0}
+#ag-brand .agb-prev-n{font:700 16px var(--body);overflow-wrap:anywhere}
+#ag-brand .agb-prev-c{font-size:14px;color:#4a5566;line-height:1.45;overflow-wrap:anywhere}
+#ag-brand .agb-prev-s{padding:6px 14px;color:#fff;font-size:14px}
+#ag-brand .agb-prev-f{padding:6px 14px 8px;font-size:14px;color:#4a5566;border-top:1px solid #e3e7ee;overflow-wrap:anywhere}
+@media (max-width:640px){ #ag-brand .agb-grid{grid-template-columns:minmax(0,1fr)} #ag-brand .agb-prev-b{flex-direction:column;align-items:flex-start;gap:8px} #ag-brand .agb-prev-b img{max-height:36px} }
+/* Marca no cabeçalho da app */
+.agb-hb{display:inline-flex;align-items:center;gap:6px;vertical-align:middle;max-width:100%;font:500 15px var(--body);color:var(--muted);letter-spacing:0}
+.agb-hb .agb-dot{opacity:.6}
+.agb-hb img{height:24px;max-width:90px;object-fit:contain;border-radius:4px;background:#fff;padding:1px 3px}
+.agb-hb .agb-hn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:min(42vw,260px)}
+@media (max-width:640px){ .agb-hb{font-size:14px} .agb-hb .agb-hn{max-width:34vw} .agb-hb img{height:22px;max-width:64px} }
+/* Faixa para quem abre um link partilhado por uma agência */
+.agb-shared{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--agb-sc,var(--accent));border-radius:12px;padding:8px 50px 10px 14px;margin-bottom:14px;position:relative}
+.agb-shared p{margin:0;flex:1 1 220px;font-size:15px;text-align:justify}
+.agb-shared .agb-sl{display:flex;flex-wrap:wrap;gap:8px}
+.agb-shared .agb-sl a{display:inline-flex;align-items:center;min-height:44px;padding:0 12px;border-radius:10px;border:1px solid var(--line);color:var(--accent);font-weight:600;font-size:14.5px;text-decoration:none;background:var(--bg)}
+.agb-shared .agb-x{position:absolute;top:2px;right:2px;width:44px;height:44px;border:0;background:none;color:var(--muted);font-size:22px;cursor:pointer;border-radius:10px}
+@media print{ .agb-shared{display:none!important} }
+/* ===== I: carteira de clientes e proposta comparativa ===== */
+#ag-clients,#ag-proposal{border:1px solid var(--line);border-radius:12px;background:var(--bg);padding:16px;min-width:0}
+#ag-clients h3,#ag-proposal h3{margin:0;font-family:var(--display);font-size:18px}
+#ag-clients p,#ag-proposal p{text-align:justify}
+.ip-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ip-c{font-size:14px;color:var(--muted)}
+.ip-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.ip-bar .btn-ghost,.ip-bar .btn-primary{min-height:44px}
+#ag-clients button.btn-primary,#ag-clients button.btn-ghost,#ag-proposal button.btn-primary,#ag-proposal button.btn-ghost,.ip-mv button{min-height:44px}
+#ag-clients .btn-ghost.sm,#ag-proposal .btn-ghost.sm{min-height:44px;font-size:14px;padding:8px 12px}
+#ag-clients input,#ag-clients select,#ag-clients textarea{width:100%;box-sizing:border-box;font:500 16px var(--body);text-align:left;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;min-height:44px}
+#ag-clients textarea{min-height:76px;resize:vertical}
+#ag-clients input[type=checkbox]{width:22px;height:22px;min-height:0;padding:0;margin:0;accent-color:var(--accent)}
+.ip-find{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,180px);gap:8px;margin-bottom:12px}
+.ip-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px;margin-bottom:12px}
+.ip-form label{display:grid;gap:4px;font:600 14px var(--body);color:var(--muted)}
+.ip-form .ip-w{grid-column:1/-1}
+.ip-form .ip-act{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
+.ip-list{display:grid;gap:10px}
+.ip-cl{border:1px solid var(--line);border-radius:10px;background:var(--panel);min-width:0}
+.ip-cl>button.ip-sum{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;width:100%;min-height:56px;padding:10px 12px;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;border-radius:10px}
+.ip-sum b{font-size:16px;overflow-wrap:anywhere}
+.ip-sum .ip-meta{grid-column:1;font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.ip-sum .ip-st{grid-column:2;grid-row:1/3;align-self:center}
+.ip-st{display:inline-block;font:700 12px var(--body);letter-spacing:.03em;border-radius:99px;padding:4px 10px;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.ip-st[data-s="1"]{background:var(--warn-soft);color:var(--warn)}
+.ip-st[data-s="2"]{background:var(--accent);color:var(--on-accent)}
+.ip-st[data-s="3"]{background:var(--good-soft);color:var(--good)}
+.ip-body{border-top:1px solid var(--line);padding:12px;display:grid;gap:12px}
+.ip-info{display:grid;gap:4px;font-size:15px}
+.ip-info a{color:var(--accent);overflow-wrap:anywhere}
+.ip-notes{white-space:pre-wrap;color:var(--muted);font-size:14.5px;margin:0}
+.ip-row{display:flex;flex-wrap:wrap;gap:8px}
+.ip-sims{display:grid;gap:8px}
+.ip-sim{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--bg)}
+.ip-sim label.ip-ck{display:grid;place-items:center;min-width:44px;min-height:44px;cursor:pointer}
+.ip-sim .ip-t{display:grid;gap:1px;min-width:0}
+.ip-sim .ip-t b{font-size:15px;overflow-wrap:anywhere}
+.ip-sim .ip-t span{font-size:14px;color:var(--muted)}
+.ip-sim .ip-v{font-family:var(--mono);color:var(--good);font-weight:700}
+.ip-sim .ip-row{grid-column:2}
+.ip-savein{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px}
+.ip-msg{font-size:14px;color:var(--accent);margin:8px 0 0;min-height:1em}
+.ip-msg.bad{color:var(--warn)}
+.ip-empty{font-size:14.5px;color:var(--muted);margin:4px 0}
+.ip-mv{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:-2px 0 4px;padding:8px 10px;border:1px dashed var(--line);border-radius:10px}
+.ip-mv select{flex:1 1 180px;min-height:44px;font:500 16px var(--body);text-align:left}
+/* Proposta comparativa */
+.ip-pt{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed}
+.ip-pt th,.ip-pt td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:14px;text-align:right;vertical-align:top;overflow-wrap:anywhere}
+.ip-pt thead th{font:700 14px var(--body);color:var(--accent);text-transform:none;letter-spacing:0}
+.ip-pt tbody th{font:500 14px var(--body);color:var(--muted);text-align:left;text-transform:none;letter-spacing:0;width:24%}
+.ip-pt td{font-family:var(--mono)}
+.ip-pt td.ip-txt{font-family:var(--body)}
+.ip-pt .ip-win{background:var(--good-soft);color:var(--good);font-weight:700}
+.ip-pt thead th.ip-win{color:var(--good)}
+.ip-cards{display:none;gap:10px}
+.ip-card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:12px;display:grid;gap:6px}
+.ip-card.ip-win{border-color:var(--good);background:var(--good-soft)}
+.ip-card h4{margin:0;font:700 16px var(--body);overflow-wrap:anywhere}
+.ip-card dl{display:grid;grid-template-columns:minmax(0,42%) minmax(0,1fr);gap:6px 10px;margin:0;align-items:baseline}
+.ip-card dt{font-size:14px;color:var(--muted)}
+.ip-card dt,.ip-card dd{min-width:0;overflow-wrap:anywhere}
+.ip-card dd{margin:0;font:600 14.5px var(--mono);text-align:right}
+.ip-badge{justify-self:start;font:700 12px var(--body);color:var(--on-accent);background:var(--good);border-radius:99px;padding:3px 9px}
+.ip-note{font-size:14px;color:var(--muted)}
+@media (max-width:720px){ #ag-proposal .ip-wide{display:none} .ip-cards{display:grid} }
+@media (max-width:640px){
+  #ag-clients,#ag-proposal{padding:12px}
+  .ip-find{grid-template-columns:minmax(0,1fr)}
+  .ip-form{grid-template-columns:minmax(0,1fr)}
+  .ip-savein{grid-template-columns:minmax(0,1fr) auto}
+  .ip-savein input{grid-column:1/-1}
+  .ip-sim .ip-row{grid-column:1/-1}
+}
+@media print{ #ag-clients .ip-bar,#ag-clients .ip-find,#ag-proposal .ip-row{display:none!important} }
+/* ===== J: página de captação de contactos ===== */
+#ag-leads h3{font:600 19px/1.25 var(--display);margin:0 0 6px}
+#ag-leads p,.lead-gate p{font-size:15px;margin:0 0 12px}
+.ld-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px;margin:0 0 14px}
+.ld-grid .ld-wide{grid-column:1/-1}
+@media (max-width:640px){ .ld-grid{grid-template-columns:minmax(0,1fr)} }
+.ld-fl{display:grid;gap:5px;align-content:start;font:600 15px var(--body);color:var(--ink)}
+.ld-fl small{font:400 14px var(--body);color:var(--muted)}
+.ld-fl input:not([type="checkbox"]):not([type="color"]),.ld-fl select,.ld-fl textarea{width:100%;box-sizing:border-box;min-height:44px;font:400 16px var(--body);text-align:left;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+.ld-fl textarea{min-height:76px;resize:vertical}
+.ld-col{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ld-col input[type="color"]{width:64px;height:44px;padding:2px;border:1px solid var(--line);border-radius:8px;background:var(--bg);cursor:pointer}
+.ld-col code{font:14px var(--mono);color:var(--muted)}
+.ld-fl [aria-invalid="true"]{border-color:var(--c-b)!important}
+.ld-err{color:var(--c-b);font:600 14px var(--body);margin:0}
+.ld-err:empty{display:none}
+.ld-out{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px}
+.ld-url{width:100%;box-sizing:border-box;min-height:44px;font:14px var(--mono);text-align:left;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px}
+.ld-row{display:flex;flex-wrap:wrap;gap:8px}
+.ld-row>button,.ld-row>a{min-height:44px;box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+@media (max-width:640px){ .ld-row>button,.ld-row>a{flex:1 1 calc(50% - 4px)} }
+.ld-qr{display:grid;gap:8px;justify-items:start}
+.ld-qr svg{display:block;width:min(240px,100%);height:auto;background:#fff;border-radius:10px;border:1px solid var(--line)}
+.ld-note{background:var(--accent-soft);border-radius:10px;padding:10px 14px;font-size:14.5px;text-align:justify;margin:0}
+/* Visitor: faixa da agência */
+.ld-band{display:flex;gap:12px;align-items:center;border-radius:12px;padding:12px 16px;margin:0 0 14px;background:var(--lead,var(--accent));color:var(--lead-ink,var(--on-accent))}
+.ld-band .ld-ic{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.18);font:700 18px var(--display)}
+.ld-band b{display:block;font:600 18px/1.25 var(--display)}
+.ld-band p{margin:2px 0 0;font-size:15px;text-align:left}
+/* Visitor: formulário de contacto */
+.lead-gate{margin-bottom:16px;border-color:color-mix(in srgb,var(--lead,var(--accent)) 55%,var(--line))}
+.lead-gate h2{font:600 20px/1.25 var(--display);margin:0 0 6px}
+.lead-gate form{display:grid;gap:12px}
+.ld-check{display:flex;gap:10px;align-items:flex-start;font:400 15px var(--body);min-height:44px;cursor:pointer}
+.ld-check input{flex:none;width:22px;height:22px;margin:1px 0 0;accent-color:var(--lead,var(--accent))}
+.ld-priv-b{border:0;background:none;color:var(--accent);font:600 15px var(--body);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:44px;padding:0;justify-self:start}
+.ld-priv{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.ld-priv p{font-size:14.5px;margin:0 0 8px}.ld-priv p:last-child{margin:0}
+.ld-go{border:0;border-radius:10px;min-height:48px;padding:12px 18px;font:700 16px var(--body);cursor:pointer;background:var(--lead,var(--accent));color:var(--lead-ink,var(--on-accent))}
+.ld-go:hover{filter:brightness(1.07)}
+/* Plano de captação: interface simplificada (o visitante só vê Dados, Resultado e Notas) */
+:root[data-tier="captacao"] .share,:root[data-tier="captacao"] .qt-savebtn,:root[data-tier="captacao"] .qf-link,:root[data-tier="captacao"] .qf-foot,
+:root[data-tier="captacao"] [data-qtab="analise"],:root[data-tier="captacao"] [data-qtab="pagamentos"],:root[data-tier="captacao"] [data-qtab="guardadas"],:root[data-tier="captacao"] [data-qtab="agencia"],
+:root[data-tier="captacao"] #qa,:root[data-tier="captacao"] #c-cal,:root[data-tier="captacao"] #c-brq,:root[data-tier="captacao"] #saves,:root[data-tier="captacao"] #agency,
+:root[data-tier="captacao"] .ld-tbl,:root[data-tier="captacao"] .best>.win:not(.primary),
+:root[data-tier="captacao"] .qf-lic,:root[data-tier="captacao"] .qf-upsell,:root[data-tier="captacao"] .qf-unlock,:root[data-tier="captacao"] [data-lic]{display:none!important}
+:root[data-tier="captacao"][data-lead]:not([data-lead-ok]) .best,:root[data-tier="captacao"][data-lead]:not([data-lead-ok]) .mbar,:root[data-tier="captacao"][data-lead]:not([data-lead-ok]) .qt-live{display:none!important}
+@media (max-width:860px){ :root[data-tier="captacao"] .qtabbar{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:1180px) and (min-width:861px){ :root[data-tier="captacao"] .side .qtabs{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media print{ .lead-gate,.ld-band{display:none!important} }
+
+/* ===== K: ajustes da junção dos planos ===== */
+@media screen{ body[data-qt="agencia"] #res>[data-tab]:not([data-tab~="agencia"]){display:none} }
+:root[data-tier="demo"] #b1d,:root[data-tier="captacao"] #b1d{display:none}
+:root[data-tier="captacao"] #g-plan-btn,:root[data-tier="captacao"] #g-strip,:root[data-tier="captacao"] #g-inv,:root[data-tier="captacao"] [data-act="plans"],:root[data-tier="captacao"] .qf-foot a[href="#planos"],:root[data-tier="captacao"] .qf-foot button{display:none!important}
 </style>
 
 </head>
@@ -698,6 +985,7 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
     <button type="button" data-qtab="pagamentos"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="qt-l">Pagamentos</span></button>
     <button type="button" data-qtab="notas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg><span class="qt-l">Notas</span><span class="qt-badge" hidden></span></button>
     <button type="button" data-qtab="guardadas"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="qt-l">Guardadas</span></button>
+    <button type="button" data-qtab="agencia" class="qt-ag"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg><span class="qt-l">Agência</span></button>
   </nav>
   <p class="side-disc">Simulação indicativa. Consulte sempre um contabilista, advogado, consultor imobiliário e mediador de crédito antes de decidir.</p>
 </nav>
@@ -872,6 +1160,10 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
       <thead><tr><th>Cenário</th><th>Impostos totais</th><th>Taxa efetiva <a class="nref" href="#nota-taxa">nota 12</a></th><th id="th-net">Líquido disponível</th></tr></thead>
       <tbody id="rows"></tbody>
     </table></div>
+  </div>
+  <div class="panel agency" id="agency" data-tab="agencia" aria-label="Ferramentas da agência">
+    <div class="ag-h"><h2>Ferramentas da agência</h2><span class="ag-tier">Plano Agência</span></div>
+    <div id="ag-slots" class="ag-slots"></div>
   </div>
   <div class="panel saves" id="saves">
     <div class="saves-h"><h2>Simulações guardadas</h2><span class="saves-c" id="saves-count"></span></div>
@@ -1096,6 +1388,7 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
   <button type="button" data-qtab="analise"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg><span class="qt-l">Análise</span></button>
   <button type="button" data-qtab="pagamentos"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="qt-l">Pagamentos</span></button>
   <button type="button" data-qtab="notas"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg><span class="qt-l">Notas</span><span class="qt-badge" hidden></span></button>
+  <button type="button" data-qtab="agencia" class="qt-ag"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-6h6v6"/><path d="M9 10h.01M15 10h.01"/></svg><span class="qt-l">Agência</span></button>
 </nav>
 <a class="mbar" id="mbar" href="#res"><span class="mb-k">Melhor cenário</span><span class="mb-n" id="mbn">—</span><span class="mb-v" id="mbv">—</span></a>
 <script>
@@ -2534,7 +2827,7 @@ qaBox(); if(LAST) qaSchedule();
   async function pipe(u8,Stream){ const r=new Response(new Blob([u8]).stream().pipeThrough(new Stream("deflate-raw"))); return new Uint8Array(await r.arrayBuffer()); }
   // Só os campos diferentes do DEF, para o link ficar curto
   function diffState(s){ const o={}; Object.keys(DEF).forEach(k=>{ if(s&&k in s&&JSON.stringify(s[k])!==JSON.stringify(DEF[k])) o[k]=s[k]; }); return o; }
-  async function encodeState(s){ const raw=new TextEncoder().encode(JSON.stringify(diffState(s)));
+  async function encodeState(s){ const raw=new TextEncoder().encode(JSON.stringify(Object.assign(diffState(s),typeof H_linkBrand==="function"?H_linkBrand():{})));
     if(typeof CompressionStream==="function"){ try{ return "z"+b64e(await pipe(raw,CompressionStream)); }catch(e){} }
     return "j"+b64e(raw); }
   async function decodeState(t){ const kind=t[0]; let u=b64d(t.slice(1));
@@ -2582,7 +2875,7 @@ qaBox(); if(LAST) qaSchedule();
   // Abrir uma simulação partilhada (#s=...)
   async function openShared(){ const m=/^#s=([A-Za-z0-9_-]+)$/.exec(location.hash||""); if(!m) return;
     clearHash();
-    let incoming; try{ incoming=sanitize(await decodeState(m[1])); }catch(e){ banner("<p>O link da simulação está incompleto ou danificado e não foi possível abri-lo. Os seus valores ficaram como estavam.</p>"); return; }
+    let incoming; try{ const raw=await decodeState(m[1]); if(typeof H_linkIn==="function") H_linkIn(raw); incoming=sanitize(raw); }catch(e){ banner("<p>O link da simulação está incompleto ou danificado e não foi possível abri-lo. Os seus valores ficaram como estavam.</p>"); return; }
     const next={...clone(DEF),...clone(incoming)}, prev=diffState(state), pk=JSON.stringify(prev);
     let kept=false;
     if(Object.keys(prev).length&&pk!==JSON.stringify(diffState(next))){
@@ -2674,8 +2967,8 @@ qaBox(); if(LAST) qaSchedule();
 
 // ===== F: separadores (Dados, Resultado, Análise, Pagamentos, Notas, Guardadas) =====
 var QT="dados";
-const QT_TABS=["dados","resultado","analise","pagamentos","notas","guardadas"];
-function qtTag(){ const res=$("res"); if(!res) return; const map={qa:"analise","c-cal":"pagamentos","c-brq":"pagamentos",saves:"guardadas",notes:"notas",legal:"notas"};
+const QT_TABS=["dados","resultado","analise","pagamentos","notas","guardadas","agencia"];
+function qtTag(){ const res=$("res"); if(!res) return; const map={qa:"analise","c-cal":"pagamentos","c-brq":"pagamentos",saves:"guardadas",notes:"notas",legal:"notas",agency:"agencia"};
   [...res.children].forEach(el=>{ if(el.dataset.tab) return;
     el.dataset.tab=map[el.id]||(el.classList.contains("disc-full")?"notas":(el.classList.contains("best")||el.classList.contains("panel"))&&!el.id?"resultado dados":"resultado"); }); }
 function qtBadge(){ const n=document.querySelectorAll("#notes .warn").length; document.querySelectorAll(".qt-badge").forEach(b=>{ b.hidden=!n; b.textContent=n; });
@@ -2698,6 +2991,987 @@ document.addEventListener("click",e=>{ const a=e.target.closest('a[href^="#"]');
 { const _cF=calc; calc=function(){ const r=_cF.apply(this,arguments); qtTag(); qtLive(); qtBadge(); setTimeout(()=>{ qtTag(); qtBadge(); },0); return r; }; }
 document.querySelector(".disc-top")?.addEventListener("click",e=>{ if(innerWidth<=860&&!e.target.closest("a")) e.currentTarget.classList.toggle("open"); });
 (function(){ let t="dados"; try{ t=localStorage.getItem("qf-tab")||"dados"; }catch(e){} qtTag(); qtLive(); qtBadge(); qtGo(t,true); paintSteps(STEP); })();
+
+// ===== L: licenças (núcleo) =====
+// Planos: "demo" (sem chave), "cliente" (compra única), "agencia" (mensalidade) e "captacao" (visitante de uma página de captação de uma agência).
+// O módulo G verifica a chave e chama qfSetLicense(); os outros módulos só usam qfHas(), qfTier() e o evento "qf-tier".
+const QF_FEATURES=(()=>{ const cli=["detalhe","analise","pagamentos","exportar","guardar","link","comparar"];
+  return {demo:[], captacao:[], cliente:cli, agencia:[...cli,"marca","carteira","proposta","captacao"]}; })();
+var QF_LIC={tier:"demo"};
+function qfTier(){ return QF_LIC.tier; }
+function qfHas(f){ return (QF_FEATURES[QF_LIC.tier]||[]).includes(f); }
+function qfSetLicense(lic){ QF_LIC=Object.assign({tier:"demo"},lic||{}); if(!QF_FEATURES[QF_LIC.tier]) QF_LIC.tier="demo";
+  document.documentElement.dataset.tier=QF_LIC.tier;
+  if(QF_LIC.tier!=="agencia"&&typeof QT!=="undefined"&&QT==="agencia") qtGo("resultado",true);
+  dispatchEvent(new CustomEvent("qf-tier",{detail:QF_LIC})); }
+document.documentElement.dataset.tier="demo";
+// ===== G: licenças, modo demo e planos =====
+// Preços e ligações de compra (Stripe, Gumroad, Lemon Squeezy…): altere aqui. Com url vazia, o botão "Comprar" abre um e-mail para QF_SHOP.contact.
+const QF_SHOP={cliente:{price:"29 €",url:""},agencia:{price:"24,90 €/mês",url:""},contact:"quantofica@[defina]"};
+(function(){
+  // Chave PÚBLICA (só verifica). A chave privada fica apenas no gerador de chaves do dono.
+  const QF_PUB_JWK={"kty":"EC","crv":"P-256","x":"5cTYgA8Tw2OtqscPsp9SqCy-mRB3y-YjM3ypKzMIslU","y":"ekZF0b3_Vz4NfL3bdphzk_hCe8XwbJFUY-R8zfB54GI"};
+  const LS="qf-license", WARN_DAYS=5, root=document.documentElement;
+  const LOCK='<svg class="g-lock-i" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+  const lockI=n=>LOCK.replace(/width="15" height="15"/,`width="${n}" height="${n}"`);
+  const KEY_I='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.7 12.3L20 3"/><path d="M16 7l3 3"/><path d="M14 9l2 2"/></svg>';
+  const TNAME={demo:"Demo grátis",captacao:"Demo grátis",cliente:"Cliente",agencia:"Agência"};
+  const escH=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const lsGet=()=>{ try{ return localStorage.getItem(LS)||""; }catch(e){ return ""; } };
+  const lsSet=v=>{ try{ if(v) localStorage.setItem(LS,v); else localStorage.removeItem(LS); return true; }catch(e){ return false; } };
+  const b64d=t=>{ t=t.replace(/-/g,"+").replace(/_/g,"/"); while(t.length%4) t+="="; const s=atob(t), u=new Uint8Array(s.length); for(let i=0;i<s.length;i++) u[i]=s.charCodeAt(i); return u; };
+  const today=()=>{ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); };
+  const utc=x=>{ const [y,m,d]=x.split("-").map(Number); return Date.UTC(y,m-1,d); };
+  const daysTo=x=>Math.round((utc(x)-utc(today()))/864e5);
+  const fmtD=x=>x?x.split("-").reverse().join("/"):"";
+  const hasCrypto=()=>!!(window.crypto&&crypto.subtle&&typeof crypto.subtle.verify==="function");
+  const MSG={
+    format:"Esta chave não é válida. Confirme que a copiou completa, desde «QF1.» até ao último carácter.",
+    sig:"Esta chave não é válida: a assinatura não confere. Copie-a de novo a partir do e-mail que recebeu.",
+    nocrypto:"Este navegador não permite verificar a chave neste endereço, porque a verificação só funciona em ligações seguras (https). Abra o QuantoFica em https://quantofica.github.io/ e ative a chave aí.",
+    expired:x=>`A sua mensalidade terminou em ${fmtD(x)} — introduza a nova chave.`};
+  let NOTICE=null, pubKey=null;
+
+  /* ---------- 1. Verificação da chave (ECDSA P-256 + SHA-256, assinatura r||s) ---------- */
+  // Formato: QF1.<base64url(JSON)>.<base64url(assinatura)>; a assinatura cobre o texto "QF1.<base64url(JSON)>".
+  async function verifyKey(raw){
+    const key=String(raw||"").replace(/\s+/g,""), m=/^QF1\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/.exec(key);
+    if(!m) return {ok:false,err:"format"};
+    if(!hasCrypto()) return {ok:false,err:"nocrypto"};
+    let p, sig; try{ p=JSON.parse(new TextDecoder().decode(b64d(m[1]))); sig=b64d(m[2]); }catch(e){ return {ok:false,err:"format"}; }
+    let good=false;
+    try{ if(!pubKey) pubKey=await crypto.subtle.importKey("jwk",QF_PUB_JWK,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);
+      good=sig.length===64&&await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},pubKey,sig,new TextEncoder().encode("QF1."+m[1])); }catch(e){ good=false; }
+    if(!good) return {ok:false,err:"sig"};
+    const D=/^\d{4}-\d{2}-\d{2}$/;
+    if(!p||typeof p!=="object"||!["cliente","agencia"].includes(p.t)||(p.t==="agencia"&&!D.test(p.x||""))||(p.x!=null&&!D.test(p.x))) return {ok:false,err:"format"};
+    const lic={tier:p.t,name:String(p.n||"").slice(0,80),email:String(p.e||"").slice(0,120),exp:p.x||null,id:String(p.id||"").slice(0,24),key};
+    if(lic.exp&&lic.exp<today()) return {ok:false,err:"expired",lic};
+    return {ok:true,lic}; }
+  function soon(lic){ if(!lic||!lic.exp) return null; const d=daysTo(lic.exp); return d<=WARN_DAYS?{kind:"soon",exp:lic.exp,d}:null; }
+  async function boot(){ const k=lsGet();
+    if(k){ const r=await verifyKey(k);
+      if(r.ok){ NOTICE=soon(r.lic); qfSetLicense(r.lic); return; }
+      if(r.err==="expired"){ NOTICE={kind:"expired",exp:r.lic.exp}; if(qfTier()!=="demo") qfSetLicense({tier:"demo"}); else paint(); return; }
+      if(r.err==="nocrypto"){ NOTICE={kind:"nocrypto"}; paint(); return; }
+      lsSet(""); }
+    NOTICE=null; if(qfTier()==="cliente"||qfTier()==="agencia") qfSetLicense({tier:"demo"}); else paint(); }
+  // A mensalidade pode terminar com a app aberta (por exemplo, de um dia para o outro)
+  document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&(QF_LIC.exp||NOTICE)) boot().catch(()=>{}); });
+
+  /* ---------- 2. Interface: botão no cabeçalho, faixa, convites ---------- */
+  const NEEDS=["detalhe","analise","pagamentos","exportar","guardar","link"];
+  const ACT_NEED={pdf:"exportar",xlsx:"exportar",mail:"exportar",wa:"exportar",copy:"exportar",native:"exportar",link:"link",save:"guardar"};
+  const LEAD={detalhe:"O cálculo passo a passo e os valores de todos os cenários estão disponíveis no plano Cliente.",
+    analise:"A análise do negócio está disponível no plano Cliente.",pagamentos:"O calendário de pagamentos está disponível no plano Cliente.",
+    guardar:"Guardar e comparar simulações está disponível no plano Cliente.",exportar:"Os relatórios em PDF e Excel, o envio por e-mail ou WhatsApp e a cópia do resumo estão disponíveis no plano Cliente.",
+    link:"A partilha da simulação por link está disponível no plano Cliente."};
+  const INV={analise:{f:"analise",h:"Análise do negócio",p:"Veja se o negócio compensa, com os números do melhor cenário.",li:["Capital investido e lucro líquido","Retorno sobre o capital e retorno anualizado","Cash-flow mensal e rentabilidade no arrendamento"]},
+    pagamentos:{f:"pagamentos",h:"Calendário de pagamentos",p:"Saiba quando e quanto vai pagar de impostos, com as datas de cada pagamento.",li:["Datas e valores de IMT, Imposto do Selo, IRS ou IRC e IMI","Efeito no Brasil em reais, para residentes fiscais brasileiros","Alertas de prazos"]},
+    guardadas:{f:"guardar",h:"Simulações guardadas",p:"Guarde as simulações neste dispositivo e compare-as lado a lado.",li:["Guardar com um nome à sua escolha","Abrir de novo com todos os valores","Comparar duas ou mais simulações"]}};
+
+  const pb=document.createElement("button"); pb.type="button"; pb.className="icon-btn"; pb.id="g-plan-btn"; pb.setAttribute("aria-haspopup","dialog"); pb.innerHTML=KEY_I;
+  pb.addEventListener("click",()=>gOpen(null));
+  { const sh=document.querySelector(".actions .share"), ac=document.querySelector(".actions"); if(sh) sh.before(pb); else if(ac) ac.prepend(pb); }
+  const strip=document.createElement("div"); strip.className="g-strip"; strip.id="g-strip"; strip.setAttribute("role","status"); strip.hidden=true;
+  { const h=document.querySelector(".wrap>header"); if(h) h.after(strip); else document.body.prepend(strip); }
+  const inv=document.createElement("div"); inv.className="panel g-inv"; inv.id="g-inv"; inv.dataset.tab="analise pagamentos guardadas";
+  { const n=$("notes"), r=$("res"); if(n) n.before(inv); else if(r) r.appendChild(inv); }
+  // Cadeado nos separadores bloqueados (menu lateral, barra inferior e botão "Guardadas" do cabeçalho)
+  document.querySelectorAll('[data-qtab="analise"],[data-qtab="pagamentos"],[data-qtab="guardadas"]').forEach(b=>{ if(b.classList.contains("qt-live")) return;
+    const f=b.dataset.qtab==="guardadas"?"guardar":b.dataset.qtab, s=document.createElement("span"); s.className="g-tl-i"; s.dataset.f=f; s.innerHTML=lockI(13); b.appendChild(s);
+    if(b.hasAttribute("aria-label")) b.dataset.gLab=b.getAttribute("aria-label"); });
+  // Menu de partilha: cadeados e entrada "Planos e licença"
+  (function(){ const m=$("share-menu"); if(!m) return;
+    const h=document.createElement("p"); h.className="sm-h"; h.textContent="Licença";
+    const b=document.createElement("button"); b.type="button"; b.setAttribute("role","menuitem"); b.dataset.act="plans";
+    b.innerHTML='<span class="sm-i">'+KEY_I.replace(/width="22" height="22"/,'width="16" height="16"')+'</span>Planos e licença';
+    m.append(h,b); })();
+  function lockMenu(){ document.querySelectorAll("#share-menu [data-act]").forEach(b=>{ const need=ACT_NEED[b.dataset.act]; if(!need) return;
+    if(!b.querySelector(".g-sm-l")){ const s=document.createElement("span"); s.className="g-sm-l"; s.innerHTML=LOCK; b.appendChild(s); }
+    b.classList.toggle("g-locked",!qfHas(need)); }); }
+  // Rodapé
+  (function(){ let p=document.querySelector(".wrap .qf-foot"); if(!p){ const w=document.querySelector(".wrap"); if(!w) return; p=document.createElement("p"); p.className="qf-foot"; w.appendChild(p); }
+    const b=document.createElement("button"); b.type="button"; b.className="qf-link"; b.textContent="Planos e licença"; b.addEventListener("click",()=>gOpen(null)); p.appendChild(b); })();
+
+  function paintStrip(){ let cls="", html="", btn="";
+    if(NOTICE&&NOTICE.kind==="expired"){ cls="g-warn"; html=LOCK+escH(MSG.expired(NOTICE.exp)); btn="Introduzir a nova chave"; }
+    else if(NOTICE&&NOTICE.kind==="nocrypto"){ cls="g-warn"; html=LOCK+escH(MSG.nocrypto); btn="Planos e licença"; }
+    else if(NOTICE&&NOTICE.kind==="soon"&&qfTier()==="agencia"){ cls="g-warn"; const d=NOTICE.d;
+      html=`A sua mensalidade do plano Agência termina em ${fmtD(NOTICE.exp)} (${d<=0?"hoje":d===1?"amanhã":`daqui a ${d} dias`}). Renove e introduza a nova chave para continuar a usar as funções da agência.`; btn="Renovar"; }
+    else if(!qfHas("detalhe")){ html=LOCK+"Versão de demonstração — veja o melhor cenário. Desbloqueie o detalhe completo."; btn="Desbloquear"; }
+    strip.className="g-strip "+cls; strip.hidden=!html;
+    strip.innerHTML=html?`<p>${html}</p><button type="button" class="g-btn">${btn}</button>`:"";
+    const b=strip.querySelector("button"); if(b) b.onclick=()=>gOpen(NOTICE&&NOTICE.kind==="soon"?"renew":(!qfHas("detalhe")&&!NOTICE?"detalhe":null),NOTICE&&NOTICE.kind!=="soon"); }
+  function paintInv(){ const c=INV[typeof QT!=="undefined"?QT:""]; if(!c||qfHas(c.f)){ if(inv.dataset.k){ inv.innerHTML=""; inv.dataset.k=""; } return; }
+    if(inv.dataset.k===QT) return; inv.dataset.k=QT;
+    inv.innerHTML=`<div class="g-inv-in"><span class="g-inv-ic">${lockI(26)}</span><h2>${c.h}</h2><p>${c.p}</p><ul>${c.li.map(x=>`<li><span>${x}</span></li>`).join("")}</ul><p class="g-inv-k">Disponível no plano Cliente</p><button type="button" class="g-btn">Desbloquear</button></div>`;
+    inv.querySelector(".g-btn").onclick=()=>gOpen(c.f); }
+  function paint(){ const miss=NEEDS.filter(f=>!qfHas(f)); if(miss.length) root.dataset.glock=miss.join(" "); else delete root.dataset.glock;
+    const t=qfTier(), paid=t==="cliente"||t==="agencia", lab=`Planos e licença (plano atual: ${TNAME[t]||t})`;
+    pb.setAttribute("aria-label",lab); pb.title=lab; if(paid) pb.dataset.paid=""; else pb.removeAttribute("data-paid");
+    document.querySelectorAll(".g-tl-i").forEach(s=>{ const b=s.parentNode, lk=!qfHas(s.dataset.f), base=b.dataset.gLab||b.querySelector(".qt-l")?.textContent||"";
+      if(lk) b.setAttribute("aria-label",base+" (disponível no plano Cliente)"); else if(b.dataset.gLab) b.setAttribute("aria-label",b.dataset.gLab); else b.removeAttribute("aria-label"); });
+    lockMenu(); paintStrip(); inv.dataset.k=""; paintInv(); }
+
+  /* ---------- 3. Modo demo: valores dos outros cenários e "Ver cálculo" ---------- */
+  const HID=lbl=>`<span class="g-hid" role="img" aria-label="${lbl||"Valor"} oculto — disponível no plano Cliente">${LOCK}<span class="g-fake" aria-hidden="true">00 000 €</span></span>`;
+  function decorate(){ if(qfHas("detalhe")) return; const tb=$("rows"); if(!tb) return;
+    tb.querySelectorAll("tr.sc").forEach(tr=>{ const b=tr.querySelector("[data-tog]");
+      if(b&&!b.classList.contains("g-tl")){ b.classList.add("g-tl"); b.innerHTML=LOCK+"Ver cálculo"; b.setAttribute("aria-expanded","false"); b.removeAttribute("aria-controls");
+        b.setAttribute("aria-haspopup","dialog"); b.setAttribute("aria-label","Ver cálculo — disponível no plano Cliente"); }
+      if(tr.classList.contains("top")) return;
+      tr.querySelectorAll("td[data-label]").forEach(td=>{ if(!td.querySelector(".g-hid")) td.innerHTML=HID(td.dataset.label); });
+      tr.querySelectorAll(".bar,.name~.det").forEach(x=>{ x.classList.add("g-blur"); x.setAttribute("aria-hidden","true"); }); });
+    tb.querySelectorAll("tr.drow").forEach(r=>{ r.hidden=true; const c=r.querySelector(".calcbox"); if(c) c.innerHTML=""; });
+    const b2=$("b2v"), b2s=$("b2s"); if(b2&&!b2.querySelector(".g-hid")) b2.innerHTML=HID("Valor"); if(b2s) b2s.textContent="Valores disponíveis no plano Cliente.";
+    document.querySelectorAll("#sum b").forEach(x=>{ if(!x.querySelector(".g-hid")) x.innerHTML=HID(""); }); }
+  { const _cG=calc; calc=function(){ const r=_cG.apply(this,arguments); try{ decorate(); }catch(e){} return r; }; }
+  { const _qG=qtGo; qtGo=function(){ const r=_qG.apply(this,arguments); try{ paintInv(); }catch(e){} return r; }; }
+  // "Ver cálculo" bloqueado: abre o convite em vez do detalhe
+  document.addEventListener("click",e=>{ const t=e.target.closest&&e.target.closest("#rows [data-tog]"); if(!t||qfHas("detalhe")) return;
+    e.preventDefault(); e.stopImmediatePropagation(); gOpen("detalhe"); },true);
+  // Botão "Guardar" das simulações
+  document.addEventListener("submit",e=>{ if(e.target&&e.target.id==="save-form"&&!qfHas("guardar")){ e.preventDefault(); e.stopImmediatePropagation(); gOpen("guardar"); } },true);
+  // Exportações e partilha (mantém a cadeia de shareAct dos outros módulos)
+  { const _sG=shareAct; shareAct=async function(act){
+      if(act==="plans"){ closeMenu(); gOpen(null); return; }
+      const need=ACT_NEED[act]; if(need&&!qfHas(need)){ closeMenu(); gOpen(need); return; }
+      return _sG.apply(this,arguments); }; }
+
+  /* ---------- 4. Diálogo "Planos e licença" ---------- */
+  let dlg=null, back=null, CTX=null, LEADON=false;
+  const PLANS=[
+    {t:"demo",h:"Demo grátis",price:"Grátis",sub:"Para experimentar",li:[["Cálculo completo das três operações",1],["Melhor cenário e valor líquido",1],["Notas legais e guia",1],["Todos os cenários e cálculo passo a passo",0],["Análise, pagamentos, relatórios e partilha",0]]},
+    {t:"cliente",h:"Cliente",price:()=>QF_SHOP.cliente.price,sub:"Compra única, sem mensalidade",li:[["Tudo o que a demonstração inclui",1],["Todos os cenários com impostos e taxa efetiva",1],["“Ver cálculo” passo a passo",1],["Análise do negócio",1],["Calendário de pagamentos",1],["Relatórios em PDF e Excel",1],["Envio por e-mail e WhatsApp, link e resumo",1],["Simulações guardadas e comparação",1]]},
+    {t:"agencia",h:"Agência",price:()=>QF_SHOP.agencia.price,sub:"Mensalidade · cada renovação traz uma chave nova",li:[["Tudo o que o plano Cliente inclui",1],["Marca própria nos relatórios",1],["Logótipo da agência e, se quiser, as cores do logótipo na app",1],["Carteira de clientes",1],["Proposta comparativa de imóveis",1],["Página de captação de contactos",1]]}];
+  function buy(t){ const s=QF_SHOP[t]||{}; if(s.url){ openLink(s.url); return; }
+    const nm=t==="agencia"?"Agência":"Cliente", subj=`Comprar o QuantoFica — plano ${nm}`;
+    const body=`Olá,\n\nQuero comprar o QuantoFica, plano ${nm} (${s.price||""}${t==="agencia"?"":", compra única"}).\n\nNome ou empresa:\nE-mail para receber a chave:\nNIF (para a fatura, opcional):\n\nObrigado.`;
+    location.href="mailto:"+QF_SHOP.contact+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body); }
+  function curHTML(){ const t=qfTier(), L=QF_LIC; let p;
+    if(t==="cliente") p=`<b>Plano Cliente</b> — compra única, sem expiração.<br>Titular: ${escH(L.name||"—")}${L.email?` · ${escH(L.email)}`:""}`;
+    else if(t==="agencia"){ const d=L.exp?daysTo(L.exp):null; p=`<b>Plano Agência</b> — mensalidade válida até ${fmtD(L.exp)}${d!=null&&d<=WARN_DAYS?` (${d<=0?"termina hoje":d===1?"termina amanhã":`faltam ${d} dias`})`:""}.<br>Titular: ${escH(L.name||"—")}${L.email?` · ${escH(L.email)}`:""}`; }
+    else p=`<b>Demo grátis</b> — calcula tudo, mas mostra só o melhor cenário e o valor líquido. Para ver o detalhe completo, compre o plano Cliente ou o plano Agência e introduza aqui a chave que recebe por e-mail.`;
+    let note="";
+    if(NOTICE&&NOTICE.kind==="expired") note=MSG.expired(NOTICE.exp);
+    else if(!hasCrypto()) note=MSG.nocrypto;
+    else if(t==="agencia"&&NOTICE&&NOTICE.kind==="soon") note="Quando renovar, recebe uma chave nova por e-mail. Cole-a abaixo e toque em “Ativar”.";
+    return `<p class="g-cur-p">${p}</p>${note?`<p class="g-note">${escH(note)}</p>`:""}`; }
+  function planHTML(P){ const t=qfTier(), cur=P.t===t||(P.t==="demo"&&t==="captacao"), pr=typeof P.price==="function"?P.price():P.price;
+    let btn="";
+    if(P.t!=="demo"){ if(cur&&P.t==="cliente") btn='<button type="button" class="g-btn" disabled>O seu plano</button>';
+      else if(P.t==="cliente"&&t==="agencia") btn='<button type="button" class="g-btn" disabled>Incluído no seu plano</button>';
+      else btn=`<button type="button" class="g-btn${P.t==="agencia"&&t!=="agencia"&&t!=="cliente"?" g-ghost":""}" data-buy="${P.t}">${cur?"Renovar":"Comprar"}</button>`; }
+    return `<article class="g-plan${cur?" cur":""}"><div class="g-plan-h"><h4>${P.h}</h4>${cur?'<span class="g-tag">Plano atual</span>':""}</div>
+      <div class="g-price">${escH(pr)}<small>${P.sub}</small></div>
+      <ul>${P.li.map(([x,ok])=>`<li class="${ok?"":"no"}"><span>${x}</span></li>`).join("")}</ul>${btn}</article>`; }
+  function render(){ if(!dlg) return; const t=qfTier(), paid=t==="cliente"||t==="agencia", lead=LEADON?(CTX==="renew"?"":LEAD[CTX]||""):"";
+    const keep=dlg.querySelector("#g-key-in")?.value||"";
+    dlg.innerHTML=`<div class="g-dlg-in">
+      <div class="g-dlg-h"><h2 id="g-dlg-t">Planos e licença</h2><button type="button" class="g-x" aria-label="Fechar">×</button></div>
+      ${lead?`<p class="g-lead">${LOCK}<span>${escH(lead)}</span></p>`:""}
+      <section class="g-cur" aria-labelledby="g-cur-h"><h3 id="g-cur-h">O seu plano</h3>${curHTML()}
+        <form class="g-key" novalidate><label for="g-key-in">${paid?"Introduzir outra chave":"Chave de licença"}</label>
+          <small id="g-key-d">Recebe a chave por e-mail depois da compra. Começa por «QF1.»; cole-a completa.</small>
+          <textarea id="g-key-in" rows="3" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="g-key-d g-msg" placeholder="QF1.…"></textarea>
+          <div class="g-row"><button type="submit" class="g-btn">Ativar</button>${paid||lsGet()?'<button type="button" class="g-btn g-danger" data-g="rm">Remover licença deste dispositivo</button>':""}</div>
+          <p class="g-msg" id="g-msg" role="status" aria-live="polite"></p></form></section>
+      <section aria-labelledby="g-pl-h"><h3 id="g-pl-h">Comparar planos</h3><div class="g-plans">${PLANS.map(planHTML).join("")}</div>
+        <p class="g-fine">O cálculo é igual em todos os planos; muda apenas o que vê e o que pode exportar. A chave fica guardada neste dispositivo e neste navegador; noutro dispositivo, ou se limpar os dados do navegador, introduza-a de novo. Preços com IVA incluído.</p></section></div>`;
+    const ta=dlg.querySelector("#g-key-in"); ta.value=keep;
+    dlg.querySelector(".g-x").onclick=gClose;
+    dlg.querySelector(".g-key").onsubmit=e=>{ e.preventDefault(); activate(ta.value); };
+    const rm=dlg.querySelector('[data-g="rm"]'); if(rm) rm.onclick=()=>{ if(!rm.classList.contains("armed")){ rm.classList.add("armed"); rm.textContent="Confirmar: remover a licença"; return; } remove(); };
+    dlg.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy)); }
+  function setMsg(t,cls){ const m=dlg&&dlg.querySelector("#g-msg"); if(m){ m.className="g-msg "+(cls||""); m.textContent=t; } }
+  async function activate(raw){ const k=String(raw||"").replace(/\s+/g,"");
+    if(!k){ setMsg("Cole a chave que recebeu por e-mail.","err"); dlg.querySelector("#g-key-in").focus(); return; }
+    setMsg("A verificar a chave…");
+    const r=await verifyKey(k);
+    if(!r.ok){ setMsg(r.err==="expired"?MSG.expired(r.lic.exp):MSG[r.err]||MSG.format,"err"); return; }
+    const stored=lsSet(r.lic.key); NOTICE=soon(r.lic); LEADON=false; dlg.querySelector("#g-key-in").value=""; qfSetLicense(r.lic);
+    const L=r.lic, who=L.name?`, em nome de ${L.name}`:"";
+    setMsg(`Chave ativada: plano ${TNAME[L.tier]}${who}${L.exp?`, válida até ${fmtD(L.exp)}`:""}.`+(stored?"":" Atenção: este navegador não deixou guardar a chave; terá de a introduzir de novo da próxima vez."),"ok"); }
+  function remove(){ lsSet(""); NOTICE=null; LEADON=false; qfSetLicense({tier:"demo"}); setMsg("A licença foi removida deste dispositivo. Voltou à versão de demonstração.","ok"); }
+  function gOpen(ctx,focusKey){ CTX=ctx; LEADON=!!ctx;
+    if(!dlg){ dlg=document.createElement("dialog"); dlg.className="g-dlg"; dlg.id="g-dlg"; dlg.setAttribute("aria-labelledby","g-dlg-t"); document.body.appendChild(dlg);
+      dlg.addEventListener("click",e=>{ if(e.target===dlg) gClose(); });
+      dlg.addEventListener("close",()=>{ if(back&&back.isConnected&&back.focus) back.focus(); back=null; });
+      dlg.addEventListener("cancel",e=>{ e.preventDefault(); gClose(); }); }
+    back=document.activeElement; render();
+    if(!dlg.open){ if(typeof dlg.showModal==="function"){ try{ dlg.showModal(); }catch(e){ dlg.setAttribute("open",""); } } else dlg.setAttribute("open",""); }
+    dlg.scrollTop=0;
+    const f=(focusKey||ctx==="renew")?dlg.querySelector("#g-key-in"):(ctx?dlg.querySelector('[data-buy="cliente"]')||dlg.querySelector(".g-x"):dlg.querySelector(".g-x")); f&&f.focus(); }
+  function gClose(){ if(!dlg) return; if(typeof dlg.close==="function"&&dlg.open) dlg.close(); else { dlg.removeAttribute("open"); if(back&&back.focus) back.focus(); } }
+  window.qfPlans=gOpen;
+
+  /* ---------- 5. Mudança de plano sem recarregar ---------- */
+  addEventListener("qf-tier",()=>{ paint(); try{ if(typeof LAST!=="undefined"&&LAST) calc(); }catch(e){} if(dlg&&dlg.open){ const m=dlg.querySelector("#g-msg"), t=m?m.textContent:"", c=m?m.className:""; render(); const m2=dlg.querySelector("#g-msg"); if(m2){ m2.textContent=t; m2.className=c; } } });
+  paint(); decorate();
+  if(!hasCrypto()&&lsGet()){ NOTICE={kind:"nocrypto"}; paint(); }
+  boot().catch(()=>paint());
+})();
+// ===== H: marca própria da agência =====
+// Só ativo com qfHas("marca"). Guarda em localStorage "qf-brand". Ganchos: buildPdf, exportXlsx e summaryText envolvidos;
+// link partilhado (#s=) leva a marca leve no campo "_ag" (ver H_linkBrand / H_linkIn, chamados pelo módulo D).
+var AGB={name:"",ami:"",cons:"",tel:"",email:"",site:"",addr:"",color:"#1d4f91",logo:"",lw:0,lh:0,applied:false};
+const AGB_KEY="qf-brand", AGB_DEFCOLOR="#1d4f91";
+function agbOn(){ return typeof qfHas==="function"&&qfHas("marca"); }
+function agbHas(){ return agbOn()&&!!(AGB.name||"").trim(); }
+// ---- cor: utilitários ----
+const agbHexToRgb=h=>{ const m=/^#?([0-9a-f]{6})$/i.exec(h||""); if(!m) return null; const n=parseInt(m[1],16); return [n>>16&255,n>>8&255,n&255]; };
+const agbRgbToHex=c=>"#"+c.map(v=>Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,"0")).join("");
+function agbLum(c){ const f=v=>{ v/=255; return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4); }; return 0.2126*f(c[0])+0.7152*f(c[1])+0.0722*f(c[2]); }
+function agbContrast(a,b){ const x=agbLum(a), y=agbLum(b); return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05); }
+function agbRgbToHsl(c){ let [r,g,b]=c.map(v=>v/255); const mx=Math.max(r,g,b), mn=Math.min(r,g,b); let h=0,s=0; const l=(mx+mn)/2;
+  if(mx!==mn){ const d=mx-mn; s=l>0.5?d/(2-mx-mn):d/(mx+mn); h=mx===r?(g-b)/d+(g<b?6:0):mx===g?(b-r)/d+2:(r-g)/d+4; h/=6; } return [h,s,l]; }
+function agbHslToRgb(h,s,l){ if(!s) return [l*255,l*255,l*255]; const q=l<0.5?l*(1+s):l+s-l*s, p=2*l-q;
+  const t=x=>{ if(x<0) x+=1; if(x>1) x-=1; return x<1/6?p+(q-p)*6*x:x<1/2?q:x<2/3?p+(q-p)*(2/3-x)*6:p; };
+  return [t(h+1/3)*255,t(h)*255,t(h-1/3)*255]; }
+const agbMix=(a,b,w)=>a.map((v,i)=>v*w+b[i]*(1-w));
+// Escurece (dir=-1) ou clareia (dir=1) a cor, mantendo o tom, até ter contraste >= alvo com todas as cores dadas
+function agbFit(c,against,target,dir){ let [h,s,l]=agbRgbToHsl(c), rgb=c;
+  for(let i=0;i<120;i++){ rgb=agbHslToRgb(h,s,l).map(Math.round); if(against.every(a=>agbContrast(rgb,a)>=target)) return rgb; l+=dir*0.01; if(l<=0||l>=1){ l=Math.max(0,Math.min(1,l)); } }
+  return dir<0?[0,0,0]:[255,255,255]; }
+// Paleta completa da app (claro e escuro) a partir de uma cor
+function agbPalette(hex){ const c=agbHexToRgb(hex)||agbHexToRgb(AGB_DEFCOLOR), W=[255,255,255];
+  const L={}, D={};
+  L.soft=agbMix(c,W,0.14).map(Math.round); L.accent=agbFit(c,[W,[237,240,244],L.soft],4.6,-1); L.on=W;
+  { const [h,s,l]=agbRgbToHsl(c); L.bar1=agbFit(agbHslToRgb(h,s,Math.min(l,0.42)).map(Math.round),[W],6,-1); const [h2,s2,l2]=agbRgbToHsl(L.bar1); L.bar2=agbHslToRgb(h2,s2,l2*0.72).map(Math.round); }
+  const P=[21,28,39], B=[11,16,23];
+  D.soft=agbMix(c,P,0.22).map(Math.round); D.accent=agbFit(c,[P,B,[15,20,28],D.soft],4.6,1);
+  D.on=agbContrast(D.accent,B)>=agbContrast(D.accent,W)?B:W;
+  { const [h,s,l]=agbRgbToHsl(c); D.bar1=agbFit(agbHslToRgb(h,Math.min(s,0.6),Math.min(l,0.3)).map(Math.round),[W],9,-1); const [h2,s2,l2]=agbRgbToHsl(D.bar1); D.bar2=agbHslToRgb(h2,s2,l2*0.68).map(Math.round); }
+  return {L,D}; }
+// Cor dominante do logótipo: ignora transparente, quase branco, quase preto e cinzentos; pontua frequência × saturação
+function agbDominant(img){ const S=72, cv=document.createElement("canvas"), r=Math.min(1,S/Math.max(img.naturalWidth||img.width||S,img.naturalHeight||img.height||S));
+  cv.width=Math.max(1,Math.round((img.naturalWidth||S)*r)); cv.height=Math.max(1,Math.round((img.naturalHeight||S)*r));
+  const x=cv.getContext("2d"); x.drawImage(img,0,0,cv.width,cv.height); let d; try{ d=x.getImageData(0,0,cv.width,cv.height).data; }catch(e){ return null; }
+  const bins={};
+  for(let i=0;i<d.length;i+=4){ if(d[i+3]<128) continue; const c=[d[i],d[i+1],d[i+2]], [h,s,l]=agbRgbToHsl(c);
+    if(l>0.9||l<0.1||s<0.25) continue; if(Math.max(...c)-Math.min(...c)<40) continue;
+    const k=Math.round(h*24)%24, b=bins[k]||(bins[k]={n:0,s:0,r:0,g:0,b:0}); b.n++; b.s+=s; b.r+=c[0]*s; b.g+=c[1]*s; b.b+=c[2]*s; }
+  let best=null; Object.values(bins).forEach(b=>{ b.score=b.n*(b.s/b.n); if(!best||b.score>best.score) best=b; });
+  if(!best||best.n<3) return null; return agbRgbToHex([best.r/best.s,best.g/best.s,best.b/best.s]); }
+// ---- guardar / ler ----
+function agbLoad(){ try{ const o=JSON.parse(localStorage.getItem(AGB_KEY)||"null"); if(o&&typeof o==="object") Object.keys(AGB).forEach(k=>{ if(k in o&&typeof o[k]===typeof AGB[k]) AGB[k]=o[k]; }); }catch(e){} if(!agbHexToRgb(AGB.color)) AGB.color=AGB_DEFCOLOR; }
+function agbSave(){ try{ localStorage.setItem(AGB_KEY,JSON.stringify(AGB)); return true; }catch(e){
+    try{ localStorage.setItem(AGB_KEY,JSON.stringify({...AGB,logo:"",lw:0,lh:0})); }catch(e2){} return false; } }
+// ---- aplicar cores à app ----
+function agbApplyColors(){ let st=document.getElementById("agb-vars"); if(!st){ st=document.createElement("style"); st.id="agb-vars"; document.head.appendChild(st); }
+  const root=document.documentElement;
+  if(!(agbHas()&&AGB.applied)){ st.textContent=""; delete root.dataset.agc; return; }
+  const {L,D}=agbPalette(AGB.color), H=agbRgbToHex, v=p=>`--accent:${H(p.accent)};--accent-soft:${H(p.soft)};--on-accent:${H(p.on)};--agb-bar1:${H(p.bar1)};--agb-bar2:${H(p.bar2)};`;
+  root.dataset.agc="1";
+  st.textContent=`html:root[data-agc]{${v(L)}}
+@media (prefers-color-scheme:dark){html:root[data-agc]:not([data-theme="light"]){${v(D)}}}
+html:root[data-agc][data-theme="dark"]{${v(D)}}
+@media (max-width:860px){html:root[data-agc] .qtabbar{background:linear-gradient(180deg,var(--agb-bar1),var(--agb-bar2))} html:root[data-agc] .qtabbar .qt-badge{box-shadow:0 0 0 2px var(--agb-bar1)}}`; }
+// ---- marca no cabeçalho da app ----
+function agbHeader(){ const h1=document.querySelector(".wrap>header h1")||document.querySelector("header h1"); if(!h1) return;
+  let s=h1.querySelector(".agb-hb");
+  if(!agbHas()){ if(s) s.remove(); return; }
+  if(!s){ s=document.createElement("span"); s.className="agb-hb"; const sub=h1.querySelector(".h1-sub"); sub?h1.insertBefore(s,sub):h1.appendChild(s); }
+  s.innerHTML=`<span class="agb-dot" aria-hidden="true">·</span>${AGB.logo?`<img src="${AGB.logo}" alt="">`:""}<span class="agb-hn">${esc(AGB.name)}</span>`;
+  s.title="Simulações preparadas por "+AGB.name; }
+// ---- contactos ----
+const agbDigits=t=>String(t||"").replace(/[^\d+]/g,"").replace(/(?!^)\+/g,"");
+function agbWa(t){ let d=agbDigits(t).replace(/^\+/,""); if(d.startsWith("00")) d=d.slice(2); if(/^9\d{8}$/.test(d)) d="351"+d; return d.length>=8?d:""; }
+const agbSiteHref=s=>{ s=String(s||"").trim(); if(!s) return ""; return /^https?:\/\//i.test(s)?s:"https://"+s; };
+function agbContacts(o,sep){ o=o||AGB; return [o.cons&&("Consultor: "+o.cons),o.tel&&("Tel. "+o.tel),o.email,o.site,o.addr,o.ami&&("AMI n.º "+o.ami)].filter(Boolean).join(sep||" · "); }
+function agbFooterLine(){ return "Simulação preparada por "+[AGB.name,AGB.cons,AGB.tel,AGB.email,AGB.site].filter(x=>x&&String(x).trim()).join(" · "); }
+
+// ---- painel no separador Agência ----
+const AGB_FIELDS=[["name","Nome da agência","text","Ex.: Imobiliária Ribeira",80],["ami","N.º de licença AMI","text","Opcional",20],["cons","Consultor","text","Nome de quem prepara a simulação",60],
+  ["tel","Telefone","tel","+351 912 345 678",30],["email","E-mail","email","geral@agencia.pt",80],["site","Site","url","www.agencia.pt",80],["addr","Morada curta","text","Rua, n.º · Cidade",90]];
+let agbAskColor="";
+function agbPanel(){ const slots=document.getElementById("ag-slots"); let sec=document.getElementById("ag-brand");
+  if(!agbOn()){ if(sec) sec.remove(); return; }
+  if(!slots) return;
+  if(sec) return agbPanelSync();
+  sec=document.createElement("section"); sec.className="ag-card panel"; sec.id="ag-brand"; sec.setAttribute("aria-labelledby","agb-h");
+  sec.innerHTML=`<h3 id="agb-h">Marca própria</h3>
+<p class="agb-p">Os relatórios em PDF e Excel, o resumo enviado por e-mail ou WhatsApp e o link partilhado passam a identificar a sua agência, com o logótipo, os contactos e a cor da marca. Os dados ficam guardados apenas neste dispositivo.</p>
+<div id="agb-ask-slot"></div>
+<div class="agb-grid">${AGB_FIELDS.map(([k,l,t,ph,mx])=>`<div class="agb-f${k==="addr"?" wide":""}"><label for="agb-${k}">${l}${k==="ami"?" <small>(opcional)</small>":""}</label><input id="agb-${k}" data-agb="${k}" type="${t}" maxlength="${mx}" placeholder="${esc(ph)}" autocomplete="off"${k==="email"?' inputmode="email"':""}></div>`).join("")}
+  <div class="agb-f"><span class="agb-lab" id="agb-color-l">Cor principal</span><div class="agb-row"><input id="agb-color" type="color" aria-labelledby="agb-color-l"><span class="agb-hex" id="agb-hex"></span></div></div>
+  <div class="agb-f"><span class="agb-lab">Logótipo <small style="font-weight:400;color:var(--muted);font-size:14px">PNG, JPG ou SVG até 1 MB</small></span>
+    <div class="agb-logo"><div class="agb-thumb" id="agb-thumb"></div><input class="agb-file" id="agb-file" type="file" accept="image/png,image/jpeg,image/svg+xml,.svg">
+      <label for="agb-file" class="btn-ghost sm agb-btn" role="button" tabindex="0" id="agb-up">Carregar</label><button type="button" class="btn-ghost sm agb-btn" id="agb-rm">Remover</button></div></div>
+</div>
+<p class="agb-msg" id="agb-msg" role="status"></p>
+<div class="agb-colors"><button type="button" class="btn-primary agb-btn" id="agb-apply">Aplicar a cor da agência à app</button><button type="button" class="btn-ghost agb-btn" id="agb-reset">Repor cores originais</button></div>
+<p class="agb-prev-h">Pré-visualização do cabeçalho do relatório</p>
+<div class="agb-prev" id="agb-prev" aria-hidden="true"></div>`;
+  slots.appendChild(sec);
+  let t=null;
+  sec.addEventListener("input",e=>{ const k=e.target.dataset.agb; if(k){ AGB[k]=e.target.value.slice(0,120); }
+    else if(e.target.id==="agb-color"){ AGB.color=e.target.value; }
+    else return;
+    agbPreview(); $("agb-hex").textContent=AGB.color.toUpperCase(); clearTimeout(t); t=setTimeout(()=>{ agbSave(); agbRefresh(false); },250); });
+  $("agb-up").addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); $("agb-file").click(); } });
+  $("agb-file").addEventListener("change",e=>{ const f=e.target.files&&e.target.files[0]; e.target.value=""; if(f) agbUpload(f); });
+  $("agb-rm").addEventListener("click",()=>{ AGB.logo=""; AGB.lw=AGB.lh=0; agbSave(); agbMsg("Logótipo removido."); agbRefresh(); });
+  $("agb-apply").addEventListener("click",()=>{ if(!(AGB.name||"").trim()){ agbMsg("Indique primeiro o nome da agência.",true); $("agb-name").focus(); return; } AGB.applied=true; agbSave(); agbRefresh(); agbMsg("A cor da agência foi aplicada à app."); });
+  $("agb-reset").addEventListener("click",()=>{ AGB.applied=false; agbSave(); agbRefresh(); agbMsg("Foram repostas as cores originais do QuantoFica."); });
+  agbPanelSync(); }
+function agbMsg(t,warn){ const m=$("agb-msg"); if(!m) return; m.textContent=t; m.classList.toggle("warn",!!warn); }
+function agbPanelSync(){ const sec=document.getElementById("ag-brand"); if(!sec) return;
+  AGB_FIELDS.forEach(([k])=>{ const el=$("agb-"+k); if(el&&document.activeElement!==el) el.value=AGB[k]||""; });
+  const c=$("agb-color"); if(c&&document.activeElement!==c) c.value=AGB.color; $("agb-hex").textContent=AGB.color.toUpperCase();
+  $("agb-thumb").innerHTML=AGB.logo?`<img src="${AGB.logo}" alt="Logótipo da agência">`:"<span>Sem logótipo</span>";
+  $("agb-rm").hidden=!AGB.logo; $("agb-apply").hidden=!!AGB.applied; $("agb-reset").hidden=!AGB.applied;
+  agbPreview(); agbAskRender(); }
+function agbPreview(){ const p=$("agb-prev"); if(!p) return; const c=agbRgbToHex(agbPalette(AGB.color).L.accent);
+  const name=(AGB.name||"").trim()||"Nome da agência", ct=agbContacts(AGB);
+  p.innerHTML=`<div class="agb-prev-top" style="background:${c}"></div><div class="agb-prev-b">${AGB.logo?`<img src="${AGB.logo}" alt="">`:""}<div class="agb-prev-t"><div class="agb-prev-n" style="color:${c}">${esc(name)}</div><div class="agb-prev-c">${esc(ct||"Contactos da agência")}</div></div></div>
+<div class="agb-prev-s" style="background:${c}">QuantoFica · Simulador fiscal imobiliário PT·BR · ${esc(OPN[state.mode]||"")}</div><div class="agb-prev-f">${esc((AGB.name||"").trim()?agbFooterLine():"Simulação preparada por …")}</div>`; }
+// Pergunta depois de carregar o logótipo
+function agbAskRender(){ const slot=$("agb-ask-slot"); if(!slot) return; if(!agbAskColor){ slot.innerHTML=""; return; }
+  const {L}=agbPalette(agbAskColor), a=agbRgbToHex(L.accent), s=agbRgbToHex(L.soft), b1=agbRgbToHex(L.bar1), b2=agbRgbToHex(L.bar2);
+  slot.innerHTML=`<div class="agb-ask" role="group" aria-labelledby="agb-q" style="--agb-ask:${a}">
+<p class="agb-q" id="agb-q">Quer aplicar as cores do logótipo à app?</p>
+<p>Encontrámos esta cor no logótipo. Se aplicar, os botões, os destaques e a barra de separadores passam a usar a cor da agência, ajustada para manter a leitura confortável no modo claro e no escuro. Pode repor as cores originais a qualquer momento.</p>
+<div class="agb-demo"><span class="agb-sw" style="background:${agbAskColor}" title="${agbAskColor.toUpperCase()}"></span><span class="agb-chip" style="background:${a};color:#fff">Botão</span><span class="agb-chip" style="background:${s};color:${a}">Destaque</span><span class="agb-bar" style="background:linear-gradient(180deg,${b1},${b2})">Barra de separadores</span></div>
+<div class="agb-acts"><button type="button" class="btn-primary" id="agb-yes" style="background:${a};color:#fff">Aplicar</button><button type="button" class="btn-ghost" id="agb-no">Manter as cores do QuantoFica</button></div></div>`;
+  $("agb-yes").onclick=()=>{ AGB.color=agbAskColor; AGB.applied=!!(AGB.name||"").trim(); agbAskColor=""; agbSave(); agbRefresh();
+    agbMsg(AGB.applied?"As cores do logótipo foram aplicadas à app e aos relatórios.":"A cor do logótipo será usada nos relatórios. Indique o nome da agência para a aplicar também à app.",!AGB.applied); if(!AGB.applied) $("agb-name").focus(); };
+  $("agb-no").onclick=()=>{ AGB.color=agbAskColor; agbAskColor=""; AGB.applied=false; agbSave(); agbRefresh(); agbMsg("Mantêm-se as cores do QuantoFica na app. A cor do logótipo será usada apenas nos relatórios."); }; }
+// Carregar logótipo: valida, reduz para no máx. 600 px de largura, guarda como data URL
+function agbUpload(f){ const okType=/^image\/(png|jpeg|svg\+xml)$/.test(f.type)||/\.(png|jpe?g|svg)$/i.test(f.name);
+  if(!okType){ agbMsg("Formato não suportado. Use um ficheiro PNG, JPG ou SVG.",true); return; }
+  if(f.size>1024*1024){ agbMsg("O ficheiro tem mais de 1 MB. Reduza o logótipo e tente novamente.",true); return; }
+  const isSvg=f.type==="image/svg+xml"||/\.svg$/i.test(f.name), isJpg=/jpe?g/.test(f.type)||/\.jpe?g$/i.test(f.name);
+  const rd=new FileReader();
+  rd.onerror=()=>agbMsg("Não foi possível ler o ficheiro.",true);
+  rd.onload=()=>{ const img=new Image();
+    img.onerror=()=>agbMsg("Não foi possível abrir a imagem. Experimente outro ficheiro.",true);
+    img.onload=()=>{ let w=img.naturalWidth||0, h=img.naturalHeight||0; if(!w||!h){ w=600; h=300; }
+      const sc=isSvg?600/w:Math.min(1,600/w), cw=Math.max(1,Math.round(w*sc)), ch=Math.max(1,Math.round(h*sc));
+      const cv=document.createElement("canvas"); cv.width=cw; cv.height=ch; const x=cv.getContext("2d");
+      if(isJpg){ x.fillStyle="#fff"; x.fillRect(0,0,cw,ch); } x.drawImage(img,0,0,cw,ch);
+      let url; try{ url=isJpg?cv.toDataURL("image/jpeg",0.88):cv.toDataURL("image/png"); }catch(e){ agbMsg("Não foi possível processar a imagem.",true); return; }
+      AGB.logo=url; AGB.lw=cw; AGB.lh=ch;
+      const ok=agbSave();
+      const dom=agbDominant(img);
+      agbMsg(ok?"Logótipo carregado.":"O logótipo não cabe no armazenamento deste navegador: fica ativo nesta sessão, mas terá de o carregar de novo da próxima vez. Experimente uma imagem mais pequena.",!ok);
+      if(dom){ agbAskColor=dom; } else { agbAskColor=""; agbMsg((ok?"Logótipo carregado. ":"")+"Não encontrámos uma cor dominante no logótipo; pode escolher a cor principal manualmente.",!ok); }
+      agbRefresh();
+      const q=$("agb-ask-slot"); if(agbAskColor&&q){ q.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(()=>{ const y=$("agb-yes"); y&&y.focus({preventScroll:true}); },50); } };
+    img.src=rd.result; };
+  rd.readAsDataURL(f); }
+function agbRefresh(sync){ agbApplyColors(); agbHeader(); if(sync!==false) agbPanel(); }
+
+// ---- PDF: envolve buildPdf e personaliza o documento criado (sem alterar o código original) ----
+function agbPdfColors(){ const {L}=agbPalette(AGB.color); return {B:L.accent, S:agbMix(L.accent,[255,255,255],0.16).map(Math.round)}; }
+{ const _bp=buildPdf; buildPdf=async function(){
+  if(!agbHas()) return _bp.apply(this,arguments);
+  await loadLibs("pdf"); const J=window.jspdf, Orig=J&&J.jsPDF; if(!Orig) return _bp.apply(this,arguments);
+  const {B,S}=agbPdfColors(), eq=(a,b)=>Array.isArray(a)&&a.length===3&&a[0]===b[0]&&a[1]===b[1]&&a[2]===b[2];
+  const BLUE=[22,74,143], SOFT=[218,229,244];
+  const map=o=>{ if(Array.isArray(o)){ if(eq(o,BLUE)) return B.slice(); if(eq(o,SOFT)) return S.slice(); return o.map(map); }
+    if(o&&typeof o==="object"&&Object.getPrototypeOf(o)===Object.prototype){ const r={}; Object.keys(o).forEach(k=>r[k]=map(o[k])); return r; } return o; };
+  const patch=doc=>{ const PW=doc.internal.pageSize.getWidth(), PH=doc.internal.pageSize.getHeight();
+    ["setTextColor","setFillColor","setDrawColor"].forEach(fn=>{ const o=doc[fn]; doc[fn]=function(...a){ if(a.length>=3&&a[0]===22&&a[1]===74&&a[2]===143) a=[...B,...a.slice(3)]; return o.apply(this,a); }; });
+    const at=doc.autoTable; if(typeof at==="function") doc.autoTable=function(opt,...rest){ const o=map(opt); if(o&&typeof o==="object"){ const m=o.margin, n=typeof m==="number"?{top:m,right:m,bottom:m,left:m}:{...(m||{})}; n.bottom=Math.max(+n.bottom||0,50); o.margin=n; } return at.call(this,o,...rest); };
+    const tx=doc.text; let headDone=false;
+    doc.text=function(t,x,y,...rest){
+      if(!headDone&&t==="QuantoFica"&&y===50){ headDone=true; const M=x;
+        this.setFillColor(...B); this.rect(0,0,PW,6,"F");
+        let x0=M; if(AGB.logo&&AGB.lw&&AGB.lh){ const r=Math.min(140/AGB.lw,38/AGB.lh), w=AGB.lw*r, h=AGB.lh*r;
+          try{ this.addImage(AGB.logo,/^data:image\/jpe?g/.test(AGB.logo)?"JPEG":"PNG",M,16+(38-h)/2,w,h,"agb-logo","FAST"); x0=M+w+12; }catch(e){} }
+        this.setFont("helvetica","bold"); this.setFontSize(15); this.setTextColor(...B); tx.call(this,pdfTxt(AGB.name),x0,30,{maxWidth:PW-M-x0});
+        this.setFont("helvetica","normal"); this.setFontSize(8.5); this.setTextColor(70,80,95);
+        const l1=[AGB.cons&&("Consultor: "+AGB.cons),AGB.tel&&("Tel. "+AGB.tel),AGB.email].filter(Boolean).join(" · "), l2=[AGB.site,AGB.addr,AGB.ami&&("AMI n.º "+AGB.ami)].filter(Boolean).join(" · ");
+        if(l1) tx.call(this,this.splitTextToSize(pdfTxt(l1),PW-M-x0)[0],x0,41); if(l2) tx.call(this,this.splitTextToSize(pdfTxt(l2),PW-M-x0)[0],x0,l1?51:41);
+        this.setDrawColor(...B); this.setLineWidth(0.8); this.line(M,56.5,PW-M,56.5); this.setLineWidth(0.2);
+        this.setFont("helvetica","normal"); this.setFontSize(10.5); this.setTextColor(40); return this; }
+      if(typeof t==="string"&&/^Simulador fiscal imobili/.test(t)&&y===68) t="QuantoFica · "+t;
+      return tx.call(this,t,x,y,...rest); };
+    const out=doc.output; let footDone=false;
+    doc.output=function(...a){ if(!footDone){ footDone=true; const n=this.getNumberOfPages(), line=pdfTxt(agbFooterLine());
+        for(let i=1;i<=n;i++){ this.setPage(i); this.setFont("helvetica","bold"); this.setFontSize(8); this.setTextColor(...B); tx.call(this,this.splitTextToSize(line,PW-80)[0],40,PH-32); } }
+      return out.apply(this,a); };
+    return doc; };
+  const Wrapped=function(...a){ return patch(new Orig(...a)); }; Wrapped.API=Orig.API; Wrapped.prototype=Orig.prototype;
+  let swapped=false; try{ J.jsPDF=Wrapped; swapped=J.jsPDF===Wrapped; }catch(e){}
+  if(!swapped){ try{ Object.defineProperty(J,"jsPDF",{value:Wrapped,configurable:true,writable:true}); swapped=true; }catch(e){} }
+  try{ return await _bp.apply(this,arguments); } finally{ if(swapped){ try{ J.jsPDF=Orig; }catch(e){ try{ Object.defineProperty(J,"jsPDF",{value:Orig,configurable:true,writable:true}); }catch(e2){} } } } }; }
+
+// ---- Excel: envolve exportXlsx; personaliza o livro antes de o gravar ----
+function agbXlsxBrand(wb){ const {L}=agbPalette(AGB.color), hx=c=>"FF"+agbRgbToHex(c).slice(1).toUpperCase();
+  const B=hx(L.accent), S=hx(agbMix(L.accent,[255,255,255],0.16)), MAP={"FF164A8F":B,"FFDAE5F4":S};
+  const esc2=s=>String(s).replace(/&/g,"&&");
+  wb.creator=AGB.name+" · QuantoFica";
+  wb.eachSheet(ws=>{
+    const tc=ws.properties&&ws.properties.tabColor; if(tc&&MAP[tc.argb]) ws.properties.tabColor={argb:MAP[tc.argb]};
+    ws.eachRow({includeEmpty:true},row=>row.eachCell({includeEmpty:true},c=>{
+      const f=c.fill; if(f&&f.fgColor&&MAP[f.fgColor.argb]) c.fill={...f,fgColor:{argb:MAP[f.fgColor.argb]}};
+      const ft=c.font; if(ft&&ft.color&&MAP[ft.color.argb]) c.font={...ft,color:{argb:MAP[ft.color.argb]}}; }));
+    ws.headerFooter={...(ws.headerFooter||{}),oddFooter:"&8"+esc2(agbFooterLine())+" · página &P de &N"}; });
+  const ws=wb.getWorksheet("Resumo"); if(!ws) return;
+  const a1=ws.getCell(1,1), a2=ws.getCell(2,1), sub=a2.value;
+  const hasLogo=!!(AGB.logo&&AGB.lw&&AGB.lh);
+  if(hasLogo){ try{ ws.unMergeCells(1,1,1,4); ws.unMergeCells(2,1,2,4); ws.mergeCells(1,1,1,3); ws.mergeCells(2,1,2,3); }catch(e){} }
+  a1.value=AGB.name; a1.font={name:"Calibri",size:18,bold:true,color:{argb:B}}; a1.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFFFFFFF"}}; a1.alignment={vertical:"middle",indent:1};
+  a2.value=agbContacts(AGB)||" "; a2.font={name:"Calibri",size:10,color:{argb:"FF46505F"}}; a2.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFFFFFFF"}}; a2.alignment={vertical:"middle",indent:1,wrapText:true}; ws.getRow(2).height=30;
+  if(hasLogo){ [1,2].forEach(r=>{ const c=ws.getCell(r,4); c.fill={type:"pattern",pattern:"solid",fgColor:{argb:"FFFFFFFF"}}; }); }
+  try{ ws.mergeCells(3,1,3,4); }catch(e){}
+  const a3=ws.getCell(3,1); a3.value="QuantoFica · "+String(sub||""); a3.font={name:"Calibri",size:10.5,color:{argb:"FFFFFFFF"}}; a3.fill={type:"pattern",pattern:"solid",fgColor:{argb:B}}; a3.alignment={vertical:"middle",indent:1}; ws.getRow(3).height=20;
+  if(hasLogo){ try{ const m=/^data:image\/(png|jpe?g);base64,(.*)$/.exec(AGB.logo);
+      if(m){ const id=wb.addImage({base64:m[2],extension:m[1]==="png"?"png":"jpeg"}), r=Math.min(140/AGB.lw,60/AGB.lh);
+        ws.addImage(id,{tl:{col:3.05,row:0.12},ext:{width:Math.round(AGB.lw*r),height:Math.round(AGB.lh*r)},editAs:"oneCell"}); } }catch(e){ console.error(e); } } }
+{ const _xx=exportXlsx; exportXlsx=async function(){
+  if(!agbHas()) return _xx.apply(this,arguments);
+  try{ await loadLibs("xlsx"); }catch(e){ return _xx.apply(this,arguments); }
+  const EX=window.ExcelJS, Orig=EX&&EX.Workbook; if(!Orig) return _xx.apply(this,arguments);
+  class BW extends Orig{ constructor(...a){ super(...a); const x=this.xlsx, w=x.writeBuffer.bind(x), wb=this;
+    x.writeBuffer=async function(...b){ try{ agbXlsxBrand(wb); }catch(e){ console.error(e); } return w(...b); }; } }
+  let swapped=false; try{ EX.Workbook=BW; swapped=EX.Workbook===BW; }catch(e){}
+  try{ return await _xx.apply(this,arguments); } finally{ if(swapped){ try{ EX.Workbook=Orig; }catch(e){} } } }; }
+
+// ---- Resumo de texto (copiar, e-mail, WhatsApp): assinatura no fim ----
+{ const _st=summaryText; summaryText=function(){ const t=_st.apply(this,arguments); if(!t||!agbHas()) return t;
+  const sig=["Simulação preparada por "+AGB.name,AGB.cons&&("Consultor: "+AGB.cons),AGB.tel&&("Tel.: "+AGB.tel),AGB.email&&("E-mail: "+AGB.email),AGB.site&&("Site: "+AGB.site),AGB.addr,AGB.ami&&("AMI n.º "+AGB.ami)].filter(Boolean);
+  return t+"\n\n--\n"+sig.join("\n"); }; }
+
+// ---- Link partilhado: marca leve (sem logótipo) no campo "_ag" ----
+function H_linkBrand(){ if(!agbHas()) return {}; const o={n:AGB.name,c:AGB.cons,t:AGB.tel,e:AGB.email,w:AGB.site,a:AGB.addr,l:AGB.ami,k:AGB.color};
+  Object.keys(o).forEach(k=>{ o[k]=String(o[k]||"").trim(); if(!o[k]) delete o[k]; }); return {_ag:o}; }
+function agbValidShared(x){ if(!x||typeof x!=="object"||Array.isArray(x)) return null; const s=(v,n)=>typeof v==="string"?v.replace(/[\u0000-\u001f<>]/g,"").trim().slice(0,n):"";
+  const o={n:s(x.n,80),c:s(x.c,60),t:s(x.t,30),e:s(x.e,80),w:s(x.w,80),a:s(x.a,90),l:s(x.l,20),k:/^#[0-9a-f]{6}$/i.test(x.k)?x.k:""};
+  if(!o.n) return null; if(o.t&&!/^[+\d][\d\s().-]{5,}$/.test(o.t)) o.t=""; if(o.e&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(o.e)) o.e="";
+  if(o.w&&!/^(https?:\/\/)?[a-z0-9.-]+\.[a-z]{2,}(\/[^\s]*)?$/i.test(o.w)) o.w=""; return o; }
+function H_linkIn(raw){ const o=agbValidShared(raw&&raw._ag); const old=document.querySelector(".agb-shared"); if(old) old.remove(); if(!o) return;
+  const b=document.createElement("div"); b.className="agb-shared"; b.setAttribute("role","region"); b.setAttribute("aria-label","Agência que preparou a simulação");
+  if(o.k){ const {L,D}=agbPalette(o.k), dark=matchMedia("(prefers-color-scheme: dark)").matches&&document.documentElement.dataset.theme!=="light"||document.documentElement.dataset.theme==="dark"; b.style.setProperty("--agb-sc",agbRgbToHex((dark?D:L).accent)); }
+  const links=[o.t&&`<a href="tel:${esc(agbDigits(o.t))}">Ligar ${esc(o.t)}</a>`,o.t&&agbWa(o.t)&&`<a href="https://wa.me/${agbWa(o.t)}" target="_blank" rel="noopener">WhatsApp</a>`,
+    o.e&&`<a href="mailto:${esc(o.e)}">${esc(o.e)}</a>`,o.w&&`<a href="${esc(agbSiteHref(o.w))}" target="_blank" rel="noopener">Site</a>`].filter(Boolean).join("");
+  b.innerHTML=`<p>Simulação preparada por <strong>${esc(o.n)}</strong>${o.c?" · "+esc(o.c):""}${o.a?" · "+esc(o.a):""}${o.l?" · AMI n.º "+esc(o.l):""}</p>${links?`<div class="agb-sl">${links}</div>`:""}<button type="button" class="agb-x" aria-label="Fechar faixa da agência">×</button>`;
+  b.querySelector(".agb-x").onclick=()=>b.remove();
+  const h=document.querySelector(".wrap>header"); h?h.after(b):document.body.prepend(b); }
+
+// ---- arranque e mudanças de plano ----
+agbLoad();
+addEventListener("qf-tier",()=>{ agbAskColor=agbOn()?agbAskColor:""; agbRefresh(); });
+agbRefresh();
+// ===== I: carteira de clientes e proposta comparativa =====
+// Só no plano Agência (qfHas("carteira") / qfHas("proposta")). Clientes em localStorage "qf-clients"; cada simulação
+// guardada num cliente tem o mesmo formato das de getSaves() (state, mode, best, bestNet, bestTaxes, unit, rows).
+(function(){
+  const CKEY="qf-clients", ST=["Novo","Em análise","Proposta enviada","Fechado"];
+  const UI={q:"",f:"",open:null,edit:null,saveFor:null,sel:{},prop:null,mv:null};
+  let CL=[], loadedOK=true;
+  const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  const norm=s=>String(s??"").normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  function load(){ try{ const a=JSON.parse(localStorage.getItem(CKEY)||"[]"); return Array.isArray(a)?a.map(cleanClient).filter(Boolean):[]; }catch(e){ loadedOK=false; return []; } }
+  function store(){ try{ localStorage.setItem(CKEY,JSON.stringify(CL)); return true; }
+    catch(e){ msg("Não foi possível guardar neste navegador: o armazenamento está cheio ou bloqueado. Os dados ficam só até fechar a página; exporte uma cópia de segurança.",true); return false; } }
+  let MSG={t:"",bad:false};
+  function msg(t,bad){ MSG={t,bad:!!bad}; const m=document.getElementById("ip-msg"); if(m){ m.textContent=t; m.classList.toggle("bad",!!bad); } }
+  // Validação (usada ao carregar e ao importar)
+  function cleanSim(x){ if(!x||typeof x!=="object"||!x.state||typeof x.state!=="object"||!OPN[x.mode]) return null;
+    const n=v=>isFinite(+v)?Math.round(+v):0;
+    return {id:String(x.id||uid()).slice(0,40),name:String(x.name||"Imóvel").slice(0,80),mode:x.mode,date:String(x.date||"").slice(0,20),state:x.state,
+      best:String(x.best||"").slice(0,160),bestNet:n(x.bestNet),bestTaxes:n(x.bestTaxes),unit:x.unit==="/ano"?"/ano":"",
+      rows:Array.isArray(x.rows)?x.rows.filter(r=>Array.isArray(r)).map(r=>[String(r[0]).slice(0,160),n(r[1])]):[]}; }
+  function cleanClient(c){ if(!c||typeof c!=="object"||typeof c.name!=="string"||!c.name.trim()) return null;
+    return {id:String(c.id||uid()).slice(0,40),name:c.name.trim().slice(0,80),phone:String(c.phone||"").slice(0,40),email:String(c.email||"").slice(0,120),
+      notes:String(c.notes||"").slice(0,2000),status:ST.includes(c.status)?c.status:ST[0],created:String(c.created||"").slice(0,20),
+      sims:Array.isArray(c.sims)?c.sims.map(cleanSim).filter(Boolean):[]}; }
+  const find=id=>CL.find(c=>c.id===id);
+  function snapSim(name){ if(!LAST||!LAST.best1) return null;
+    return {id:uid(),name,mode:state.mode,date:stamp().human,state:clone(state),best:txt(LAST.best1.name),bestNet:Math.round(LAST.best1.net),bestTaxes:Math.round(LAST.best1.taxes),unit:LAST.unit,
+      rows:LAST.order.map(s=>[txt(s.name),Math.round(s.net)])}; }
+  function openSim(x){ state={...clone(DEF),...clone(x.state)}; save(); fill(); calc(); qtGo("resultado"); const m=$("exp-msg"); if(m) m.textContent=`Simulação "${x.name}" aberta.`; }
+  // ---------- Cálculo "em silêncio" (como o módulo A, qaRun) ----------
+  function quiet(st){ if(typeof qaRun!=="function"||typeof QA==="undefined") return null;
+    const n0=QA.noSale; let o=null; QA.cache=null; QA.noSale=false;
+    try{ o=qaRun(T=>{ Object.keys(T).forEach(k=>delete T[k]); Object.assign(T,clone(DEF),clone(st)); }); }catch(e){ o=null; }
+    finally{ QA.cache=null; QA.noSale=n0; }
+    return o; }
+  const priceOf=S=>S.mode==="ced"?(+S.cpcv||0):S.mode==="rent"?(+S.rcompra||0):(+S.compra||0);
+  const valOf=S=>S.mode==="ced"?[ "Valor da cedência",sumL(S.recebidas||[])]:S.mode==="rent"?["Renda mensal",+S.renda||0]:["Preço de venda",+S.venda||0];
+  function propData(c,ids){
+    return ids.map(id=>c.sims.find(s=>s.id===id)).filter(Boolean).map(x=>{ const S={...clone(DEF),...clone(x.state)}, o=quiet(S);
+      let best=null, eff=NaN, roi=NaN, ann=NaN, cap=NaN, unit=x.unit||"", fresh=false;
+      if(o&&o.sc&&o.sc.length){ const sorted=[...o.sc].sort((a,b)=>b.net-a.net); best=sorted[0]; unit=o.unit||""; fresh=true;
+        eff=o.preTax>0?best.taxes/o.preTax:NaN;
+        if(typeof qaMetrics==="function"){ try{ const m=qaMetrics([best],S,S.mode)[0]; roi=m.roi; ann=m.ann; cap=m.cap; }catch(e){} } }
+      const v=valOf(S);
+      return {id:x.id,name:x.name,mode:x.mode,date:x.date,price:priceOf(S),valLbl:v[0],val:v[1],best:best?txt(best.name):x.best,net:best?best.net:x.bestNet,
+        taxes:best?best.taxes:x.bestTaxes,eff,roi,ann,cap,unit,fresh,retido:!!(best&&best.retido)}; }); }
+  const fPct=v=>!isFinite(v)?"—":(v>9.99?"> 999%":v<-9.99?"< −999%":pct(v));
+  const fEur=v=>!isFinite(v)?"—":(v<0?"− ":"")+eur(Math.abs(v));
+  function propRows(P){
+    return [["Operação",P.map(p=>OPN[p.mode]),1],["Preço de compra",P.map(p=>fEur(p.price))],["Venda / cedência / renda",P.map(p=>`${p.valLbl}: ${fEur(p.val)}`),1],
+      ["Melhor cenário",P.map(p=>p.best+(p.retido?" (fica na sociedade)":"")),1],["Impostos totais",P.map(p=>fEur(p.taxes)+(p.unit==="/ano"?" /ano":""))],
+      ["Líquido",P.map(p=>fEur(p.net)+(p.unit==="/ano"?" /ano":"")),0,"net"],["Taxa efetiva",P.map(p=>fPct(p.eff))],
+      ["Capital próprio investido",P.map(p=>fEur(p.cap))],["Retorno (ROI)",P.map(p=>fPct(p.roi))],
+      ...(P.some(p=>p.mode!=="rent")?[["Retorno anualizado",P.map(p=>fPct(p.mode==="rent"?p.roi:p.ann))]]:[])]; }
+  const winIdx=P=>{ let w=-1,m=-Infinity; P.forEach((p,i)=>{ if(isFinite(p.net)&&p.net>m){ m=p.net; w=i; } }); return w; };
+  function brand(){ try{ const b=JSON.parse(localStorage.getItem("qf-brand")||"null"); return b&&typeof b==="object"?b:null; }catch(e){ return null; } }
+  function propText(c,P){ const w=winIdx(P), st=stamp(), b=brand();
+    const L=[`Proposta comparativa — ${c.name} (${st.human})`,""];
+    P.forEach((p,i)=>{ const u=p.unit==="/ano"?" por ano":""; L.push(`${i+1}. ${p.name} — ${OPN[p.mode]}${i===w?" [melhor líquido]":""}`,
+      `   Preço de compra: ${fEur(p.price)} · ${p.valLbl}: ${fEur(p.val)}`,`   Melhor cenário: ${p.best}`,
+      `   Líquido: ${fEur(p.net)}${u} · Impostos: ${fEur(p.taxes)}${u} · Taxa efetiva: ${fPct(p.eff)} · ROI: ${fPct(p.roi)}`,""); });
+    if(w>-1) L.push(`Melhor líquido: ${P[w].name} (${fEur(P[w].net)}${P[w].unit==="/ano"?" por ano":""}).`);
+    if(P.some(p=>p.mode==="rent")&&P.some(p=>p.mode!=="rent")) L.push("Nota: nos imóveis para arrendar, os valores são anuais.");
+    if(b&&(b.name||b.phone||b.email||b.site)) L.push("",[b.name,b.phone,b.email,b.site].filter(Boolean).join(" · "));
+    L.push("","Aviso: "+DISC); return L.join("\n").replace(/[  ]/g," "); }
+  // ---------- PDF ----------
+  const hexRgb=h=>{ const m=/^#?([0-9a-f]{6})$/i.exec(String(h||"").trim()); if(!m) return null; const n=parseInt(m[1],16); return [n>>16&255,n>>8&255,n&255]; };
+  const imgDims=src=>new Promise(r=>{ const i=new Image(); i.onload=()=>r([i.naturalWidth||1,i.naturalHeight||1]); i.onerror=()=>r(null); i.src=src; });
+  async function propPdf(c,P){ await loadLibs("pdf");
+    const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4",orientation:P.length>3?"landscape":"portrait"}), st=stamp(), W=doc.internal.pageSize.getWidth(), M=40;
+    const b=brand(), col=(b&&hexRgb(b.color))||[22,74,143], amber=[154,91,0]; let y=40;
+    if(b){ let x=M;
+      if(typeof b.logo==="string"&&/^data:image\/(png|jpe?g)/i.test(b.logo)){ const d=await imgDims(b.logo); if(d){ const h=44, w=Math.min(140,h*d[0]/d[1]);
+        try{ doc.addImage(b.logo,/png/i.test(b.logo.slice(0,20))?"PNG":"JPEG",M,y,w,w*d[1]/d[0]); x=M+w+14; }catch(e){} } }
+      doc.setFont("helvetica","bold"); doc.setFontSize(15); doc.setTextColor(...col); if(b.name) doc.text(pdfTxt(String(b.name)),x,y+16);
+      doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(70); const ct=[b.phone,b.email,b.site].filter(Boolean).join(" · ");
+      if(ct) doc.text(pdfTxt(ct),x,y+32,{maxWidth:W-x-M});
+      y+=58; doc.setDrawColor(...col); doc.setLineWidth(1.5); doc.line(M,y,W-M,y); y+=24; }
+    else y=50;
+    doc.setFont("helvetica","bold"); doc.setFontSize(17); doc.setTextColor(...col); doc.text(pdfTxt("Proposta comparativa — ").replace(" - "," — ")+pdfTxt(c.name),M,y,{maxWidth:W-2*M});
+    doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(60); doc.text(pdfTxt(`Comparação de ${P.length} imóveis · ${st.human}${b&&b.name?"":" · QuantoFica"}`),M,y+16);
+    y+=30; doc.setDrawColor(...amber); doc.setFillColor(255,243,220); const dl=doc.splitTextToSize(pdfTxt(DISC),W-2*M-20); doc.roundedRect(M,y,W-2*M,dl.length*12+14,4,4,"FD");
+    doc.setTextColor(60,40,0); doc.setFontSize(9.5); doc.text(pdfTxt(DISC),M+10,y+15,{maxWidth:W-2*M-20,align:"justify"}); y+=dl.length*12+28;
+    const w=winIdx(P), rows=propRows(P), green=[226,242,233];
+    doc.autoTable({startY:y,head:[["",...P.map((p,i)=>pdfTxt(p.name+(i===w?" (melhor líquido)":"")))]],
+      body:rows.map(r=>[{content:pdfTxt(r[0]),styles:{fontStyle:"bold",textColor:[70,80,95],halign:"left"}},...r[1].map((v,i)=>({content:pdfTxt(v),styles:{halign:r[2]?"left":"right",
+        ...(i===w?{fillColor:green}:{}),...(r[3]==="net"?{fontStyle:"bold",textColor:i===w?[14,110,60]:[15,23,34]}:{})}}))]),
+      theme:"grid",styles:{fontSize:9.5,cellPadding:6,lineColor:[210,216,224],valign:"top"},headStyles:{fillColor:col,textColor:[255,255,255],halign:"center"},
+      columnStyles:{0:{cellWidth:(W-2*M)*(P.length>3?.18:.24)}},margin:{left:M,right:M}});
+    let yy=doc.lastAutoTable.finalY+18; const notes=[];
+    if(w>-1) notes.push(`Melhor líquido: ${P[w].name} (${fEur(P[w].net)}${P[w].unit==="/ano"?" por ano":""}).`);
+    if(P.some(p=>p.mode==="rent")) notes.push("Nos imóveis para arrendar, impostos e líquido são anuais (um ano de arrendamento); o ROI é o líquido anual sobre o capital próprio.");
+    notes.push("Valores recalculados com as regras fiscais atuais a partir dos dados de cada simulação. Retorno anualizado para compra e venda e cedência, com base no prazo indicado.");
+    if(c.notes) notes.push("Notas do cliente: "+c.notes);
+    doc.autoTable({startY:yy,head:[["Notas"]],body:[...notes.map(n=>[pdfTxt(n)]),[{content:pdfTxt("Aviso: "+DISC),styles:{fontStyle:"bold"}}]],
+      styles:{fontSize:9.5,cellPadding:6,halign:"justify"},headStyles:{fillColor:amber,halign:"left"},margin:{left:M,right:M}});
+    const n=doc.getNumberOfPages(); for(let i=1;i<=n;i++){ doc.setPage(i); doc.setFontSize(8); doc.setTextColor(120);
+      doc.text(pdfTxt(`${b&&b.name?b.name+" · ":""}Simulação indicativa · não substitui o aconselhamento profissional · página ${i} de ${n}`),M,doc.internal.pageSize.getHeight()-20); }
+    const slug=norm(c.name).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,30)||"cliente";
+    return {doc,blob:doc.output("blob"),filename:`proposta-${slug}-${st.file}.pdf`}; }
+  // ---------- Desenho ----------
+  const stIdx=s=>Math.max(0,ST.indexOf(s));
+  function match(c){ if(UI.f&&c.status!==UI.f) return false; const q=norm(UI.q).trim(); if(!q) return true;
+    const qd=q.replace(/\D/g,""), hay=norm([c.name,c.email,...c.sims.map(s=>s.name)].join(" "));
+    return q.split(/\s+/).every(t=>hay.includes(t))||(qd.length>=3&&c.phone.replace(/\D/g,"").includes(qd)); }
+  function formHTML(c){ const v=c||{name:"",phone:"",email:"",notes:"",status:ST[0]};
+    return `<form class="ip-form" id="ip-form" autocomplete="off" data-id="${c?esc(c.id):""}">
+      <label class="ip-w">Nome<input name="name" required maxlength="80" value="${esc(v.name)}" placeholder="Nome do cliente"></label>
+      <label>Telefone<input name="phone" type="tel" maxlength="40" value="${esc(v.phone)}" placeholder="912 345 678"></label>
+      <label>E-mail<input name="email" type="email" maxlength="120" value="${esc(v.email)}" placeholder="nome@exemplo.pt"></label>
+      <label class="ip-w">Estado<select name="status">${ST.map(s=>`<option ${s===v.status?"selected":""}>${s}</option>`).join("")}</select></label>
+      <label class="ip-w">Notas<textarea name="notes" maxlength="2000" placeholder="Preferências, zona, orçamento…">${esc(v.notes)}</textarea></label>
+      <div class="ip-act"><button type="submit" class="btn-primary">${c?"Guardar alterações":"Criar cliente"}</button><button type="button" class="btn-ghost" data-ip="cancel">Cancelar</button></div></form>`; }
+  function simHTML(c,x){ const on=(UI.sel[c.id]||[]).includes(x.id);
+    return `<div class="ip-sim"><label class="ip-ck"><input type="checkbox" data-ipsel="${esc(x.id)}" data-c="${esc(c.id)}" ${on?"checked":""} aria-label="Incluir ${esc(x.name)} na proposta"></label>
+      <div class="ip-t"><b>${esc(x.name)}</b><span>${OPN[x.mode]} · ${esc(x.date)}</span><span>Melhor: ${esc(x.best)} · <span class="ip-v">${eur(x.bestNet)}${x.unit||""}</span></span></div>
+      <div class="ip-row"><button type="button" class="btn-ghost sm" data-ip="open-sim" data-c="${esc(c.id)}" data-s="${esc(x.id)}">Abrir</button>
+      <button type="button" class="btn-ghost sm danger-t" data-ip="del-sim" data-c="${esc(c.id)}" data-s="${esc(x.id)}">Apagar</button></div></div>`; }
+  function clientHTML(c){ const open=UI.open===c.id, n=c.sims.length, sel=(UI.sel[c.id]||[]).filter(id=>c.sims.some(s=>s.id===id)).length;
+    const meta=[c.phone,c.email].filter(Boolean).join(" · ")||"Sem contactos", body=!open?"":(UI.edit===c.id?`<div class="ip-body">${formHTML(c)}</div>`:`<div class="ip-body">
+      <div class="ip-info">${c.phone?`<a href="tel:${esc(c.phone.replace(/[^\d+]/g,""))}">${esc(c.phone)}</a>`:""}${c.email?`<a href="mailto:${esc(c.email)}">${esc(c.email)}</a>`:""}${c.created?`<span class="ip-c">Cliente desde ${esc(c.created)}</span>`:""}</div>
+      ${c.notes?`<p class="ip-notes">${esc(c.notes)}</p>`:""}
+      <div class="ip-row"><button type="button" class="btn-ghost sm" data-ip="edit" data-c="${esc(c.id)}">Editar</button><button type="button" class="btn-ghost sm danger-t" data-ip="del" data-c="${esc(c.id)}">Apagar cliente</button></div>
+      <div><h4 style="margin:0 0 8px;font:700 15px var(--body)">Imóveis e simulações (${n})</h4>
+      <div class="ip-sims">${n?c.sims.map(x=>simHTML(c,x)).join(""):'<p class="ip-empty">Ainda sem simulações. Preencha os dados no separador Dados e guarde aqui a simulação atual.</p>'}</div></div>
+      ${UI.saveFor===c.id?`<form class="ip-savein" id="ip-savein" data-c="${esc(c.id)}" autocomplete="off"><input name="nm" maxlength="80" required placeholder="Nome do imóvel ou morada" aria-label="Nome do imóvel ou morada"><button type="submit" class="btn-primary">Guardar</button><button type="button" class="btn-ghost" data-ip="cancel-save">Cancelar</button></form>`
+        :`<div class="ip-row"><button type="button" class="btn-primary" data-ip="save-here" data-c="${esc(c.id)}">Guardar simulação atual neste cliente</button>
+        ${qfHas("proposta")&&n>1?`<button type="button" class="btn-ghost" data-ip="prop" data-c="${esc(c.id)}" ${sel<2||sel>4?"disabled":""}>Proposta comparativa (${sel})</button>`:""}</div>
+        ${qfHas("proposta")&&n>1?`<p class="ip-empty ip-selhint">Marque 2 a 4 imóveis para gerar a proposta comparativa.${sel>4?" Tem mais de 4 marcados.":""}</p>`:""}`}
+    </div>`);
+    return `<div class="ip-cl" data-cl="${esc(c.id)}"><button type="button" class="ip-sum" data-ip="toggle" data-c="${esc(c.id)}" aria-expanded="${open}">
+      <b>${esc(c.name)}</b><span class="ip-st" data-s="${stIdx(c.status)}">${esc(c.status)}</span><span class="ip-meta">${esc(meta)} · ${n} imóve${n===1?"l":"is"}</span></button>${body}</div>`; }
+  function render(){ const slots=$("ag-slots"); if(!slots) return; let sec=$("ag-clients"), ps=$("ag-proposal");
+    if(!qfHas("carteira")){ if(sec) sec.remove(); if(ps) ps.remove(); return; }
+    if(!sec){ sec=document.createElement("section"); sec.className="ag-card"; sec.id="ag-clients"; sec.setAttribute("aria-label","Carteira de clientes"); slots.appendChild(sec); }
+    const list=CL.filter(match);
+    sec.innerHTML=`<div class="ip-h"><h3>Carteira de clientes</h3><span class="ip-c">${CL.length} cliente${CL.length===1?"":"s"}</span></div>
+      <div class="ip-bar"><button type="button" class="btn-primary" data-ip="new">+ Novo cliente</button><button type="button" class="btn-ghost" data-ip="export" ${CL.length?"":"disabled"}>Exportar cópia (JSON)</button>
+        <button type="button" class="btn-ghost" data-ip="import">Importar cópia</button><input type="file" id="ip-file" accept="application/json,.json" hidden></div>
+      ${UI.edit==="new"?formHTML(null):""}
+      ${CL.length?`<div class="ip-find"><input type="search" id="ip-q" value="${esc(UI.q)}" placeholder="Pesquisar nome, telefone, e-mail ou imóvel" aria-label="Pesquisar clientes">
+        <select id="ip-f" aria-label="Filtrar por estado"><option value="">Todos os estados</option>${ST.map(s=>`<option ${s===UI.f?"selected":""}>${s}</option>`).join("")}</select></div>`:""}
+      <div class="ip-list">${CL.length?(list.length?list.map(clientHTML).join(""):'<p class="ip-empty">Nenhum cliente corresponde à pesquisa.</p>')
+        :'<p class="ip-empty">Ainda não tem clientes. Crie o primeiro e guarde nele as simulações dos imóveis que lhe interessam.</p>'}</div>
+      <p class="ip-msg${MSG.bad?" bad":""}" id="ip-msg" role="status">${esc(MSG.t)}</p>`;
+    if(!loadedOK&&!MSG.t) msg("Não foi possível ler a carteira guardada neste navegador.",true);
+    renderProp(); }
+  function propTable(P,w){ const rows=propRows(P);
+    return `<div class="ip-wide"><table class="ip-pt"><thead><tr><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Indicador</span></th>${P.map((p,i)=>`<th scope="col" class="${i===w?"ip-win":""}">${esc(p.name)}${i===w?"<br><small>Melhor líquido</small>":""}</th>`).join("")}</tr></thead>
+      <tbody>${rows.map(r=>`<tr><th scope="row">${r[0]}</th>${r[1].map((v,i)=>`<td class="${r[2]?"ip-txt":""} ${i===w?"ip-win":""}">${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>
+      <div class="ip-cards">${P.map((p,i)=>`<div class="ip-card ${i===w?"ip-win":""}">${i===w?'<span class="ip-badge">Melhor líquido</span>':""}<h4>${esc(p.name)}</h4><dl>${rows.map(r=>`<dt>${r[0]}</dt><dd${r[2]?' style="font-family:var(--body);font-weight:500;text-align:right"':""}>${esc(r[1][i])}</dd>`).join("")}</dl></div>`).join("")}</div>`; }
+  function renderProp(){ const slots=$("ag-slots"); let ps=$("ag-proposal"); const pr=UI.prop, c=pr&&find(pr.c);
+    if(!qfHas("proposta")||!c){ if(ps) ps.remove(); return; }
+    const P=pr.data, w=winIdx(P);
+    if(!ps){ ps=document.createElement("section"); ps.className="ag-card"; ps.id="ag-proposal"; ps.setAttribute("aria-label","Proposta comparativa"); const cs=$("ag-clients"); cs?cs.after(ps):slots.appendChild(ps); }
+    ps.innerHTML=`<div class="ip-h"><h3>Proposta comparativa — ${esc(c.name)}</h3><span class="ip-c">${esc(pr.date)}</span></div>
+      ${propTable(P,w)}
+      ${w>-1?`<p class="ip-note">Melhor líquido: <b>${esc(P[w].name)}</b> (${fEur(P[w].net)}${P[w].unit==="/ano"?" por ano":""}).${P.some(p=>p.mode==="rent")&&P.some(p=>p.mode!=="rent")?" Atenção: nos imóveis para arrendar, os valores são anuais.":""}</p>`:""}
+      <p class="ip-note">Valores recalculados agora a partir dos dados de cada simulação. ${esc(DISC)}</p>
+      <div class="ip-row"><button type="button" class="btn-primary" data-ip="p-pdf">Exportar PDF</button><button type="button" class="btn-ghost" data-ip="p-mail">Enviar por e-mail</button>
+        <button type="button" class="btn-ghost" data-ip="p-wa">Enviar por WhatsApp</button><button type="button" class="btn-ghost" data-ip="p-close">Fechar</button></div>
+      <p class="ip-msg" id="ip-pmsg" role="status"></p>`; }
+  // ---------- Importar / exportar ----------
+  async function exportJSON(){ const data={app:"QuantoFica",kind:"carteira",version:1,exported:new Date().toISOString(),clients:CL};
+    msg(await saveFile(`quantofica-carteira-${stamp().file}.json`,new Blob([JSON.stringify(data,null,1)],{type:"application/json"}))); }
+  function importJSON(text){ let d; try{ d=JSON.parse(text); }catch(e){ msg("O ficheiro não é um JSON válido.",true); return; }
+    const arr=Array.isArray(d)?d:(d&&Array.isArray(d.clients)?d.clients:null);
+    if(!arr){ msg("Este ficheiro não é uma cópia da carteira do QuantoFica.",true); return; }
+    const ok=arr.map(cleanClient).filter(Boolean); if(!ok.length){ msg("O ficheiro não tem clientes válidos.",true); return; }
+    let add=0, upd=0, sims=0; ok.forEach(c=>{ sims+=c.sims.length; const i=CL.findIndex(x=>x.id===c.id); if(i>-1){ CL[i]=c; upd++; } else { CL.push(c); add++; } });
+    const saved=store(); render(); if(saved) msg(`Importação concluída: ${add} cliente${add===1?"":"s"} novo${add===1?"":"s"}, ${upd} atualizado${upd===1?"":"s"}, ${sims} simulaç${sims===1?"ão":"ões"}.${arr.length>ok.length?` ${arr.length-ok.length} registo(s) inválido(s) ignorado(s).`:""}`); }
+  // ---------- Eventos ----------
+  const arm=(b,label)=>{ if(b.classList.contains("armed")) return true; b.classList.add("armed"); const t0=b.textContent; b.textContent=label||"Confirmar";
+    setTimeout(()=>{ if(b.isConnected&&b.classList.contains("armed")){ b.classList.remove("armed"); b.textContent=t0; } },4000); return false; };
+  function onClick(e){ const b=e.target.closest("[data-ip]"); if(!b) return; const a=b.dataset.ip, c=b.dataset.c&&find(b.dataset.c);
+    if(a==="new"){ UI.edit="new"; render(); const f=$("ip-form"); f&&f.name.focus(); return; }
+    if(a==="cancel"){ UI.edit=null; render(); return; }
+    if(a==="export") return exportJSON();
+    if(a==="import"){ const f=$("ip-file"); f&&f.click(); return; }
+    if(a==="toggle"&&c){ UI.open=UI.open===c.id?null:c.id; UI.edit=null; UI.saveFor=null; render(); return; }
+    if(a==="edit"&&c){ UI.edit=c.id; render(); return; }
+    if(a==="del"&&c){ if(!arm(b,"Tocar de novo para apagar")) return; CL=CL.filter(x=>x!==c); delete UI.sel[c.id]; if(UI.prop&&UI.prop.c===c.id) UI.prop=null; if(store()) msg(`Cliente "${c.name}" apagado.`); render(); return; }
+    if(a==="save-here"&&c){ if(!LAST||!LAST.best1){ msg("Preencha primeiro uma simulação no separador Dados.",true); return; } UI.saveFor=c.id; render(); const f=$("ip-savein"); f&&f.nm.focus(); return; }
+    if(a==="cancel-save"){ UI.saveFor=null; render(); return; }
+    const x=c&&b.dataset.s&&c.sims.find(s=>s.id===b.dataset.s);
+    if(a==="open-sim"&&x){ openSim(x); return; }
+    if(a==="del-sim"&&x){ if(!arm(b)) return; c.sims=c.sims.filter(s=>s!==x); UI.sel[c.id]=(UI.sel[c.id]||[]).filter(id=>id!==x.id); if(store()) msg(`Simulação "${x.name}" apagada.`); render(); return; }
+    if(a==="prop"&&c){ const ids=(UI.sel[c.id]||[]).filter(id=>c.sims.some(s=>s.id===id)); if(ids.length<2||ids.length>4) return;
+      UI.prop={c:c.id,ids,data:propData(c,ids),date:stamp().human}; renderProp(); const ps=$("ag-proposal"); ps&&ps.scrollIntoView({behavior:"smooth",block:"start"}); return; }
+    const pc=UI.prop&&find(UI.prop.c), pm=$("ip-pmsg");
+    if(a==="p-close"){ UI.prop=null; renderProp(); return; }
+    if(a==="p-pdf"&&pc){ pm.textContent="A preparar o PDF…"; propPdf(pc,UI.prop.data).then(async r=>{ pm.textContent=await saveFile(r.filename,r.blob); }).catch(()=>{ pm.textContent="Não foi possível criar o PDF. Verifique a ligação à internet."; }); return; }
+    if(a==="p-mail"&&pc){ const t=propText(pc,UI.prop.data); openLinkI("mailto:"+encodeURIComponent(pc.email||"")+"?subject="+encodeURIComponent("Proposta comparativa — "+pc.name)+"&body="+encodeURIComponent(t+"\n\n(Exporte o PDF para o anexar.)"));
+      pm.textContent="A abrir o e-mail… Exporte o PDF para o anexar."; return; }
+    if(a==="p-wa"&&pc){ let ph=pc.phone.replace(/\D/g,"").replace(/^00/,""); if(ph.length===9) ph="351"+ph; openLinkI("https://wa.me/"+(ph.length>=8?ph:"")+"?text="+encodeURIComponent(propText(pc,UI.prop.data))); pm.textContent="A abrir o WhatsApp…"; return; } }
+  function openLinkI(h){ if(typeof openLink==="function") return openLink(h); location.href=h; }
+  function onSubmit(e){ const f=e.target;
+    if(f.id==="ip-form"){ e.preventDefault(); const g=k=>f.elements[k].value.trim(), name=g("name"); if(!name){ f.name.focus(); return; }
+      const id=f.dataset.id, c=id&&find(id), v={name,phone:g("phone"),email:g("email"),notes:f.elements.notes.value.trim(),status:ST.includes(g("status"))?g("status"):ST[0]};
+      if(c) Object.assign(c,v); else { const n={id:uid(),...v,created:stamp().human.slice(0,10),sims:[]}; CL.unshift(n); UI.open=n.id; }
+      UI.edit=null; if(store()) msg(c?`Cliente "${name}" atualizado.`:`Cliente "${name}" criado.`); render(); return; }
+    if(f.id==="ip-savein"){ e.preventDefault(); const c=find(f.dataset.c), nm=f.nm.value.trim(); if(!c||!nm) return; const x=snapSim(nm); if(!x){ msg("Não há resultado para guardar.",true); return; }
+      c.sims.unshift(x); UI.saveFor=null; if(store()) msg(`Simulação "${nm}" guardada em ${c.name}.`); render(); } }
+  function onInput(e){ const t=e.target;
+    if(t.id==="ip-q"){ UI.q=t.value; const pos=t.selectionStart; render(); const q=$("ip-q"); if(q){ q.focus(); try{ q.setSelectionRange(pos,pos); }catch(_){} } return; }
+    if(t.id==="ip-f"){ UI.f=t.value; render(); return; }
+    if(t.dataset&&t.dataset.ipsel){ const L=UI.sel[t.dataset.c]||(UI.sel[t.dataset.c]=[]); const i=L.indexOf(t.dataset.ipsel); if(t.checked&&i<0) L.push(t.dataset.ipsel); if(!t.checked&&i>-1) L.splice(i,1);
+      const card=t.closest(".ip-cl"), b=card&&card.querySelector('[data-ip="prop"]'), h=card&&card.querySelector(".ip-selhint"), n=L.length;
+      if(b){ b.disabled=n<2||n>4; b.textContent=`Proposta comparativa (${n})`; } if(h) h.textContent="Marque 2 a 4 imóveis para gerar a proposta comparativa."+(n>4?" Tem mais de 4 marcados.":""); return; }
+  }
+  function onFile(t){ if(!t.files||!t.files[0]) return; const fl=t.files[0]; if(fl.size>15e6){ msg("Ficheiro demasiado grande.",true); return; } fl.text().then(importJSON).catch(()=>msg("Não foi possível ler o ficheiro.",true)); }
+  // ---------- Bónus: "Mover para cliente…" no separador Guardadas ----------
+  function decorateSaves(){ const box=$("saves-list"); if(!box) return; box.querySelectorAll(".ip-mvb,.ip-mv").forEach(n=>n.remove());
+    if(!qfHas("carteira")||!CL.length) return;
+    box.querySelectorAll(".sv").forEach(sv=>{ const o=sv.querySelector("[data-open]"), act=sv.querySelector(".sv-a"); if(!o||!act) return; const id=o.dataset.open;
+      const b=document.createElement("button"); b.type="button"; b.className="btn-ghost sm ip-mvb"; b.dataset.ipmv=id; b.textContent="Mover para cliente…"; act.appendChild(b);
+      if(UI.mv===id){ const d=document.createElement("div"); d.className="ip-mv";
+        d.innerHTML=`<select aria-label="Cliente de destino">${CL.map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("")}</select><button type="button" class="btn-primary" data-ipmvgo="${esc(id)}">Mover</button><button type="button" class="btn-ghost" data-ipmvx="1">Cancelar</button>`;
+        sv.after(d); } }); }
+  function onSavesClick(e){ const b=e.target.closest("[data-ipmv],[data-ipmvgo],[data-ipmvx]"); if(!b) return; e.stopPropagation();
+    if(b.dataset.ipmv){ UI.mv=UI.mv===b.dataset.ipmv?null:b.dataset.ipmv; decorateSaves(); return; }
+    if(b.dataset.ipmvx){ UI.mv=null; decorateSaves(); return; }
+    const id=b.dataset.ipmvgo, sel=b.parentElement.querySelector("select"), c=sel&&find(sel.value), x=getSaves().find(s=>s.id===id); if(!c||!x) return;
+    const sim=cleanSim({...x,id:uid()}); if(!sim) return; c.sims.unshift(sim); UI.mv=null;
+    if(store()){ putSaves(getSaves().filter(s=>s.id!==id)); if(typeof CMP!=="undefined") CMP.delete(id); renderSaves(); render(); const m=$("exp-msg"); if(m) m.textContent=`Simulação "${x.name}" movida para ${c.name}.`; }
+    else { c.sims.shift(); decorateSaves(); } }
+  // ---------- Arranque ----------
+  CL=load();
+  const _rs=renderSaves; renderSaves=function(){ const r=_rs.apply(this,arguments); try{ decorateSaves(); }catch(e){} return r; };
+  const slots=$("ag-slots");
+  if(slots){ slots.addEventListener("click",onClick); slots.addEventListener("submit",onSubmit); slots.addEventListener("input",onInput); slots.addEventListener("change",e=>{ if(e.target.id==="ip-file"){ onFile(e.target); e.target.value=""; } }); }
+  const sv=$("saves"); if(sv) sv.addEventListener("click",onSavesClick,true);
+  addEventListener("qf-tier",()=>{ if(!qfHas("carteira")){ UI.prop=null; UI.mv=null; } render(); try{ decorateSaves(); }catch(e){} });
+  window.qfClients={get:()=>clone(CL),render};
+  render();
+})();
+// ===== J: página de captação de contactos =====
+// Agência: painel #ag-leads gera um link público #lead=<base64url de JSON compacto> (sem servidor).
+// Visitante: quem abre #lead= entra no plano "captacao" só nesta sessão (a licença guardada no dispositivo não é tocada),
+// preenche os dados, deixa o contacto e o resumo segue por WhatsApp ou e-mail para a agência, com um link #s= da simulação.
+(function(){
+  const store=k=>({get(n){ try{ return window[k].getItem(n); }catch(e){ return null; } },
+    set(n,v){ try{ window[k].setItem(n,v); return true; }catch(e){ return false; } },
+    del(n){ try{ window[k].removeItem(n); }catch(e){} }});
+  const LS=store("localStorage"), SS=store("sessionStorage");
+  const root=document.documentElement;
+  // Mesma base de URL que o módulo D usa para os links partilhados
+  const PUB="https://quantofica.github.io/";
+  const inArtifact=()=>!/^https?:$/.test(location.protocol)||!!window.claude;
+  const baseUrl=()=>inArtifact()?PUB:location.href.split("#")[0];
+  const b64e=u8=>{ let s=""; for(let i=0;i<u8.length;i+=0x8000) s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000)); return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); };
+  const b64d=t=>{ t=t.replace(/-/g,"+").replace(/_/g,"/"); while(t.length%4) t+="="; const s=atob(t), u=new Uint8Array(s.length); for(let i=0;i<s.length;i++) u[i]=s.charCodeAt(i); return u; };
+  const clean=s=>String(s??"").replace(/[\u0000-\u001f\u007f\u2028\u2029]/g," ").replace(/\s+/g," ").trim();
+  const MAILRE=/^[^\s@<>"(),;:]{1,64}@[A-Za-z0-9.-]{1,180}\.[A-Za-z]{2,24}$/;
+  const telNorm=s=>{ let t=String(s??"").replace(/[\s().\-]/g,""); if(/^00\d/.test(t)) t="+"+t.slice(2); return t; };
+  const telOk=s=>/^\+\d{8,15}$/.test(s);
+  const colOk=s=>/^#[0-9a-fA-F]{6}$/.test(s);
+  const OPS={flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"};
+  const DEFCOL="#1d4f91";
+  const LIM={n:60,w:16,e:120,m:200};
+  const inkFor=hex=>{ const n=parseInt(hex.slice(1),16), c=[n>>16&255,n>>8&255,n&255].map(v=>{ v/=255; return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4); });
+    return .2126*c[0]+.7152*c[1]+.0722*c[2]>.36?"#0d1520":"#ffffff"; };
+  const nb=s=>String(s).replace(/[  ]/g," ");
+
+  /* ---------- Payload do link ---------- */
+  function encodeLead(a){ const o={v:1,n:a.name}; if(a.wa) o.w=a.wa; if(a.email) o.e=a.email; if(a.msg) o.m=a.msg; if(a.op&&a.op!=="flip") o.o=a.op; if(a.color) o.c=a.color.toLowerCase();
+    return b64e(new TextEncoder().encode(JSON.stringify(o))); }
+  // Só aceita os campos esperados, com tipos e comprimentos certos; o resto é ignorado. Devolve null se o link não servir.
+  function validateLead(o){ if(!o||typeof o!=="object"||Array.isArray(o)||o.v!==1) return null;
+    const str=(x,max)=>typeof x==="string"&&x.length<=max?clean(x):null;
+    const name=str(o.n,LIM.n); if(!name) return null;
+    const a={name,wa:"",email:"",msg:"",op:"flip",color:""};
+    if(o.w!==undefined&&o.w!==""){ if(typeof o.w!=="string"||!telOk(o.w)) return null; a.wa=o.w; }
+    if(o.e!==undefined&&o.e!==""){ const e=str(o.e,LIM.e); if(!e||!MAILRE.test(e)) return null; a.email=e; }
+    if(!a.wa&&!a.email) return null;
+    if(o.m!==undefined){ const m=str(o.m,LIM.m); if(m===null) return null; a.msg=m; }
+    if(typeof o.o==="string"&&OPS[o.o]) a.op=o.o;
+    if(typeof o.c==="string"&&colOk(o.c)) a.color=o.c;
+    return a; }
+  function parseHash(h){ if(!/^#lead=/.test(h||"")) return undefined; const m=/^#lead=([A-Za-z0-9_-]{4,2400})$/.exec(h); if(!m) return null;
+    try{ const a=validateLead(JSON.parse(new TextDecoder("utf-8",{fatal:true}).decode(b64d(m[1])))); return a?{a,token:m[1]}:null; }catch(e){ return null; } }
+  window.qfLeadParse=h=>{ const r=parseHash(h); return r?r.a:r; };
+
+  /* ---------- Link #s= da simulação (formato "j" do módulo D, síncrono para não perder o gesto do utilizador) ---------- */
+  function simLink(){ const o={}; Object.keys(DEF).forEach(k=>{ if(k in state&&JSON.stringify(state[k])!==JSON.stringify(DEF[k])) o[k]=state[k]; });
+    return baseUrl()+"#s=j"+b64e(new TextEncoder().encode(JSON.stringify(o))); }
+
+  /* ---------- Código QR mínimo (modo byte, correção M), sem bibliotecas ---------- */
+  const qrMatrix=(function(){
+    const ECC=[-1,10,16,26,18,24,16,18,22,22,26,30,22,22,24,24,28,28,26,26,26,26,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28,28];
+    const BLK=[-1,1,1,1,2,2,4,4,4,5,5,5,8,9,9,10,10,11,13,14,16,17,17,18,20,21,23,25,26,28,29,31,33,35,37,38,40,43,45,47,49];
+    const rawMods=v=>{ let r=(16*v+128)*v+64; if(v>=2){ const n=Math.floor(v/7)+2; r-=(25*n-10)*n-55; if(v>=7) r-=36; } return r; };
+    const dataCw=v=>Math.floor(rawMods(v)/8)-ECC[v]*BLK[v];
+    const gmul=(x,y)=>{ let z=0; for(let i=7;i>=0;i--){ z=(z<<1)^((z>>>7)*0x11D); z^=((y>>>i)&1)*x; } return z; };
+    function rsDiv(n){ const r=new Array(n).fill(0); r[n-1]=1; let rt=1; for(let i=0;i<n;i++){ for(let j=0;j<n;j++){ r[j]=gmul(r[j],rt); if(j+1<n) r[j]^=r[j+1]; } rt=gmul(rt,2); } return r; }
+    function rsRem(data,div){ const r=div.map(()=>0); data.forEach(b=>{ const f=b^r.shift(); r.push(0); div.forEach((c,i)=>{ r[i]^=gmul(c,f); }); }); return r; }
+    function alignPos(v){ if(v===1) return []; const n=Math.floor(v/7)+2, step=Math.floor((v*8+n*3+5)/(n*4-4))*2, size=v*4+17, r=[6]; for(let p=size-7;r.length<n;p-=step) r.splice(1,0,p); return r; }
+    const MK=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,(x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+    return function(text){ const bytes=[...new TextEncoder().encode(text)];
+      let v=1; for(;v<=40;v++) if(4+(v<=9?8:16)+bytes.length*8<=dataCw(v)*8) break; if(v>40) return null;
+      const cap=dataCw(v)*8, bits=[], put=(val,len)=>{ for(let i=len-1;i>=0;i--) bits.push((val>>>i)&1); };
+      put(4,4); put(bytes.length,v<=9?8:16); bytes.forEach(b=>put(b,8)); put(0,Math.min(4,cap-bits.length)); put(0,(8-bits.length%8)%8);
+      for(let p=0xEC;bits.length<cap;p^=0xEC^0x11) put(p,8);
+      const data=[]; for(let i=0;i<bits.length;i+=8){ let b=0; for(let j=0;j<8;j++) b=(b<<1)|bits[i+j]; data.push(b); }
+      const nb=BLK[v], el=ECC[v], raw=Math.floor(rawMods(v)/8), nShort=nb-raw%nb, shortLen=Math.floor(raw/nb), div=rsDiv(el), blocks=[];
+      for(let i=0,k=0;i<nb;i++){ const dat=data.slice(k,k+shortLen-el+(i<nShort?0:1)); k+=dat.length; const ecc=rsRem(dat,div); if(i<nShort) dat.push(0); blocks.push(dat.concat(ecc)); }
+      const cw=[]; for(let i=0;i<blocks[0].length;i++) blocks.forEach((b,j)=>{ if(i!==shortLen-el||j>=nShort) cw.push(b[i]); });
+      const size=v*4+17, M=[...Array(size)].map(()=>new Array(size).fill(false)), F=[...Array(size)].map(()=>new Array(size).fill(false));
+      const set=(x,y,d)=>{ M[y][x]=d; F[y][x]=true; };
+      for(let i=0;i<size;i++){ set(6,i,i%2===0); set(i,6,i%2===0); }
+      [[3,3],[size-4,3],[3,size-4]].forEach(([cx,cy])=>{ for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++){ const d=Math.max(Math.abs(dx),Math.abs(dy)), x=cx+dx, y=cy+dy; if(x>=0&&x<size&&y>=0&&y<size) set(x,y,d!==2&&d!==4); } });
+      const ap=alignPos(v), na=ap.length; ap.forEach((a,i)=>ap.forEach((b,j)=>{ if((i===0&&j===0)||(i===0&&j===na-1)||(i===na-1&&j===0)) return; for(let dy=-2;dy<=2;dy++) for(let dx=-2;dx<=2;dx++) set(a+dx,b+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1); }));
+      const fmt=mask=>{ const d=mask; let r=d; for(let i=0;i<10;i++) r=(r<<1)^((r>>>9)*0x537); const b=((d<<10)|r)^0x5412, g=i=>((b>>>i)&1)===1; // nível M = 00
+        for(let i=0;i<=5;i++) set(8,i,g(i)); set(8,7,g(6)); set(8,8,g(7)); set(7,8,g(8)); for(let i=9;i<15;i++) set(14-i,8,g(i));
+        for(let i=0;i<8;i++) set(size-1-i,8,g(i)); for(let i=8;i<15;i++) set(8,size-15+i,g(i)); set(8,size-8,true); };
+      fmt(0);
+      if(v>=7){ let r=v; for(let i=0;i<12;i++) r=(r<<1)^((r>>>11)*0x1F25); const b=(v<<12)|r; for(let i=0;i<18;i++){ const d=((b>>>i)&1)===1, a=size-11+i%3, c=Math.floor(i/3); set(a,c,d); set(c,a,d); } }
+      let n=0; for(let right=size-1;right>=1;right-=2){ if(right===6) right=5; for(let vert=0;vert<size;vert++) for(let j=0;j<2;j++){ const x=right-j, up=((right+1)&2)===0, y=up?size-1-vert:vert; if(!F[y][x]&&n<cw.length*8){ M[y][x]=((cw[n>>>3]>>>(7-(n&7)))&1)===1; n++; } } }
+      const mask=k=>{ for(let y=0;y<size;y++) for(let x=0;x<size;x++) if(!F[y][x]&&MK[k](x,y)) M[y][x]=!M[y][x]; };
+      const pen=()=>{ let p=0, dark=0;
+        for(let a=0;a<size;a++){ let rr=1, rc=1; for(let b=1;b<=size;b++){
+          if(b<size&&M[a][b]===M[a][b-1]) rr++; else { if(rr>=5) p+=rr-2; rr=1; }
+          if(b<size&&M[b][a]===M[b-1][a]) rc++; else { if(rc>=5) p+=rc-2; rc=1; } } }
+        for(let y=0;y<size;y++) for(let x=0;x<size;x++){ if(M[y][x]) dark++; if(x<size-1&&y<size-1&&M[y][x]===M[y][x+1]&&M[y][x]===M[y+1][x]&&M[y][x]===M[y+1][x+1]) p+=3; }
+        return p+Math.max(0,Math.ceil(Math.abs(dark*20-size*size*10)/(size*size))-1)*10; };
+      let best=0, bp=Infinity; for(let k=0;k<8;k++){ mask(k); fmt(k); const p=pen(); if(p<bp){ bp=p; best=k; } mask(k); }
+      mask(best); fmt(best); return {size,M}; };
+  })();
+  function qrSVG(text){ const q=qrMatrix(text); if(!q) return ""; const s=q.size, Z=4; let d="";
+    for(let y=0;y<s;y++) for(let x=0;x<s;x++) if(q.M[y][x]) d+=`M${x+Z} ${y+Z}h1v1h-1z`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${s+2*Z} ${s+2*Z}" shape-rendering="crispEdges" role="img" aria-label="Código QR da página de captação"><rect width="100%" height="100%" fill="#ffffff"/><path d="${d}" fill="#000000"/></svg>`; }
+  window.qfQR=qrMatrix;
+
+  function band(html){ let b=document.querySelector(".qf-banner");
+    if(!b){ b=document.createElement("div"); b.className="qf-banner"; b.setAttribute("role","status"); const h=document.querySelector(".wrap>header"); h?h.after(b):document.body.prepend(b); }
+    b.innerHTML=html+'<button type="button" class="qf-x" aria-label="Fechar aviso">×</button>'; b.querySelector(".qf-x").onclick=()=>b.remove(); return b; }
+  function popup(url){ let w=null; try{ w=window.open(url,"_blank","noopener"); }catch(e){} if(!w&&!/^https?:/.test(url)) openLink(url); return w; }
+
+  /* =====================================================================
+     1. Agência: configuração e link público
+     ===================================================================== */
+  const CKEY="qf-lead-cfg";
+  function brand(){ try{ const b=JSON.parse(LS.get("qf-brand")||"null"); return b&&typeof b==="object"&&!Array.isArray(b)?b:{}; }catch(e){ return {}; } }
+  function getCfg(){ try{ const c=JSON.parse(LS.get(CKEY)||"null"); return c&&typeof c==="object"&&!Array.isArray(c)?c:{}; }catch(e){ return {}; } }
+  function defaults(){ const b=brand(), tel=telNorm(b.phone||"");
+    return {name:clean(b.name||QF_LIC.name||"").slice(0,LIM.n), wa:telOk(tel)?tel:"", email:MAILRE.test(clean(b.email||""))?clean(b.email):clean(QF_LIC.email||""),
+      msg:"Simule os impostos da sua operação imobiliária e receba o resultado na hora.", op:"flip", color:colOk(b.color||"")?b.color:DEFCOL}; }
+  let PANEL=null;
+  function panelHTML(){ return `<h3>Página de captação de contactos</h3>
+    <p>Crie um link para partilhar com potenciais clientes. Quem o abrir faz a simulação com a sua marca e, para ver o resultado, deixa o nome e o contacto, que lhe chegam por WhatsApp ou e-mail com a simulação completa.</p>
+    <div class="ld-grid">
+      <label class="ld-fl ld-wide">Nome da agência<input id="ld-c-name" type="text" maxlength="${LIM.n}" autocomplete="organization"></label>
+      <label class="ld-fl">WhatsApp para receber os contactos<input id="ld-c-wa" type="tel" inputmode="tel" maxlength="22" placeholder="+351 912 345 678" autocomplete="tel"><small>Com o indicativo do país.</small></label>
+      <label class="ld-fl">E-mail para receber os contactos<input id="ld-c-email" type="email" maxlength="${LIM.e}" placeholder="contactos@agencia.pt" autocomplete="email"><small>Alternativa ou complemento ao WhatsApp.</small></label>
+      <label class="ld-fl ld-wide">Mensagem de boas-vindas<textarea id="ld-c-msg" maxlength="${LIM.m}" rows="2"></textarea><small>Curta: aparece no topo da página do visitante.</small></label>
+      <label class="ld-fl">Operação inicial<select id="ld-c-op">${Object.keys(OPS).map(k=>`<option value="${k}">${OPS[k]}</option>`).join("")}</select></label>
+      <div class="ld-fl"><label for="ld-c-color">Cor da página</label><span class="ld-col"><input id="ld-c-color" type="color"><code id="ld-c-colv"></code><button type="button" class="btn-ghost" id="ld-c-colr">Usar a cor da marca</button></span></div>
+    </div>
+    <p class="ld-err" id="ld-c-err" role="alert"></p>
+    <div class="ld-out" id="ld-c-out">
+      <label class="ld-fl">Link público<input class="ld-url" id="ld-c-url" type="text" readonly></label>
+      <div class="ld-row">
+        <button type="button" class="btn-primary" id="ld-c-copy">Copiar link</button>
+        <button type="button" class="btn-ghost" id="ld-c-prev">Pré-visualizar</button>
+        <button type="button" class="btn-ghost" id="ld-c-wa-share">Partilhar por WhatsApp</button>
+        <button type="button" class="btn-ghost" id="ld-c-qrb" aria-expanded="false" aria-controls="ld-c-qr">Código QR</button>
+      </div>
+      <p class="exp-msg" id="ld-c-msgout" role="status" aria-live="polite"></p>
+      <div class="ld-qr" id="ld-c-qr" hidden></div>
+    </div>
+    <p class="ld-note"><b>Onde ficam os contactos?</b> Este simulador não tem servidor: cada contacto é enviado pelo próprio visitante, a partir do telemóvel ou computador dele, para o WhatsApp ou o e-mail indicados acima. Por isso não é possível mostrar aqui uma lista de contactos recebidos neste dispositivo — consulte-os no WhatsApp ou na caixa de correio da agência.</p>`; }
+  const F=id=>PANEL&&PANEL.querySelector("#"+id);
+  function readForm(){ const d=defaults(), c=getCfg(), v=k=>c[k]!==undefined?c[k]:d[k];
+    return {name:clean(v("name")).slice(0,LIM.n), wa:telNorm(v("wa")), email:clean(v("email")), msg:clean(v("msg")).slice(0,LIM.m), op:OPS[v("op")]?v("op"):"flip", color:colOk(v("color"))?v("color"):d.color}; }
+  function fillForm(){ if(!PANEL) return; const d=defaults(), c=getCfg(), v=k=>c[k]!==undefined?c[k]:d[k];
+    F("ld-c-name").value=v("name"); F("ld-c-wa").value=v("wa"); F("ld-c-email").value=v("email"); F("ld-c-msg").value=v("msg");
+    F("ld-c-op").value=OPS[v("op")]?v("op"):"flip"; const col=colOk(v("color"))?v("color"):d.color; F("ld-c-color").value=col.toLowerCase(); F("ld-c-colv").textContent=col.toLowerCase();
+    F("ld-c-colr").hidden=!colOk(brand().color||"")||col.toLowerCase()===String(brand().color).toLowerCase(); }
+  let CUR="";
+  function refresh(){ if(!PANEL) return; const a=readForm(), errs=[];
+    const mark=(id,bad)=>F(id).setAttribute("aria-invalid",bad?"true":"false");
+    mark("ld-c-name",!a.name); if(!a.name) errs.push("Indique o nome da agência.");
+    const waBad=!!a.wa&&!telOk(a.wa); mark("ld-c-wa",waBad);
+    if(waBad) errs.push(/^\d/.test(a.wa)?"Indique o WhatsApp com o indicativo do país, por exemplo +351 912 345 678.":"O número de WhatsApp só pode ter algarismos, espaços e o sinal + no início.");
+    const mBad=!!a.email&&!MAILRE.test(a.email); mark("ld-c-email",mBad); if(mBad) errs.push("O e-mail não parece válido.");
+    if(!a.wa&&!a.email) errs.push("Indique pelo menos um WhatsApp ou um e-mail para receber os contactos.");
+    F("ld-c-err").textContent=errs.join(" ");
+    const ok=!errs.length; F("ld-c-out").hidden=!ok;
+    CUR=ok?baseUrl()+"#lead="+encodeLead(a):""; F("ld-c-url").value=CUR;
+    const qr=F("ld-c-qr"); if(!qr.hidden) drawQR(); }
+  function drawQR(){ const qr=F("ld-c-qr"); if(!CUR){ qr.hidden=true; return; } const svg=qrSVG(CUR);
+    qr.innerHTML=svg?svg+'<button type="button" class="btn-ghost" id="ld-c-qrsave">Descarregar o código QR</button>':'<p class="ld-err">O link é demasiado longo para um código QR. Encurte a mensagem de boas-vindas.</p>';
+    const s=qr.querySelector("#ld-c-qrsave"); if(s) s.onclick=async()=>{ const m=F("ld-c-msgout");
+      try{ m.textContent=await saveFile("qr-captacao.svg",new Blob([svg],{type:"image/svg+xml"})); }catch(e){ m.textContent="Não foi possível descarregar o código QR."; } }; }
+  function setCfg(k,val){ const c=getCfg(); c[k]=val; LS.set(CKEY,JSON.stringify(c)); }
+  function buildPanel(){ const slots=$("ag-slots"); if(!slots) return;
+    PANEL=document.createElement("section"); PANEL.className="ag-card"; PANEL.id="ag-leads"; PANEL.setAttribute("aria-labelledby","ld-c-h");
+    PANEL.innerHTML=panelHTML(); PANEL.querySelector("h3").id="ld-c-h"; slots.appendChild(PANEL);
+    const map={"ld-c-name":"name","ld-c-wa":"wa","ld-c-email":"email","ld-c-msg":"msg","ld-c-op":"op","ld-c-color":"color"};
+    PANEL.addEventListener("input",e=>{ const k=map[e.target.id]; if(!k) return; setCfg(k,e.target.value);
+      if(k==="color"){ F("ld-c-colv").textContent=e.target.value; F("ld-c-colr").hidden=!colOk(brand().color||"")||e.target.value===String(brand().color).toLowerCase(); }
+      F("ld-c-msgout").textContent=""; refresh(); });
+    PANEL.addEventListener("change",e=>{ if(e.target.id==="ld-c-wa"){ const t=telNorm(e.target.value); if(t!==e.target.value&&telOk(t)){ e.target.value=t; setCfg("wa",t); refresh(); } } });
+    F("ld-c-colr").onclick=()=>{ const c=getCfg(); delete c.color; LS.set(CKEY,JSON.stringify(c)); fillForm(); refresh(); };
+    F("ld-c-copy").onclick=async()=>{ if(!CUR) return; const m=F("ld-c-msgout"); let ok=false;
+      try{ await navigator.clipboard.writeText(CUR); ok=true; }catch(e){ const u=F("ld-c-url"); u.focus(); u.select(); try{ ok=document.execCommand("copy"); }catch(e2){} }
+      m.textContent=ok?"Link copiado. Pode colá-lo no site, nas redes sociais ou numa mensagem.":"Não foi possível copiar automaticamente: selecione o link acima e copie-o."; };
+    F("ld-c-prev").onclick=()=>{ if(CUR) popup(CUR); };
+    F("ld-c-wa-share").onclick=()=>{ if(!CUR) return; const a=readForm();
+      popup("https://wa.me/?text="+encodeURIComponent(`Simule os impostos da sua operação imobiliária com ${a.name}: veja quanto fica para si.\n${CUR}`)); };
+    F("ld-c-qrb").onclick=()=>{ const qr=F("ld-c-qr"), show=qr.hidden; qr.hidden=!show; F("ld-c-qrb").setAttribute("aria-expanded",String(show)); if(show) drawQR(); };
+    fillForm(); refresh(); }
+  function syncPanel(){ const on=qfHas("captacao");
+    if(on&&!PANEL) buildPanel(); else if(on){ fillForm(); refresh(); }
+    if(PANEL) PANEL.hidden=!on; }
+  addEventListener("qf-tier",()=>syncPanel());
+  { const _qg=qtGo; qtGo=function(t){ if(qfTier()==="captacao"&&["analise","pagamentos","guardadas","agencia"].includes(t)) t="resultado";
+      const r=_qg.apply(this,[t,...[].slice.call(arguments,1)]); if(t==="agencia"&&PANEL&&!PANEL.hidden){ fillForm(); refresh(); } return r; }; }
+  syncPanel();
+
+  /* =====================================================================
+     2. Visitante: modo captação aberto por #lead=
+     ===================================================================== */
+  let LEAD=null, TOKEN="", ORIG=null, GATE=null, BAND=null, CONTACT=null, reapply=0;
+  const KEYS=[KEY,"qf-tab","qf-step"];
+  // Os valores do visitante desta sessão não substituem os guardados no dispositivo: repõem-se ao sair ou esconder a página
+  function restoreOrig(){ if(!ORIG) return; SS.set("qf-lead-state",JSON.stringify({k:TOKEN,s:state})); KEYS.forEach(k=>{ ORIG[k]===null?LS.del(k):LS.set(k,ORIG[k]); }); }
+  function applyTier(){ qfSetLicense({tier:"captacao",agency:Object.assign({},LEAD)}); }
+  addEventListener("qf-tier",e=>{ if(!LEAD||!e.detail||e.detail.tier==="captacao") return;
+    if(++reapply>20) return; setTimeout(()=>{ if(LEAD&&qfTier()!=="captacao") applyTier(); },0); });
+  function contactKey(){ try{ const c=JSON.parse(SS.get("qf-lead-contact")||"null"); return c&&c.k===TOKEN&&c.c&&c.c.name?c.c:null; }catch(e){ return null; } }
+  function leadText(){ const a=LEAD, c=CONTACT, u=LAST&&LAST.unit?" por ano":"", when=new Date(c.at||Date.now());
+    const L=[`Novo contacto pela página de captação do QuantoFica (${a.name})`,"",
+      `Nome: ${c.name}`,`Telefone: ${c.tel}`,`E-mail: ${c.email||"não indicado"}`,
+      `Consentimento RGPD: "Autorizo ${a.name} a contactar-me sobre esta simulação." (${when.toLocaleString("pt-PT",{dateStyle:"short",timeStyle:"short"})})`,"",
+      `Simulação: ${OPN[state.mode]}`];
+    if(LAST&&LAST.best1){ L.push(`Melhor cenário: ${txt(LAST.best1.name)} – ${eur(LAST.best1.net)}${u}`,`Impostos nesse cenário: ${eur(LAST.best1.taxes)}${u}`);
+      if(LAST.sumPairs&&LAST.sumPairs.length){ L.push("","Resumo:"); LAST.sumPairs.slice(0,6).forEach(p=>L.push(`• ${p[0]}: ${p[1]}`)); } }
+    L.push("","Abrir a simulação completa no QuantoFica:",simLink());
+    return nb(L.join("\n")); }
+  function sendWA(){ if(!LEAD.wa||!CONTACT) return null; const url="https://wa.me/"+LEAD.wa.replace(/^\+/,"")+"?text="+encodeURIComponent(leadText()); popup(url); return url; }
+  function sendMail(){ if(!LEAD.email||!CONTACT) return null;
+    const url="mailto:"+LEAD.email+"?subject="+encodeURIComponent(nb(`Novo contacto: ${CONTACT.name} – simulação ${OPN[state.mode]}`))+"&body="+encodeURIComponent(leadText());
+    openLink(url); return url; }
+  window.qfLeadSend={wa:()=>sendWA(),mail:()=>sendMail(),text:()=>leadText()};
+  function gateForm(){ const a=LEAD; return `<h2 id="ld-g-h">Para ver o resultado, deixe o seu contacto</h2>
+    <p>Indique os valores da operação no separador Dados. Para ver o resultado, deixe o seu contacto: ${esc(a.name)} recebe-o com o resumo desta simulação e poderá ajudá-lo a decidir.</p>
+    <form id="ld-form" novalidate autocomplete="on">
+      <label class="ld-fl">Nome<input id="ld-name" type="text" maxlength="60" autocomplete="name" required></label>
+      <label class="ld-fl">Telefone<input id="ld-tel" type="tel" inputmode="tel" maxlength="22" autocomplete="tel" placeholder="+351 912 345 678" required></label>
+      <label class="ld-fl">E-mail <small>(opcional)</small><input id="ld-mail" type="email" maxlength="120" autocomplete="email"></label>
+      <label class="ld-check"><input id="ld-ok" type="checkbox" required><span>Autorizo ${esc(a.name)} a contactar-me sobre esta simulação.</span></label>
+      <button type="button" class="ld-priv-b" id="ld-priv-b" aria-expanded="false" aria-controls="ld-priv">Como são tratados os meus dados</button>
+      <div class="ld-priv" id="ld-priv" hidden>
+        <p>O seu nome, telefone, e-mail e os valores desta simulação são enviados apenas para ${esc(a.name)}, pela mensagem de WhatsApp ou e-mail que vai abrir no seu dispositivo; nada é enviado sem que o confirme.</p>
+        <p>O QuantoFica não tem servidor e não recebe nem guarda estes dados. Neste dispositivo, o contacto fica guardado só durante esta sessão do navegador, para não ter de o repetir.</p>
+        <p>${esc(a.name)} é responsável pelo tratamento dos dados que receber, usa-os apenas para o contactar sobre esta simulação e é a quem deve pedir o acesso, a retificação ou a eliminação dos seus dados, nos termos do RGPD.</p>
+      </div>
+      <p class="ld-err" id="ld-g-err" role="alert"></p>
+      <button type="submit" class="ld-go">${a.wa?"Ver o resultado e enviar pelo WhatsApp":"Ver o resultado e enviar por e-mail"}</button>
+    </form>`; }
+  function gateSent(){ const a=LEAD, c=CONTACT; return `<h2 id="ld-g-h">Obrigado, ${esc(c.name.split(" ")[0])}</h2>
+    <p>O resultado está abaixo. ${a.wa?`Para ${esc(a.name)} receber o seu contacto e o resumo, envie a mensagem que abriu no WhatsApp.`:`Para ${esc(a.name)} receber o seu contacto e o resumo, envie o e-mail que abriu.`} Se alterar os valores, pode enviar de novo a versão atual.</p>
+    <div class="ld-row">${a.wa?'<button type="button" class="ld-go" id="ld-s-wa">Enviar pelo WhatsApp</button>':""}${a.email?`<button type="button" class="${a.wa?"btn-ghost":"ld-go"}" id="ld-s-mail">Enviar por e-mail</button>`:""}<button type="button" class="btn-ghost" id="ld-s-edit">Alterar o meu contacto</button></div>`; }
+  function renderGate(){ if(!GATE) return; GATE.innerHTML=CONTACT?gateSent():gateForm();
+    if(CONTACT){ root.dataset.leadOk="1";
+      const w=GATE.querySelector("#ld-s-wa"), m=GATE.querySelector("#ld-s-mail");
+      if(w) w.onclick=()=>sendWA(); if(m) m.onclick=()=>sendMail();
+      GATE.querySelector("#ld-s-edit").onclick=()=>{ const prev=CONTACT; CONTACT=null; delete root.dataset.leadOk; renderGate();
+        GATE.querySelector("#ld-name").value=prev.name; GATE.querySelector("#ld-tel").value=prev.tel; GATE.querySelector("#ld-mail").value=prev.email||""; GATE.querySelector("#ld-name").focus(); };
+      return; }
+    delete root.dataset.leadOk;
+    const pb=GATE.querySelector("#ld-priv-b"); pb.onclick=()=>{ const p=GATE.querySelector("#ld-priv"), show=p.hidden; p.hidden=!show; pb.setAttribute("aria-expanded",String(show)); };
+    GATE.querySelector("#ld-form").addEventListener("submit",e=>{ e.preventDefault();
+      const g=id=>GATE.querySelector("#"+id), name=clean(g("ld-name").value).slice(0,60), tel=telNorm(g("ld-tel").value), email=clean(g("ld-mail").value), ok=g("ld-ok").checked, errs=[];
+      const mark=(id,bad)=>g(id).setAttribute("aria-invalid",bad?"true":"false");
+      mark("ld-name",name.length<2); if(name.length<2) errs.push("Indique o seu nome.");
+      const tBad=!/^\+?\d{9,15}$/.test(tel); mark("ld-tel",tBad); if(tBad) errs.push("Indique um telefone válido (só algarismos, com o indicativo se não for português).");
+      const mBad=!!email&&!MAILRE.test(email); mark("ld-mail",mBad); if(mBad) errs.push("O e-mail não parece válido.");
+      if(!ok) errs.push(`Para continuar, autorize ${LEAD.name} a contactá-lo.`);
+      g("ld-g-err").textContent=errs.join(" ");
+      if(errs.length){ const f=GATE.querySelector('[aria-invalid="true"]')||(!ok?g("ld-ok"):null); f&&f.focus(); return; }
+      CONTACT={name,tel,email,at:new Date().toISOString()};
+      SS.set("qf-lead-contact",JSON.stringify({k:TOKEN,c:CONTACT}));
+      renderGate(); if(LEAD.wa) sendWA(); else sendMail();
+      qtGo("resultado",true); requestAnimationFrame(()=>{ const b=document.querySelector("#res .best"); if(b) scrollToEl(GATE); });
+    }); }
+  function enterLead(r){ LEAD=r.a; TOKEN=r.token;
+    if(!ORIG){ // o retrato dos valores do dispositivo fica na sessão do separador, para um recarregamento não o substituir pelos do visitante
+      try{ const o=JSON.parse(SS.get("qf-lead-orig")||"null"); if(o&&typeof o==="object"&&KEYS.every(k=>k in o)) ORIG=o; }catch(e){}
+      if(!ORIG){ ORIG={}; KEYS.forEach(k=>{ ORIG[k]=LS.get(k); }); SS.set("qf-lead-orig",JSON.stringify(ORIG)); }
+      addEventListener("pagehide",restoreOrig); document.addEventListener("visibilitychange",()=>{ if(document.hidden) restoreOrig(); }); }
+    let s=null; try{ const x=JSON.parse(SS.get("qf-lead-state")||"null"); if(x&&x.k===TOKEN&&x.s&&typeof x.s==="object") s=x.s; }catch(e){}
+    state=s?{...clone(DEF),...s}:{...clone(DEF),mode:LEAD.op}; fill();
+    root.dataset.lead="1";
+    const col=LEAD.color||DEFCOL; root.style.setProperty("--lead",col); root.style.setProperty("--lead-ink",inkFor(col));
+    BAND=document.createElement("div"); BAND.className="ld-band"; BAND.setAttribute("role","note");
+    BAND.innerHTML=`<span class="ld-ic" aria-hidden="true">${esc((LEAD.name.match(/[A-Za-zÀ-ÿ0-9]/)||["Q"])[0].toUpperCase())}</span><div><b>${esc(LEAD.name)}</b>${LEAD.msg?`<p>${esc(LEAD.msg)}</p>`:""}</div>`;
+    const hd=document.querySelector(".wrap>header"); hd?hd.after(BAND):document.body.prepend(BAND);
+    const rows=$("rows"), tb=rows&&rows.closest(".panel"); if(tb) tb.classList.add("ld-tbl");
+    GATE=document.createElement("div"); GATE.className="panel lead-gate"; GATE.id="lead-gate"; GATE.dataset.tab="resultado dados"; GATE.setAttribute("aria-labelledby","ld-g-h");
+    const res=$("res"); res.prepend(GATE);
+    CONTACT=contactKey(); renderGate();
+    applyTier(); setTimeout(()=>{ if(LEAD&&qfTier()!=="captacao") applyTier(); },0);
+    qtGo("dados",true); goStep(1,true); scrollTo({top:0});
+    // O guia de primeira utilização fala de funções que o visitante não tem: fecha-se sozinho nesta sessão
+    new MutationObserver(()=>{ const sk=document.querySelector(".qf-tour .qt-skip"); if(sk&&LEAD) sk.click(); }).observe(document.body,{childList:true}); }
+  function boot(){ const r=parseHash(location.hash);
+    if(r===undefined) return;
+    if(r===null){ try{ history.replaceState(null,"",location.pathname+location.search); }catch(e){}
+      band("<p>O link da página de captação está incompleto ou danificado. Abriu-se o simulador normal; peça à agência um link novo.</p>"); return; }
+    enterLead(r); }
+  boot();
+  addEventListener("hashchange",()=>{ const r=parseHash(location.hash); if(r===undefined) return; if(LEAD&&r&&r.token===TOKEN) return; if(r&&!LEAD){ enterLead(r); return; } location.reload(); });
+  window.qfLead=()=>LEAD?Object.assign({},LEAD):null;
+})();
 </script>
 
 <script>
