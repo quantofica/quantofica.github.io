@@ -4,7 +4,7 @@ compatibility_date = "2026-10-01"
 
 [vars]
 EMAIL_PROVIDER = "resend"
-EMAIL_FROM = "QuantoFica <conta@quantofica.pt>"
+EMAIL_FROM = "QuantoFica <conta@mail.quantofica.com.pt>"
 ALLOWED_ORIGINS = "https://quantofica.github.io,capacitor://localhost,https://localhost"
 GRACE_DAYS = "3"
 

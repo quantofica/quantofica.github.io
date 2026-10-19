@@ -15,14 +15,11 @@ Enquanto `QF_ACCOUNT_URL` estiver vazio no `index.html`, a app funciona exatamen
 
 ## O que precisa de fazer (cerca de 30 minutos)
 
-### 1. Domínio para enviar e-mails (recomendado)
-Os códigos de entrada saem por e-mail. Para não caírem no spam, o ideal é enviá-los de um domínio seu, por exemplo `quantofica.pt` (cerca de 15 €/ano num registador como o PTisp ou o Dominios.pt). O domínio também serve mais tarde para as lojas de apps.
-
-Sem domínio, use o Brevo com o endereço `quantoficapt@gmail.com` como remetente verificado. Funciona, mas mais e-mails vão para o spam.
+### 1. Domínio para enviar e-mails
+O domínio é `quantofica.com.pt` (registado na OVHcloud, DNS geridos na Cloudflare). Os códigos saem de `conta@mail.quantofica.com.pt`.
 
 ### 2. Serviço de e-mail
-- **Com domínio:** crie conta em resend.com (gratuito até 3 000 e-mails/mês), adicione o domínio e copie os registos DNS que o Resend indica para o seu registador. Crie uma chave de API.
-- **Sem domínio:** crie conta em brevo.com, verifique `quantoficapt@gmail.com` como remetente e crie uma chave de API (SMTP & API → API Keys). No `wrangler.toml`, mude `EMAIL_PROVIDER` para `"brevo"` e `EMAIL_FROM` para `"QuantoFica <quantoficapt@gmail.com>"`.
+No Resend, adicione o domínio `mail.quantofica.com.pt` (região Irlanda) e deixe-o configurar os registos na Cloudflare. Depois crie uma chave de API com permissão "Sending access" limitada a esse domínio.
 
 ### 3. Chave restrita do Stripe
 No painel do Stripe: Programadores → Chaves de API → **Criar chave restrita**. Dê apenas permissão de **Leitura** a: Checkout Sessions, Subscriptions, Customers, PaymentIntents e Charges. Tudo o resto fica "Nenhum". Comece com uma chave do **modo de teste** para experimentar.

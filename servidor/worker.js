@@ -17,7 +17,7 @@
 //   EMAIL_API_KEY       chave do Resend ou do Brevo
 // Variáveis (wrangler.toml → [vars]):
 //   EMAIL_PROVIDER      "resend" ou "brevo"
-//   EMAIL_FROM          ex.: "QuantoFica <conta@quantofica.pt>"
+//   EMAIL_FROM          ex.: "QuantoFica <conta@mail.quantofica.com.pt>"
 //   ALLOWED_ORIGINS     ex.: "https://quantofica.github.io,capacitor://localhost,https://localhost"
 //   GRACE_DAYS          dias de tolerância depois do fim do período pago da Agência (por omissão 3)
 
