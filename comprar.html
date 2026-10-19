@@ -203,7 +203,7 @@ $("buy").addEventListener("submit",async e=>{ e.preventDefault(); const err=$("e
   const btn=$("go"); btn.disabled=true; await send(data); btn.disabled=false;
   const link=STRIPE[p];
   if(!link){ const off=$("off"); off.hidden=false; off.innerHTML='<b>O pagamento online ainda não está ativo.</b> Os seus dados ficaram registados; vamos contactá-lo por e-mail com os passos para concluir a compra. Também pode escrever para <a href="mailto:'+CONTACT+'?subject='+encodeURIComponent("Compra QuantoFica — plano "+(p==="agencia"?"Agência":"Cliente")+" ("+ref+")")+'">'+CONTACT+'</a>.'; return; }
-  const u=new URL(link); u.searchParams.set("prefilled_email",email); u.searchParams.set("client_reference_id",ref);
+  const u=new URL(link); u.searchParams.set("prefilled_email",email.toLowerCase()); u.searchParams.set("client_reference_id",ref);
   location.href=u.toString(); });
 </script>
 </body>

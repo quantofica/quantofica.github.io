@@ -725,6 +725,18 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
 .g-cur-p b{font-size:16px}
 .g-note{margin:0;padding:10px 12px;border-radius:10px;background:var(--warn-soft);border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));font-size:14.5px;line-height:1.45;text-align:justify}
 .g-key{display:grid;gap:8px}
+.g-acc{display:grid;gap:8px}
+.g-acc label{font-weight:600;font-size:15px}
+.g-acc small{color:var(--muted);font-size:14px;line-height:1.4}
+.g-acc input{width:100%;box-sizing:border-box;min-height:46px;font:16px var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:0 12px}
+.g-acc input[type=email]{text-align:left}
+.g-acc .g-msg:empty{display:none}
+.g-acc input.g-code{font:600 22px var(--mono);letter-spacing:.3em;text-align:center}
+.g-acc-p{margin:0;font-size:15px;line-height:1.5}
+.g-lnk{background:none;border:0;padding:6px 0;color:var(--accent);font:600 14.5px var(--body);text-decoration:underline;cursor:pointer;min-height:36px}
+.g-keyd{border-top:1px solid var(--line);padding-top:10px}
+.g-keyd>summary{cursor:pointer;font-weight:600;font-size:15px;color:var(--accent);min-height:36px;display:flex;align-items:center}
+.g-keyd[open]>summary{margin-bottom:8px}
 .g-key label{font-weight:600;font-size:15px}
 .g-key small{color:var(--muted);font-size:14px;line-height:1.4}
 .g-key textarea{width:100%;box-sizing:border-box;min-height:84px;resize:vertical;font:14px/1.4 var(--mono);color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px;word-break:break-all;text-align:left}
@@ -3153,6 +3165,8 @@ function qfSetLicense(lic){ QF_LIC=Object.assign({tier:"demo"},lic||{}); if(!QF_
 document.documentElement.dataset.tier="demo";
 // ===== G: licenças, modo demo e planos =====
 // Preços e ligações de compra (Stripe, Gumroad, Lemon Squeezy…): altere aqui. Com url vazia, o botão "Comprar" abre um e-mail para QF_SHOP.contact.
+// Serviço de contas (Cloudflare Worker, pasta servidor/). Vazio = a app funciona só com chaves, como antes.
+const QF_ACCOUNT_URL="";
 const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/comprar.html?plano=cliente"},agencia:{price:"12,90 €/mês",url:"https://quantofica.github.io/comprar.html?plano=agencia"},contact:"quantofica@[defina]"};
 (function(){
   // Chave PÚBLICA (só verifica). A chave privada fica apenas no gerador de chaves do dono.
@@ -3175,8 +3189,43 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     format:"Esta chave não é válida. Confirme que a copiou completa, desde «QF1.» até ao último carácter.",
     sig:"Esta chave não é válida: a assinatura não confere. Copie-a de novo a partir do e-mail que recebeu.",
     nocrypto:"Este navegador não permite verificar a chave neste endereço, porque a verificação só funciona em ligações seguras (https). Abra o QuantoFica em https://quantofica.github.io/ e ative a chave aí.",
-    expired:x=>`A sua mensalidade terminou em ${fmtD(x)} — introduza a nova chave.`};
+    expired:x=>ssGet()?`A sua mensalidade terminou em ${fmtD(x)}. Quando a subscrição for renovada, o plano volta a ficar ativo sozinho.`:`A sua mensalidade terminou em ${fmtD(x)} — introduza a nova chave.`};
   let NOTICE=null, pubKey=null;
+
+  /* ---------- 0. Contas: entrar com o e-mail (serviço QF_ACCOUNT_URL) ---------- */
+  const SS="qf-session", SR="qf-session-at", ACC=()=>!!QF_ACCOUNT_URL;
+  const ssGet=()=>{ try{ return localStorage.getItem(SS)||""; }catch(e){ return ""; } };
+  const ssSet=v=>{ try{ if(v){ localStorage.setItem(SS,v); localStorage.setItem(SR,String(Date.now())); } else { localStorage.removeItem(SS); localStorage.removeItem(SR); } }catch(e){} };
+  const ssTouch=()=>{ try{ localStorage.setItem(SR,String(Date.now())); }catch(e){} };
+  const ssEmail=()=>{ const m=/^QS1\.([A-Za-z0-9_-]+)\./.exec(ssGet()); if(!m) return ""; try{ return String(JSON.parse(new TextDecoder().decode(b64d(m[1]))).e||""); }catch(e){ return ""; } };
+  const AERR={bad_email:"Indique um e-mail válido.",bad_code:"O código não está certo. Confirme os 6 dígitos do e-mail.",code_expired:"O código expirou. Peça um código novo.",
+    no_purchase:"Não encontrámos nenhuma compra ativa com este e-mail. Confirme que é o e-mail que usou no pagamento.",too_many:"Fez muitas tentativas seguidas. Aguarde um minuto e tente de novo.",
+    network:"Não foi possível ligar ao serviço. Verifique a ligação à internet e tente de novo.",bad_session:"A sua sessão terminou. Entre de novo com o seu e-mail.",session_expired:"A sua sessão terminou. Entre de novo com o seu e-mail."};
+  const aerr=e=>AERR[e]||"Não foi possível concluir agora. Tente de novo dentro de momentos.";
+  async function api(path,body){ const ctl=typeof AbortController==="function"?new AbortController():null, t=ctl&&setTimeout(()=>ctl.abort(),15000);
+    try{ const r=await fetch(QF_ACCOUNT_URL.replace(/\/+$/,"")+path,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body),signal:ctl&&ctl.signal});
+      return await r.json().catch(()=>({ok:false,err:"upstream"})); }
+    catch(e){ return {ok:false,err:"network"}; } finally{ if(t) clearTimeout(t); } }
+  // Guarda a licença e a sessão devolvidas pelo serviço
+  async function applyGrant(j){ if(j.session) ssSet(j.session); else ssTouch();
+    if(!j.license) return null;
+    const r=await verifyKey(j.license); if(!r.ok) return null;
+    lsSet(r.lic.key); NOTICE=soon(r.lic); qfSetLicense(r.lic); return r.lic; }
+  // Atualiza o plano a partir da conta (renovação da Agência, reembolso, cancelamento)
+  let REFRESHING=null;
+  function refresh(){ if(!ACC()||!ssGet()) return Promise.resolve(null); if(REFRESHING) return REFRESHING;
+    REFRESHING=(async()=>{ const j=await api("/refresh",{session:ssGet()});
+      if(j.ok&&j.license) return await applyGrant(j);
+      if(j.ok){ ssTouch(); const k=lsGet(), cur=k?await verifyKey(k):null;
+        // Sem plano ativo na conta: remove só a licença que veio da conta (uma chave introduzida à mão mantém-se)
+        if(!cur||!cur.lic||cur.lic.acct||cur.err==="expired"){ if(k&&(!cur||!cur.ok||cur.lic.acct)) lsSet(""); NOTICE=cur&&cur.err==="expired"?{kind:"expired",exp:cur.lic.exp}:null; qfSetLicense({tier:"demo"}); }
+        return null; }
+      if(j.err==="bad_session"||j.err==="session_expired"){ ssSet(""); paint(); }
+      return null; })().finally(()=>{ REFRESHING=null; });
+    return REFRESHING; }
+  function maybeRefresh(){ if(!ACC()||!ssGet()) return; let at=0; try{ at=+localStorage.getItem(SR)||0; }catch(e){}
+    if(!lsGet()||NOTICE||qfTier()==="demo"||Date.now()-at>3*864e5) refresh().catch(()=>{}); }
+  let LOGIN={step:"email",email:"",challenge:""};
 
   /* ---------- 1. Verificação da chave (ECDSA P-256 + SHA-256, assinatura r||s) ---------- */
   // Formato: QF1.<base64url(JSON)>.<base64url(assinatura)>; a assinatura cobre o texto "QF1.<base64url(JSON)>".
@@ -3191,7 +3240,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     if(!good) return {ok:false,err:"sig"};
     const D=/^\d{4}-\d{2}-\d{2}$/;
     if(!p||typeof p!=="object"||!["cliente","agencia"].includes(p.t)||(p.t==="agencia"&&!D.test(p.x||""))||(p.x!=null&&!D.test(p.x))) return {ok:false,err:"format"};
-    const lic={tier:p.t,name:String(p.n||"").slice(0,80),email:String(p.e||"").slice(0,120),exp:p.x||null,id:String(p.id||"").slice(0,24),key};
+    const lic={tier:p.t,name:String(p.n||"").slice(0,80),email:String(p.e||"").slice(0,120),exp:p.x||null,id:String(p.id||"").slice(0,24),acct:!!p.a,key};
     if(lic.exp&&lic.exp<today()) return {ok:false,err:"expired",lic};
     return {ok:true,lic}; }
   function soon(lic){ if(!lic||!lic.exp) return null; const d=daysTo(lic.exp); return d<=WARN_DAYS?{kind:"soon",exp:lic.exp,d}:null; }
@@ -3203,7 +3252,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
       lsSet(""); }
     NOTICE=null; if(qfTier()==="cliente"||qfTier()==="agencia") qfSetLicense({tier:"demo"}); else paint(); }
   // A mensalidade pode terminar com a app aberta (por exemplo, de um dia para o outro)
-  document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&(QF_LIC.exp||NOTICE)) boot().catch(()=>{}); });
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden) return; if(QF_LIC.exp||NOTICE) boot().then(maybeRefresh).catch(()=>{}); else maybeRefresh(); });
 
   /* ---------- 2. Interface: botão no cabeçalho, faixa, convites ---------- */
   const NEEDS=["detalhe","analise","pagamentos","exportar","guardar","link"];
@@ -3243,7 +3292,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
   function paintStrip(){ let cls="", html="", btn="";
     if(NOTICE&&NOTICE.kind==="expired"){ cls="g-warn"; html=LOCK+escH(MSG.expired(NOTICE.exp)); btn="Introduzir a nova chave"; }
     else if(NOTICE&&NOTICE.kind==="nocrypto"){ cls="g-warn"; html=LOCK+escH(MSG.nocrypto); btn="Planos e licença"; }
-    else if(NOTICE&&NOTICE.kind==="soon"&&qfTier()==="agencia"){ cls="g-warn"; const d=NOTICE.d;
+    else if(NOTICE&&NOTICE.kind==="soon"&&qfTier()==="agencia"&&!ssGet()){ cls="g-warn"; const d=NOTICE.d;
       html=`A sua mensalidade do plano Agência termina em ${fmtD(NOTICE.exp)} (${d<=0?"hoje":d===1?"amanhã":`daqui a ${d} dias`}). Renove e introduza a nova chave para continuar a usar as funções da agência.`; btn="Renovar"; }
     else if(!qfHas("detalhe")){ html=LOCK+"Versão de demonstração — veja o melhor cenário. Desbloqueie o detalhe completo."; btn="Desbloquear"; }
     strip.className="g-strip "+cls; strip.hidden=!html;
@@ -3290,7 +3339,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
   const PLANS=[
     {t:"demo",h:"Demo grátis",price:"Grátis",sub:"Para experimentar",li:[["Cálculo completo das três operações",1],["Melhor cenário e valor líquido",1],["Notas legais e guia",1],["Todos os cenários e cálculo passo a passo",0],["Análise, pagamentos, relatórios e partilha",0]]},
     {t:"cliente",h:"Cliente",price:()=>QF_SHOP.cliente.price,sub:"Compra única, sem mensalidade",li:[["Tudo o que a demonstração inclui",1],["Todos os cenários com impostos e taxa efetiva",1],["“Ver cálculo” passo a passo",1],["Análise do negócio",1],["Calendário de pagamentos",1],["Relatórios em PDF e Excel",1],["Envio por e-mail e WhatsApp, link e resumo",1],["Simulações guardadas e comparação",1]]},
-    {t:"agencia",h:"Agência",price:()=>QF_SHOP.agencia.price,sub:"Mensalidade · cada renovação traz uma chave nova",li:[["Tudo o que o plano Cliente inclui",1],["Marca própria nos relatórios",1],["Logótipo da agência e, se quiser, as cores do logótipo na app",1],["Carteira de clientes",1],["Proposta comparativa de imóveis",1],["Página de captação de contactos",1]]}];
+    {t:"agencia",h:"Agência",price:()=>QF_SHOP.agencia.price,sub:QF_ACCOUNT_URL?"Mensalidade · renova-se automaticamente":"Mensalidade · cada renovação traz uma chave nova",li:[["Tudo o que o plano Cliente inclui",1],["Marca própria nos relatórios",1],["Logótipo da agência e, se quiser, as cores do logótipo na app",1],["Carteira de clientes",1],["Proposta comparativa de imóveis",1],["Página de captação de contactos",1]]}];
   function buy(t){ const s=QF_SHOP[t]||{}; if(s.url){ openLink(s.url); return; }
     const nm=t==="agencia"?"Agência":"Cliente", subj=`Comprar o QuantoFica — plano ${nm}`;
     const body=`Olá,\n\nQuero comprar o QuantoFica, plano ${nm} (${s.price||""}${t==="agencia"?"":", compra única"}).\n\nNome ou empresa:\nE-mail para receber a chave:\nNIF (para a fatura, opcional):\n\nObrigado.`;
@@ -3298,11 +3347,11 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
   function curHTML(){ const t=qfTier(), L=QF_LIC; let p;
     if(t==="cliente") p=`<b>Plano Cliente</b> — compra única, sem expiração.<br>Titular: ${escH(L.name||"—")}${L.email?` · ${escH(L.email)}`:""}`;
     else if(t==="agencia"){ const d=L.exp?daysTo(L.exp):null; p=`<b>Plano Agência</b> — mensalidade válida até ${fmtD(L.exp)}${d!=null&&d<=WARN_DAYS?` (${d<=0?"termina hoje":d===1?"termina amanhã":`faltam ${d} dias`})`:""}.<br>Titular: ${escH(L.name||"—")}${L.email?` · ${escH(L.email)}`:""}`; }
-    else p=`<b>Demo grátis</b> — calcula tudo, mas mostra só o melhor cenário e o valor líquido. Para ver o detalhe completo, compre o plano Cliente ou o plano Agência e introduza aqui a chave que recebe por e-mail.`;
+    else p=`<b>Demo grátis</b> — calcula tudo, mas mostra só o melhor cenário e o valor líquido. Para ver o detalhe completo, compre o plano Cliente ou o plano Agência e ${ACC()?"entre aqui com o e-mail da compra":"introduza aqui a chave que recebe por e-mail"}.`;
     let note="";
     if(NOTICE&&NOTICE.kind==="expired") note=MSG.expired(NOTICE.exp);
     else if(!hasCrypto()) note=MSG.nocrypto;
-    else if(t==="agencia"&&NOTICE&&NOTICE.kind==="soon") note="Quando renovar, recebe uma chave nova por e-mail. Cole-a abaixo e toque em “Ativar”.";
+    else if(t==="agencia"&&NOTICE&&NOTICE.kind==="soon"&&!ssGet()) note="Quando renovar, recebe uma chave nova por e-mail. Cole-a abaixo e toque em “Ativar”.";
     return `<p class="g-cur-p">${p}</p>${note?`<p class="g-note">${escH(note)}</p>`:""}`; }
   function planHTML(P){ const t=qfTier(), cur=P.t===t||(P.t==="demo"&&t==="captacao"), pr=typeof P.price==="function"?P.price():P.price;
     let btn="";
@@ -3312,24 +3361,73 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     return `<article class="g-plan${cur?" cur":""}"><div class="g-plan-h"><h4>${P.h}</h4>${cur?'<span class="g-tag">Plano atual</span>':""}</div>
       <div class="g-price">${escH(pr)}<small>${P.sub}</small></div>
       <ul>${P.li.map(([x,ok])=>`<li class="${ok?"":"no"}"><span>${x}</span></li>`).join("")}</ul>${btn}</article>`; }
+  let KEYOPEN=false;
+  function accHTML(){ if(!ACC()) return "";
+    const msg='<p class="g-msg" id="g-amsg" role="status" aria-live="polite"></p>';
+    if(ssGet()) return `<div class="g-acc"><p class="g-acc-p">Sessão iniciada com <b>${escH(ssEmail()||QF_LIC.email||"")}</b>. O plano é atualizado automaticamente em todos os seus dispositivos.</p>
+      <div class="g-row"><button type="button" class="g-btn g-ghost" data-g="sync">Atualizar plano</button><button type="button" class="g-btn g-ghost" data-g="out">Terminar sessão</button></div>${msg}</div>`;
+    if(LOGIN.step==="code") return `<form class="g-acc" data-g="code-f" novalidate><label for="g-code-in">Código de 6 dígitos</label>
+      <small id="g-code-d">Se houver uma compra com <b>${escH(LOGIN.email)}</b>, enviámos-lhe um código. Chega em menos de um minuto; veja também a pasta de spam.</small>
+      <input id="g-code-in" class="g-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]*" aria-describedby="g-code-d g-amsg" placeholder="000000">
+      <div class="g-row"><button type="submit" class="g-btn">Entrar</button><button type="button" class="g-lnk" data-g="resend">Reenviar código</button><button type="button" class="g-lnk" data-g="other">Usar outro e-mail</button></div>${msg}</form>`;
+    return `<form class="g-acc" data-g="email-f" novalidate><label for="g-mail-in">Já comprou? Entre com o seu e-mail</label>
+      <small id="g-mail-d">Use o e-mail que indicou no pagamento. Enviamos-lhe um código de 6 dígitos; não precisa de palavra-passe.</small>
+      <input id="g-mail-in" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" aria-describedby="g-mail-d g-amsg" placeholder="nome@exemplo.pt" value="${escH(LOGIN.email)}">
+      <div class="g-row"><button type="submit" class="g-btn">Enviar código</button></div>${msg}</form>`; }
+  function setAMsg(t,cls){ const m=dlg&&dlg.querySelector("#g-amsg"); if(m){ m.className="g-msg "+(cls||""); m.textContent=t; } }
+  function busy(f,on){ if(f) f.querySelectorAll("button,input").forEach(x=>{ x.disabled=on; }); }
+  async function startLogin(email,f){ email=String(email||"").trim().toLowerCase();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ setAMsg(AERR.bad_email,"err"); dlg.querySelector("#g-mail-in")?.focus(); return; }
+    busy(f,true); setAMsg("A enviar o código…");
+    const j=await api("/login/start",{email}); busy(f,false);
+    if(!j.ok){ setAMsg(aerr(j.err),"err"); return; }
+    LOGIN={step:"code",email,challenge:j.challenge}; render(); dlg.querySelector("#g-code-in")?.focus(); }
+  async function verifyLogin(code,f){ code=String(code||"").replace(/\D/g,"");
+    if(code.length!==6){ setAMsg("Escreva os 6 dígitos do código.","err"); return; }
+    busy(f,true); setAMsg("A confirmar…");
+    const j=await api("/login/verify",{challenge:LOGIN.challenge,code}); busy(f,false);
+    if(!j.ok){ setAMsg(aerr(j.err),"err"); if(j.err==="code_expired"||j.err==="bad_request"){ LOGIN={step:"email",email:LOGIN.email,challenge:""}; render(); setAMsg(aerr(j.err),"err"); } return; }
+    LOGIN={step:"email",email:"",challenge:""}; LEADON=false;
+    const lic=await applyGrant(j); render();
+    if(lic) setAMsg(`Sessão iniciada: plano ${TNAME[lic.tier]} ativo neste dispositivo${lic.exp?`, válido até ${fmtD(lic.exp)}`:""}.`,"ok");
+    else setAMsg("Sessão iniciada, mas não há nenhum plano ativo neste e-mail.","err"); }
+  function bindAcc(){ if(!ACC()) return;
+    const ef=dlg.querySelector('[data-g="email-f"]'); if(ef) ef.onsubmit=e=>{ e.preventDefault(); startLogin(ef.querySelector("input").value,ef); };
+    const cf=dlg.querySelector('[data-g="code-f"]'); if(cf){ const ci=cf.querySelector("input");
+      cf.onsubmit=e=>{ e.preventDefault(); verifyLogin(ci.value,cf); };
+      ci.addEventListener("input",()=>{ ci.value=ci.value.replace(/\D/g,"").slice(0,6); if(ci.value.length===6) verifyLogin(ci.value,cf); });
+      cf.querySelector('[data-g="resend"]').onclick=()=>startLogin(LOGIN.email,cf);
+      cf.querySelector('[data-g="other"]').onclick=()=>{ LOGIN={step:"email",email:LOGIN.email,challenge:""}; render(); dlg.querySelector("#g-mail-in")?.focus(); }; }
+    const sy=dlg.querySelector('[data-g="sync"]'); if(sy) sy.onclick=async()=>{ setAMsg("A atualizar…"); sy.disabled=true;
+      const lic=await refresh(); if(!dlg.querySelector('[data-g="sync"]')) return; sy.disabled=false;
+      if(!ssGet()) { render(); setAMsg(AERR.bad_session,"err"); return; }
+      setAMsg(lic?`Plano ${TNAME[lic.tier]} ativo${lic.exp?` até ${fmtD(lic.exp)}`:""}.`:(qfTier()==="demo"?"Não há nenhum plano ativo neste e-mail.":"O plano está atualizado."),lic||qfTier()!=="demo"?"ok":"err"); };
+    const out=dlg.querySelector('[data-g="out"]'); if(out) out.onclick=()=>{ if(!out.classList.contains("armed")){ out.classList.add("armed","g-danger"); out.textContent="Confirmar: terminar sessão"; return; }
+      const k=lsGet(); ssSet(""); LOGIN={step:"email",email:"",challenge:""};
+      verifyKey(k).then(r=>{ const keep=!!(k&&r.ok&&!r.lic.acct);
+        if(!keep){ lsSet(""); NOTICE=null; qfSetLicense({tier:"demo"}); } else render();
+        setAMsg(keep?"Sessão terminada. A chave de licença introduzida neste dispositivo continua ativa.":"Sessão terminada. Neste dispositivo voltou à versão de demonstração.","ok"); }); };
+    const kd=dlg.querySelector(".g-keyd"); if(kd) kd.addEventListener("toggle",()=>{ KEYOPEN=kd.open; }); }
   function render(){ if(!dlg) return; const t=qfTier(), paid=t==="cliente"||t==="agencia", lead=LEADON?(CTX==="renew"?"":LEAD[CTX]||""):"";
-    const keep=dlg.querySelector("#g-key-in")?.value||"";
+    const keep=dlg.querySelector("#g-key-in")?.value||"", keepMail=dlg.querySelector("#g-mail-in")?.value; if(keepMail!=null&&LOGIN.step==="email") LOGIN.email=keepMail.trim();
     dlg.innerHTML=`<div class="g-dlg-in">
       <div class="g-dlg-h"><h2 id="g-dlg-t">Planos e licença</h2><button type="button" class="g-x" aria-label="Fechar">×</button></div>
       ${lead?`<p class="g-lead">${LOCK}<span>${escH(lead)}</span></p>`:""}
       <section class="g-cur" aria-labelledby="g-cur-h"><h3 id="g-cur-h">O seu plano</h3>${curHTML()}
+        ${accHTML()}
+        ${ACC()?`<details class="g-keyd"${KEYOPEN?" open":""}><summary>Tenho uma chave de licença</summary>`:""}
         <form class="g-key" novalidate><label for="g-key-in">${paid?"Introduzir outra chave":"Chave de licença"}</label>
-          <small id="g-key-d">Recebe a chave por e-mail depois da compra. Começa por «QF1.»; cole-a completa.</small>
+          <small id="g-key-d">${ACC()?"Se recebeu uma chave por e-mail, cole-a aqui. Começa por «QF1.».":"Recebe a chave por e-mail depois da compra. Começa por «QF1.»; cole-a completa."}</small>
           <textarea id="g-key-in" rows="3" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="g-key-d g-msg" placeholder="QF1.…"></textarea>
           <div class="g-row"><button type="submit" class="g-btn">Ativar</button>${paid||lsGet()?'<button type="button" class="g-btn g-danger" data-g="rm">Remover licença deste dispositivo</button>':""}</div>
-          <p class="g-msg" id="g-msg" role="status" aria-live="polite"></p></form></section>
+          <p class="g-msg" id="g-msg" role="status" aria-live="polite"></p></form>${ACC()?"</details>":""}</section>
       <section aria-labelledby="g-pl-h"><h3 id="g-pl-h">Comparar planos</h3><div class="g-plans">${PLANS.map(planHTML).join("")}</div>
-        <p class="g-fine">O cálculo é igual em todos os planos; muda apenas o que vê e o que pode exportar. A chave fica guardada neste dispositivo e neste navegador; noutro dispositivo, ou se limpar os dados do navegador, introduza-a de novo. Preços com IVA incluído.</p></section></div>`;
+        <p class="g-fine">O cálculo é igual em todos os planos; muda apenas o que vê e o que pode exportar. ${ACC()?"Para usar o plano noutro dispositivo, entre com o mesmo e-mail.":"A chave fica guardada neste dispositivo e neste navegador; noutro dispositivo, ou se limpar os dados do navegador, introduza-a de novo."} Preços com IVA incluído.</p></section></div>`;
     const ta=dlg.querySelector("#g-key-in"); ta.value=keep;
     dlg.querySelector(".g-x").onclick=gClose;
     dlg.querySelector(".g-key").onsubmit=e=>{ e.preventDefault(); activate(ta.value); };
     const rm=dlg.querySelector('[data-g="rm"]'); if(rm) rm.onclick=()=>{ if(!rm.classList.contains("armed")){ rm.classList.add("armed"); rm.textContent="Confirmar: remover a licença"; return; } remove(); };
-    dlg.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy)); }
+    dlg.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>buy(b.dataset.buy)); bindAcc(); }
   function setMsg(t,cls){ const m=dlg&&dlg.querySelector("#g-msg"); if(m){ m.className="g-msg "+(cls||""); m.textContent=t; } }
   async function activate(raw){ const k=String(raw||"").replace(/\s+/g,"");
     if(!k){ setMsg("Cole a chave que recebeu por e-mail.","err"); dlg.querySelector("#g-key-in").focus(); return; }
@@ -3348,15 +3446,17 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     back=document.activeElement; render();
     if(!dlg.open){ if(typeof dlg.showModal==="function"){ try{ dlg.showModal(); }catch(e){ dlg.setAttribute("open",""); } } else dlg.setAttribute("open",""); }
     dlg.scrollTop=0;
-    const f=(focusKey||ctx==="renew")?dlg.querySelector("#g-key-in"):(ctx?dlg.querySelector('[data-buy="cliente"]')||dlg.querySelector(".g-x"):dlg.querySelector(".g-x")); f&&f.focus(); }
+    const wantLogin=ACC()&&!ssGet()&&(ctx==="renew"||focusKey||(ctx&&ctx.reason==="key"));
+    if(!wantLogin&&ACC()&&(focusKey||ctx==="renew")&&!ssGet()){ KEYOPEN=true; render(); }
+    const f=wantLogin?dlg.querySelector("#g-mail-in"):(focusKey||ctx==="renew")?dlg.querySelector("#g-key-in"):(ctx?dlg.querySelector('[data-buy="cliente"]')||dlg.querySelector(".g-x"):dlg.querySelector(".g-x")); f&&f.focus(); }
   function gClose(){ if(!dlg) return; if(typeof dlg.close==="function"&&dlg.open) dlg.close(); else { dlg.removeAttribute("open"); if(back&&back.focus) back.focus(); } }
   window.qfPlans=gOpen;
 
   /* ---------- 5. Mudança de plano sem recarregar ---------- */
-  addEventListener("qf-tier",()=>{ paint(); try{ if(typeof LAST!=="undefined"&&LAST) calc(); }catch(e){} if(dlg&&dlg.open){ const m=dlg.querySelector("#g-msg"), t=m?m.textContent:"", c=m?m.className:""; render(); const m2=dlg.querySelector("#g-msg"); if(m2){ m2.textContent=t; m2.className=c; } } });
+  addEventListener("qf-tier",()=>{ paint(); try{ if(typeof LAST!=="undefined"&&LAST) calc(); }catch(e){} if(dlg&&dlg.open){ const keepM=["#g-msg","#g-amsg"].map(id=>{ const m=dlg.querySelector(id); return [id,m?m.textContent:"",m?m.className:""]; }); render(); keepM.forEach(([id,t,c])=>{ const m2=dlg.querySelector(id); if(m2&&t){ m2.textContent=t; m2.className=c; } }); } });
   paint(); decorate();
   if(!hasCrypto()&&lsGet()){ NOTICE={kind:"nocrypto"}; paint(); }
-  boot().catch(()=>paint());
+  boot().catch(()=>paint()).then(maybeRefresh);
 })();
 // ===== H: marca própria da agência =====
 // Só ativo com qfHas("marca"). Guarda em localStorage "qf-brand". Ganchos: buildPdf, exportXlsx e summaryText envolvidos;
@@ -4155,7 +4255,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
         <button class="dg-btn" type="submit">Começar a simular</button>
         <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail.</p></details>
       </form>
-      <div class="dg-alt"><button type="button" data-dg="key">Já tenho uma chave de licença</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
+      <div class="dg-alt"><button type="button" data-dg="key">${typeof QF_ACCOUNT_URL!=="undefined"&&QF_ACCOUNT_URL?"Já comprei — entrar":"Já tenho uma chave de licença"}</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
     </div>`;
     document.body.appendChild(el);
     const f=el.querySelector("form"), err=el.querySelector(".dg-err");
