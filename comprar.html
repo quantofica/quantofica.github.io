@@ -156,7 +156,7 @@ footer a{color:var(--accent)}
   <section class="panel faq" style="margin-top:20px" aria-labelledby="h-faq">
     <h2 id="h-faq">Perguntas frequentes</h2>
     <details><summary>Posso usar em mais de um dispositivo?</summary><p>Sim. A chave pode ser ativada nos seus dispositivos pessoais (por exemplo, telemóvel e computador). Não a partilhe com terceiros.</p></details>
-    <details><summary>Como cancelo a mensalidade da Agência?</summary><p>Pelo link de gestão da subscrição que o Stripe envia por e-mail, ou respondendo ao e-mail da chave. O plano mantém-se até ao fim do mês já pago.</p></details>
+    <details><summary>Como cancelo a mensalidade da Agência?</summary><p>Em <a href="https://billing.stripe.com/p/login/8x2eVcfpk5zf5TueKVcIE00">billing.stripe.com</a> (entra com o e-mail da compra), pelo link que o Stripe envia por e-mail, ou respondendo ao e-mail da chave. O plano mantém-se até ao fim do mês já pago.</p></details>
     <details><summary>O QuantoFica substitui um contabilista?</summary><p>Não. O QuantoFica produz estimativas indicativas. Antes de qualquer decisão, consulte um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito.</p></details>
     <details id="termos-txt"><summary>Termos de utilização</summary><p>A licença concede o direito pessoal e intransmissível de usar o QuantoFica no plano adquirido. O plano Cliente é uma compra única; o plano Agência é uma subscrição mensal renovável, cancelável a qualquer momento, sem reembolso do mês em curso. Os resultados são estimativas e não constituem aconselhamento fiscal, jurídico ou financeiro. Tem 14 dias para pedir o reembolso do plano Cliente se não tiver ficado satisfeito.</p></details>
     <details id="privacidade"><summary>Política de privacidade</summary><p>Usamos o nome, o e-mail, o telemóvel e os dados de faturação apenas para processar a compra, enviar a chave de licença, emitir a fatura e prestar apoio. O pagamento é tratado pelo Stripe; não recebemos os dados do seu cartão. As simulações ficam guardadas apenas no seu dispositivo. Pode pedir o acesso, a correção ou a eliminação dos seus dados a qualquer momento, por e-mail.</p></details>
@@ -168,7 +168,7 @@ footer a{color:var(--accent)}
 <script>
 // ===== Configuração (altere aqui) =====
 // Links de pagamento do Stripe (Payment Links). Vazio = pagamento ainda não ativo.
-const STRIPE={ cliente:"https://buy.stripe.com/test_8x2eVcfpk5zf5TueKVcIE00", agencia:"https://buy.stripe.com/test_7sYbJ04KG5zf2Hi5alcIE02" }; // MODO DE TESTE — trocar pelos links reais
+const STRIPE={ cliente:"https://buy.stripe.com/7sYbJ04KG5zf2Hi5alcIE02", agencia:"https://buy.stripe.com/9B628q4KGbXDeq032dcIE03" }; // links reais (modo de produção)
 // URL da aplicação Web do Google Apps Script que grava na folha Google (o mesmo do app). Vazio = não grava.
 const SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRkjHV0Xs4aEvilTTz6B1-3yDK2YWh4OxLMNph8AwcD_pM8VHe/exec";
 const PRICES={ cliente:{v:"9,90 €",l:"Total · compra única"}, agencia:{v:"12,90 €/mês",l:"Total · por mês"} };
