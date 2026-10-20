@@ -3170,7 +3170,8 @@ const QF_ACCOUNT_URL="";
 const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/comprar.html?plano=cliente"},agencia:{price:"12,90 €/mês",url:"https://quantofica.github.io/comprar.html?plano=agencia"},contact:"quantofica@[defina]"};
 (function(){
   // Chave PÚBLICA (só verifica). A chave privada fica apenas no gerador de chaves do dono.
-  const QF_PUB_JWK={"kty":"EC","crv":"P-256","x":"5cTYgA8Tw2OtqscPsp9SqCy-mRB3y-YjM3ypKzMIslU","y":"ekZF0b3_Vz4NfL3bdphzk_hCe8XwbJFUY-R8zfB54GI"};
+  // 1.ª: gerador de chaves original; 2.ª: serviço de contas (servidor/).
+  const QF_PUB_JWKS=[{"kty":"EC","crv":"P-256","x":"5cTYgA8Tw2OtqscPsp9SqCy-mRB3y-YjM3ypKzMIslU","y":"ekZF0b3_Vz4NfL3bdphzk_hCe8XwbJFUY-R8zfB54GI"},{"kty":"EC","crv":"P-256","x":"UUyackFvG2W7nDS8PyqJOYRVeqAHkHq-cgUaREhUbqI","y":"7pspelbmjwMWfB9YV7awke2DSPokmaeEG_ht8BuWfhg"}];
   const LS="qf-license", WARN_DAYS=5, root=document.documentElement;
   const LOCK='<svg class="g-lock-i" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
   const lockI=n=>LOCK.replace(/width="15" height="15"/,`width="${n}" height="${n}"`);
@@ -3191,7 +3192,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     nocrypto:"Este navegador não permite verificar a chave neste endereço, porque a verificação só funciona em ligações seguras (https). Abra o QuantoFica em https://quantofica.github.io/ e ative a chave aí.",
     revoked:"Esta chave foi desativada, por exemplo por ter sido partilhada ou reembolsada. Se acha que é um engano, responda ao e-mail em que a recebeu.",
     expired:x=>ssGet()?`A sua mensalidade terminou em ${fmtD(x)}. Quando a subscrição for renovada, o plano volta a ficar ativo sozinho.`:`A sua mensalidade terminou em ${fmtD(x)} — introduza a nova chave.`};
-  let NOTICE=null, pubKey=null;
+  let NOTICE=null, pubKeys=null;
   // Chaves desativadas: lista pública revogadas.json (ids de chave ou e-mails). Guarda a última cópia para funcionar sem internet.
   const LSR="qf-revoked";
   const revList=()=>{ try{ const a=JSON.parse(localStorage.getItem(LSR)||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } };
@@ -3246,8 +3247,8 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     if(!hasCrypto()) return {ok:false,err:"nocrypto"};
     let p, sig; try{ p=JSON.parse(new TextDecoder().decode(b64d(m[1]))); sig=b64d(m[2]); }catch(e){ return {ok:false,err:"format"}; }
     let good=false;
-    try{ if(!pubKey) pubKey=await crypto.subtle.importKey("jwk",QF_PUB_JWK,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);
-      good=sig.length===64&&await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},pubKey,sig,new TextEncoder().encode("QF1."+m[1])); }catch(e){ good=false; }
+    try{ if(!pubKeys) pubKeys=await Promise.all(QF_PUB_JWKS.map(j=>crypto.subtle.importKey("jwk",j,{name:"ECDSA",namedCurve:"P-256"},false,["verify"])));
+      if(sig.length===64){ const data=new TextEncoder().encode("QF1."+m[1]); for(const k of pubKeys){ if(await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},k,sig,data)){ good=true; break; } } } }catch(e){ good=false; }
     if(!good) return {ok:false,err:"sig"};
     const D=/^\d{4}-\d{2}-\d{2}$/;
     if(!p||typeof p!=="object"||!["cliente","agencia"].includes(p.t)||(p.t==="agencia"&&!D.test(p.x||""))||(p.x!=null&&!D.test(p.x))) return {ok:false,err:"format"};
