@@ -2606,11 +2606,13 @@ qaBox(); if(LAST) qaSchedule();
     if($("o-rvcoef")) $("o-rvcoef").textContent=N>=2?f2(coef)+(K.auto?" (estimativa)":""):"não se aplica (menos de 24 meses)";
     if($("o-rvcoef-n")) $("o-rvcoef-n").innerHTML=`Vazio usa a estimativa: ${f2(K.est)} · <a href="#nota-venda-arr">como se calcula</a>`;
     if($("o-rvbal")) $("o-rvbal").textContent=M?eur(balN):"—";
-    const JB=A.base+B.base, incJ=add=>add<=0?0:2*irs((JB+add)/2)-2*irs(JB/2);
+    // Titulares, quotas e cônjuge vêm do contexto de titulares (módulo E), que conhece 1 a 5 titulares
+    const JB=A.base+(TIT.spo||B).base, incJ=add=>add<=0?0:2*irs((JB+add)/2)-2*irs(JB/2), jc=p=>TIT.jc(p);
     const brTop=(p,income,ptTax,rate,what)=>{ if(!p.br||income<=0) return null; const cred=Math.min(ptTax,rate*income), t=Math.max(0,rate*income-ptTax);
       return {t,line:L(`Imposto no Brasil de ${p.name}: ${pct(rate)} sobre ${eur(income)} (${what}) − crédito de ${eur(cred)}`,-t,"tax")}; };
-    const sh=socio==="A"?[{p:A,share:1}]:socio==="B"?[{p:B,share:1}]:[{p:A,share:a.qA},{p:B,share:a.qB}];
-    const ownersOf=k=>k==="a1"?[{p:A,share:1}]:k==="a3"?[{p:B,share:1}]:joint?[{p:A,share:.5},{p:B,share:.5}]:[{p:A,share:a.qA},{p:B,share:a.qB}];
+    const sh=TIT.sh(socio);
+    const ownersOf=k=>{ const x=TIT.plan.find(z=>z.key===k); return x?x.owners:[{p:A,share:1}]; };
+    const eniOf=k=>{ const x=TIT.eni.find(z=>z.key===k); return x?x.p:A; };
     const lineV=(s,re)=>{ const x=s&&s.lines.find(l=>!l.h&&re.test(l.l)); return x?x.v:0; };
     const deprOf=imtX=>((S.rcompra+S.resc+imtX+is)*.75+val)*.02;
     const preTaxSum=y1.preTax+(N-1)*yt.preTax;
@@ -2627,9 +2629,11 @@ qaBox(); if(LAST) qaSchedule();
       if(/^a/.test(k)){ // ----- Pessoa singular: categoria G -----
         const ow=ownersOf(k), aq=base*coef, gAll=V-aq-S.resc-is-val-comm;
         let irsT=0, brT=0; const tl=[], gs=ow.map(x=>x.share*gAll-x.share*imtOf(x.p)), gTot=gs.reduce((a,b)=>a+b,0);
-        if(joint){ const add=.5*Math.max(0,gTot); irsT=incJ(add); tl.push(L(`IRS do casal: 50% da mais-valia englobada, ${eur(JB)} → ${eur(JB+add)}`,-irsT,"tax"));
-          ow.forEach((x,i)=>{ const b=brTop(x.p,Math.max(0,gs[i])+x.share*base*(coef-1),irsT*x.share,.15,"ganho de capital"); if(b){brT+=b.t; tl.push(b.line);} }); }
-        else ow.forEach((x,i)=>{ const g=Math.max(0,gs[i]); let t;
+        const cplI=ow.map((x,i)=>i).filter(i=>jc(ow[i].p)&&ow[i].share>0);
+        if(cplI.length){ const gC=cplI.reduce((a,i)=>a+gs[i],0), cs=cplI.reduce((a,i)=>a+ow[i].share,0), add=.5*Math.max(0,gC), tJ=incJ(add); irsT+=tJ;
+          tl.push(L(`IRS do casal: 50% da mais-valia englobada, ${eur(JB)} → ${eur(JB+add)}`,-tJ,"tax"));
+          cplI.forEach(i=>{ const x=ow[i], b=brTop(x.p,Math.max(0,gs[i])+x.share*base*(coef-1),tJ*x.share/cs,.15,"ganho de capital"); if(b){brT+=b.t; tl.push(b.line);} }); }
+        ow.forEach((x,i)=>{ if(cplI.includes(i)) return; const g=Math.max(0,gs[i]); let t;
           if(x.p.nr){ t=.28*.5*g; tl.push(L(`IRS de ${x.p.name} (não residente): 28% sobre 50% de ${eur(g)}`,-t,"tax")); }
           else { t=inc(x.p.base,.5*g); tl.push(L(`IRS de ${x.p.name}: 50% da mais-valia englobada, ${eur(x.p.base)} → ${eur(x.p.base+.5*g)}`,-t,"tax")); }
           irsT+=t; const b=brTop(x.p,g+(g>0?x.share*base*(coef-1):0),t,.15,"ganho de capital"); if(b){brT+=b.t; tl.push(b.line);} });
@@ -2653,17 +2657,18 @@ qaBox(); if(LAST) qaSchedule();
         saleTax=ircD+derD+brC;
         if(k==="c1"){ saleCash=coCash; saleLbl="IRC e derrama"+(brC?" e imposto no Brasil":""); }
         else { const Ds=Math.max(0,g-ircD-derD); let t=0; const tl=[];
-          if(k==="c3"&&joint){ t=incJ(.5*Ds); tl.push(L(`IRS do casal sobre 50% do dividendo da venda (${eur(.5*Ds)})`,-t,"tax")); }
-          else sh.forEach(x=>{ const d=Ds*x.share, r=x.p.nr?(x.p.br?.15:.25):.28;
+          const cplS=k==="c3"?sh.filter(x=>jc(x.p)&&x.share>0):[];
+          if(cplS.length){ const add=.5*Ds*cplS.reduce((a,x)=>a+x.share,0), v=incJ(add); t+=v; tl.push(L(`IRS do casal sobre 50% do dividendo da venda (${eur(add)})`,-v,"tax")); }
+          sh.forEach(x=>{ if(cplS.includes(x)) return; const d=Ds*x.share, r=x.p.nr?(x.p.br?.15:.25):.28;
             if(k==="c3"&&!x.p.nr){ const v=inc(x.p.base,.5*d); t+=v; tl.push(L(`IRS de ${x.p.name}: 50% do dividendo da venda englobado`,-v,"tax")); }
             else { t+=d*r; tl.push(L(`− Retenção sobre o dividendo da venda de ${x.p.name}: ${pct(r)} sobre ${eur(d)}`,-d*r,"tax")); } });
           sl.push(hd("Distribuição da mais-valia"),L("Dividendo bruto (mais-valia depois de IRC)",Ds),...tl);
           saleTax+=t; saleCash=coCash-t; saleLbl="IRC, derrama e imposto sobre dividendos"+(brC?" e no Brasil":"");
           extraSub=L(`Do dinheiro da venda, ${eur(Math.max(0,coCash-Ds))} ficam na sociedade (recuperação do custo)`,Math.max(0,coCash-Ds),"sub"); }
       } else { // ----- Empresário em nome individual: categoria B -----
-        const p=k==="b2"?B:A, custo=S.rcompra+S.resc+imtX+is+val, acc=deprOf(imtX)*N, vc=custo-acc, g=V-comm-vc;
+        const p=eniOf(k), custo=S.rcompra+S.resc+imtX+is+val, acc=deprOf(imtX)*N, vc=custo-acc, g=V-comm-vc;
         const txT=Math.max(0,lineV(st,/^= Lucro tributável/)), gp=Math.max(0,g); let t, line;
-        if(joint){ t=gp?2*irs((JB+txT+gp)/2)-2*irs((JB+txT)/2):0; line=L(`IRS do casal: mais-valia 100% englobada, somada ao lucro do ano (${eur(JB+txT)} → ${eur(JB+txT+gp)})`,-t,"tax"); }
+        if(jc(p)){ t=gp?2*irs((JB+txT+gp)/2)-2*irs((JB+txT)/2):0; line=L(`IRS do casal: mais-valia 100% englobada, somada ao lucro do ano (${eur(JB+txT)} → ${eur(JB+txT+gp)})`,-t,"tax"); }
         else if(p.nr){ t=.25*gp; line=L(`IRS de ${p.name} (não residente): 25% sobre ${eur(gp)}`,-t,"tax"); }
         else { t=inc(p.base+txT,gp); line=L(`IRS de ${p.name}: mais-valia 100% englobada, ${eur(p.base+txT)} → ${eur(p.base+txT+gp)}`,-t,"tax"); }
         const b=brTop(p,gp,t,.15,"ganho de capital"), br=b?b.t:0;
@@ -3167,7 +3172,7 @@ document.documentElement.dataset.tier="demo";
 // Preços e ligações de compra (Stripe, Gumroad, Lemon Squeezy…): altere aqui. Com url vazia, o botão "Comprar" abre um e-mail para QF_SHOP.contact.
 // Serviço de contas (Cloudflare Worker, pasta servidor/). Vazio = a app funciona só com chaves, como antes.
 const QF_ACCOUNT_URL="https://quantofica-conta.quantoficapt.workers.dev";
-const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/comprar.html?plano=cliente"},agencia:{price:"12,90 €/mês",url:"https://quantofica.github.io/comprar.html?plano=agencia"},contact:"quantofica@[defina]"};
+const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/comprar.html?plano=cliente"},agencia:{price:"12,90 €/mês",url:"https://quantofica.github.io/comprar.html?plano=agencia"},contact:"quantoficapt@gmail.com"};
 (function(){
   // Chave PÚBLICA (só verifica). A chave privada fica apenas no gerador de chaves do dono.
   // 1.ª: gerador de chaves original; 2.ª: serviço de contas (servidor/).
@@ -4275,7 +4280,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
         <label class="dg-chk"><input type="checkbox" name="mkt"><span>Quero receber novidades e dicas sobre impostos no imobiliário (opcional).</span></label>
         <p class="dg-err" role="alert"></p>
         <button class="dg-btn" type="submit">Começar a simular</button>
-        <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail.</p></details>
+        <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail, para quantoficapt@gmail.com.</p></details>
       </form>
       <div class="dg-alt"><button type="button" data-dg="key">${typeof QF_ACCOUNT_URL!=="undefined"&&QF_ACCOUNT_URL?"Já comprei — entrar":"Já tenho uma chave de licença"}</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
     </div>`;

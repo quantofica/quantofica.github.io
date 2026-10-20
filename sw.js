@@ -1,6 +1,6 @@
 // QuantoFica: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "2026-10-20-contas";
+const VERSION = "2026-10-20-revisao";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png?v=2", "./icons/icon-512.png?v=2", "./icons/maskable-512.png?v=2",
   "./icons/apple-touch-icon.png?v=2", "./icons/favicon-32.png?v=2"];

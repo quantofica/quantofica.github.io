@@ -59,7 +59,7 @@ p{text-align:justify}
 // Serviço de contas (o mesmo endereço de QF_ACCOUNT_URL no index.html). Vazio = envio manual da chave.
 const ACCOUNT_URL="https://quantofica-conta.quantoficapt.workers.dev";
 // true quando o "Entrar com o e-mail" estiver ligado na app (QF_ACCOUNT_URL no index.html)
-const LOGIN_READY=false;
+const LOGIN_READY=true;
 const q=new URLSearchParams(location.search); let b=null; try{ b=JSON.parse(localStorage.getItem("qf-buy")||"null"); }catch(e){}
 const p=q.get("plano")||(b&&b.plano);
 if(p==="agencia") document.getElementById("sub").textContent="Bem-vindo ao plano Agência do QuantoFica.";
