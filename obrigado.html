@@ -57,6 +57,8 @@ p{text-align:justify}
 <script>
 // Serviço de contas (o mesmo endereço de QF_ACCOUNT_URL no index.html). Vazio = envio manual da chave.
 const ACCOUNT_URL="https://quantofica-conta.quantoficapt.workers.dev";
+// true quando o "Entrar com o e-mail" estiver ligado na app (QF_ACCOUNT_URL no index.html)
+const LOGIN_READY=false;
 const q=new URLSearchParams(location.search); let b=null; try{ b=JSON.parse(localStorage.getItem("qf-buy")||"null"); }catch(e){}
 const p=q.get("plano")||(b&&b.plano);
 if(p==="agencia") document.getElementById("sub").textContent="Bem-vindo ao plano Agência do QuantoFica.";
@@ -67,9 +69,8 @@ const esc=t=>String(t||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const sid=q.get("session_id"), st=document.getElementById("st"), steps=document.getElementById("steps");
 function loginSteps(email){ steps.innerHTML=`<li>Abra o QuantoFica e toque no <b>ícone da chave</b> no topo.</li><li>Em «Já comprou? Entre com o seu e-mail», escreva <b>${esc(email||"o e-mail que usou no pagamento")}</b>.</li><li>Introduza o código de 6 dígitos que recebe por e-mail. O plano fica ativo.</li>`; }
 async function claim(){
-  if(!ACCOUNT_URL) return;
-  loginSteps(b&&b.email);
-  if(!/^cs_(test|live)_/.test(sid||"")) return;
+  if(!ACCOUNT_URL||!/^cs_(test|live)_/.test(sid||"")) return;
+  if(LOGIN_READY) loginSteps(b&&b.email);
   st.hidden=false; st.className="st"; st.innerHTML='<span class="spin" aria-hidden="true"></span><span>A ativar o seu plano…</span>';
   for(let i=0;i<6;i++){
     let j=null; try{ const r=await fetch(ACCOUNT_URL.replace(/\/+$/,"")+"/claim",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({session_id:sid})}); j=await r.json(); }catch(e){}
@@ -77,11 +78,13 @@ async function claim(){
       try{ localStorage.setItem("qf-license",j.license); localStorage.setItem("qf-session",j.session); localStorage.setItem("qf-session-at",String(Date.now())); }catch(e){}
       const nm=j.tier==="agencia"?"Agência":"Cliente";
       st.className="st ok"; st.innerHTML='<span aria-hidden="true">✓</span><span>Plano '+nm+' ativo neste navegador.</span>';
-      steps.innerHTML=`<li>Toque em <b>Abrir o QuantoFica</b>: já está tudo desbloqueado.</li><li>Noutro dispositivo, ou na app instalada no ecrã principal do iPhone, toque no <b>ícone da chave</b> e entre com <b>${esc(j.email)}</b>. Recebe um código de 6 dígitos por e-mail.</li>`;
+      steps.innerHTML=LOGIN_READY?`<li>Toque em <b>Abrir o QuantoFica</b>: já está tudo desbloqueado.</li><li>Noutro dispositivo, ou na app instalada no ecrã principal do iPhone, toque no <b>ícone da chave</b> e entre com <b>${esc(j.email)}</b>. Recebe um código de 6 dígitos por e-mail.</li>`
+        :`<li>Toque em <b>Abrir o QuantoFica</b>: já está tudo desbloqueado neste navegador.</li><li>Para usar noutro dispositivo, ou na app instalada no ecrã principal do iPhone, vai receber também por e-mail a sua <b>chave de licença</b>: toque no <b>ícone da chave</b>, cole-a e toque em <b>Ativar</b>.</li>`;
       return; }
     if(j&&j.err&&j.err!=="not_paid"&&j.err!=="upstream") break;
     await new Promise(r=>setTimeout(r,2500)); }
-  st.className="st"; st.innerHTML="<span>O pagamento está confirmado. Para ativar o plano, siga os passos abaixo.</span>"; }
+  st.className="st"; st.innerHTML="<span>O pagamento está confirmado. Para ativar o plano, siga os passos abaixo.</span>";
+  if(!LOGIN_READY) st.hidden=true; }
 claim();
 </script>
 </body>
