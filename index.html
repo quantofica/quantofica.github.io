@@ -3189,8 +3189,19 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     format:"Esta chave não é válida. Confirme que a copiou completa, desde «QF1.» até ao último carácter.",
     sig:"Esta chave não é válida: a assinatura não confere. Copie-a de novo a partir do e-mail que recebeu.",
     nocrypto:"Este navegador não permite verificar a chave neste endereço, porque a verificação só funciona em ligações seguras (https). Abra o QuantoFica em https://quantofica.github.io/ e ative a chave aí.",
+    revoked:"Esta chave foi desativada, por exemplo por ter sido partilhada ou reembolsada. Se acha que é um engano, responda ao e-mail em que a recebeu.",
     expired:x=>ssGet()?`A sua mensalidade terminou em ${fmtD(x)}. Quando a subscrição for renovada, o plano volta a ficar ativo sozinho.`:`A sua mensalidade terminou em ${fmtD(x)} — introduza a nova chave.`};
   let NOTICE=null, pubKey=null;
+  // Chaves desativadas: lista pública revogadas.json (ids de chave ou e-mails). Guarda a última cópia para funcionar sem internet.
+  const LSR="qf-revoked";
+  const revList=()=>{ try{ const a=JSON.parse(localStorage.getItem(LSR)||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } };
+  const isRevoked=lic=>{ const L=revList().map(x=>String(x).trim().toLowerCase()); return (!!lic.id&&L.includes(lic.id.toLowerCase()))||(!!lic.email&&L.includes(lic.email.toLowerCase())); };
+  let revAt=0;
+  async function syncRevoked(force){ if(!force&&Date.now()-revAt<30*60e3) return false; revAt=Date.now();
+    try{ const r=await fetch("revogadas.json?t="+Date.now(),{cache:"no-store"}); if(!r.ok) return false;
+      const j=await r.json(), a=(Array.isArray(j)?j:j&&j.revogadas||[]).filter(x=>typeof x==="string"&&x.trim()).map(x=>x.trim());
+      const nv=JSON.stringify(a), old=(()=>{ try{ return localStorage.getItem(LSR)||"[]"; }catch(e){ return "[]"; } })();
+      if(nv===old) return false; try{ localStorage.setItem(LSR,nv); }catch(e){} return true; }catch(e){ return false; } }
 
   /* ---------- 0. Contas: entrar com o e-mail (serviço QF_ACCOUNT_URL) ---------- */
   const SS="qf-session", SR="qf-session-at", ACC=()=>!!QF_ACCOUNT_URL;
@@ -3241,6 +3252,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     const D=/^\d{4}-\d{2}-\d{2}$/;
     if(!p||typeof p!=="object"||!["cliente","agencia"].includes(p.t)||(p.t==="agencia"&&!D.test(p.x||""))||(p.x!=null&&!D.test(p.x))) return {ok:false,err:"format"};
     const lic={tier:p.t,name:String(p.n||"").slice(0,80),email:String(p.e||"").slice(0,120),exp:p.x||null,id:String(p.id||"").slice(0,24),acct:!!p.a,key};
+    if(isRevoked(lic)) return {ok:false,err:"revoked",lic};
     if(lic.exp&&lic.exp<today()) return {ok:false,err:"expired",lic};
     return {ok:true,lic}; }
   function soon(lic){ if(!lic||!lic.exp) return null; const d=daysTo(lic.exp); return d<=WARN_DAYS?{kind:"soon",exp:lic.exp,d}:null; }
@@ -3249,10 +3261,15 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
       if(r.ok){ NOTICE=soon(r.lic); qfSetLicense(r.lic); return; }
       if(r.err==="expired"){ NOTICE={kind:"expired",exp:r.lic.exp}; if(qfTier()!=="demo") qfSetLicense({tier:"demo"}); else paint(); return; }
       if(r.err==="nocrypto"){ NOTICE={kind:"nocrypto"}; paint(); return; }
+      // Chave desativada: fica guardada, para voltar a funcionar sozinha se for reativada
+      if(r.err==="revoked"){ NOTICE={kind:"revoked"}; if(qfTier()!=="demo") qfSetLicense({tier:"demo"}); else paint(); return; }
       lsSet(""); }
     NOTICE=null; if(qfTier()==="cliente"||qfTier()==="agencia") qfSetLicense({tier:"demo"}); else paint(); }
   // A mensalidade pode terminar com a app aberta (por exemplo, de um dia para o outro)
-  document.addEventListener("visibilitychange",()=>{ if(document.hidden) return; if(QF_LIC.exp||NOTICE) boot().then(maybeRefresh).catch(()=>{}); else maybeRefresh(); });
+  document.addEventListener("visibilitychange",()=>{ if(document.hidden) return; if(QF_LIC.exp||NOTICE) boot().then(maybeRefresh).catch(()=>{}); else maybeRefresh();
+    if(lsGet()) syncRevoked(false).then(ch=>{ if(ch) boot(); }).catch(()=>{}); });
+  // Com internet, confere a lista de chaves desativadas pouco depois de abrir (sem atrasar o arranque)
+  setTimeout(()=>{ if(lsGet()) syncRevoked(true).then(ch=>{ if(ch) boot(); }).catch(()=>{}); },1500);
 
   /* ---------- 2. Interface: botão no cabeçalho, faixa, convites ---------- */
   const NEEDS=["detalhe","analise","pagamentos","exportar","guardar","link"];
@@ -3287,11 +3304,13 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     b.classList.toggle("g-locked",!qfHas(need)); }); }
   // Rodapé
   (function(){ let p=document.querySelector(".wrap .qf-foot"); if(!p){ const w=document.querySelector(".wrap"); if(!w) return; p=document.createElement("p"); p.className="qf-foot"; w.appendChild(p); }
-    const b=document.createElement("button"); b.type="button"; b.className="qf-link"; b.textContent="Planos e licença"; b.addEventListener("click",()=>gOpen(null)); p.appendChild(b); })();
+    const b=document.createElement("button"); b.type="button"; b.className="qf-link"; b.textContent="Planos e licença"; b.addEventListener("click",()=>gOpen(null)); p.appendChild(b);
+    const t=document.createElement("a"); t.className="qf-link"; t.href="termos.html"; t.textContent="Termos"; p.appendChild(t); })();
 
   function paintStrip(){ let cls="", html="", btn="";
     if(NOTICE&&NOTICE.kind==="expired"){ cls="g-warn"; html=LOCK+escH(MSG.expired(NOTICE.exp)); btn="Introduzir a nova chave"; }
     else if(NOTICE&&NOTICE.kind==="nocrypto"){ cls="g-warn"; html=LOCK+escH(MSG.nocrypto); btn="Planos e licença"; }
+    else if(NOTICE&&NOTICE.kind==="revoked"){ cls="g-warn"; html=LOCK+escH(MSG.revoked); btn="Planos e licença"; }
     else if(NOTICE&&NOTICE.kind==="soon"&&qfTier()==="agencia"&&!ssGet()){ cls="g-warn"; const d=NOTICE.d;
       html=`A sua mensalidade do plano Agência termina em ${fmtD(NOTICE.exp)} (${d<=0?"hoje":d===1?"amanhã":`daqui a ${d} dias`}). Renove e introduza a nova chave para continuar a usar as funções da agência.`; btn="Renovar"; }
     else if(!qfHas("detalhe")){ html=LOCK+"Versão de demonstração — veja o melhor cenário. Desbloqueie o detalhe completo."; btn="Desbloquear"; }
@@ -3350,6 +3369,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
     else p=`<b>Demo grátis</b> — calcula tudo, mas mostra só o melhor cenário e o valor líquido. Para ver o detalhe completo, compre o plano Cliente ou o plano Agência e ${ACC()?"entre aqui com o e-mail da compra":"introduza aqui a chave que recebe por e-mail"}.`;
     let note="";
     if(NOTICE&&NOTICE.kind==="expired") note=MSG.expired(NOTICE.exp);
+    else if(NOTICE&&NOTICE.kind==="revoked") note=MSG.revoked;
     else if(!hasCrypto()) note=MSG.nocrypto;
     else if(t==="agencia"&&NOTICE&&NOTICE.kind==="soon"&&!ssGet()) note="Quando renovar, recebe uma chave nova por e-mail. Cole-a abaixo e toque em “Ativar”.";
     return `<p class="g-cur-p">${p}</p>${note?`<p class="g-note">${escH(note)}</p>`:""}`; }
@@ -3432,6 +3452,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
   async function activate(raw){ const k=String(raw||"").replace(/\s+/g,"");
     if(!k){ setMsg("Cole a chave que recebeu por e-mail.","err"); dlg.querySelector("#g-key-in").focus(); return; }
     setMsg("A verificar a chave…");
+    await syncRevoked(true).catch(()=>{});
     const r=await verifyKey(k);
     if(!r.ok){ setMsg(r.err==="expired"?MSG.expired(r.lic.exp):MSG[r.err]||MSG.format,"err"); return; }
     const stored=lsSet(r.lic.key); NOTICE=soon(r.lic); LEADON=false; dlg.querySelector("#g-key-in").value=""; qfSetLicense(r.lic);

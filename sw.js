@@ -1,6 +1,6 @@
 // QuantoFica: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "2026-10-19-contas";
+const VERSION = "2026-10-20-revogadas";
 const CORE = ["./", "./index.html", "./manifest.webmanifest",
   "./icons/icon-192.png?v=2", "./icons/icon-512.png?v=2", "./icons/maskable-512.png?v=2",
   "./icons/apple-touch-icon.png?v=2", "./icons/favicon-32.png?v=2"];
@@ -27,6 +27,8 @@ self.addEventListener("fetch", e => {
   }
   // Ficheiros da app e tipos de letra: usa a cópia guardada e atualiza em segundo plano.
   const sameOrigin = url.origin === location.origin;
+  // Lista de chaves desativadas: sempre da rede, nunca da cópia guardada.
+  if (sameOrigin && url.pathname.endsWith("/revogadas.json")) return;
   const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com";
   if (!sameOrigin && !fonts) return;
   e.respondWith(caches.match(req).then(hit => {
