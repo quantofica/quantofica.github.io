@@ -30,6 +30,7 @@ p{text-align:justify}
 .st{width:100%;text-align:left;display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--accent) 10%,var(--panel));margin:0 0 14px;font-weight:600}
 .st.ok{background:color-mix(in srgb,var(--good) 14%,var(--panel));color:var(--good)}
 .spin{width:18px;height:18px;border:3px solid currentColor;border-right-color:transparent;border-radius:50%;animation:r .8s linear infinite;flex:none}
+.st[hidden]{display:none}
 .st>span:last-child{flex:1}
 @keyframes r{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}}
