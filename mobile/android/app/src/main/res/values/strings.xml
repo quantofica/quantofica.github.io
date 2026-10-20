@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">QuantoFica</string>
+    <string name="title_activity_main">QuantoFica</string>
+    <string name="package_name">pt.com.quantofica.app</string>
+    <string name="custom_url_scheme">pt.com.quantofica.app</string>
+</resources>

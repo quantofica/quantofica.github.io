@@ -1,0 +1,29 @@
+{
+  "name": "quantofica-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "QuantoFica — app nativa (iOS e Android) feita com Capacitor a partir da app web",
+  "scripts": {
+    "build": "node scripts/build-www.mjs",
+    "sync": "npm run build && npx cap sync",
+    "ios": "npm run sync && npx cap open ios",
+    "android": "npm run sync && npx cap open android",
+    "assets": "npx capacitor-assets generate --ios --android --iconBackgroundColor '#1d4f91' --iconBackgroundColorDark '#0c2550' --splashBackgroundColor '#1a4787' --splashBackgroundColorDark '#0c2550'"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.3",
+    "@capacitor/app": "^8.1.2",
+    "@capacitor/browser": "^8.0.5",
+    "@capacitor/core": "^8.5.3",
+    "@capacitor/filesystem": "^8.1.5",
+    "@capacitor/ios": "^8.5.3",
+    "@capacitor/share": "^8.0.3",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^3.0.5",
+    "@capacitor/cli": "^8.5.3",
+    "esbuild": "^0.28.2"
+  }
+}

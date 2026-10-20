@@ -1,0 +1,13 @@
+/* QuantoFica — ajustes só para a app nativa (iOS/Android) */
+
+/* Compras: nesta fase, nas lojas não se compra dentro da app (as compras da loja entram numa fase seguinte).
+   Quem já comprou no site entra com o e-mail. */
+:root[data-native] [data-buy],
+:root[data-native] [data-dg="buy"] { display: none !important; }
+
+/* Sem realce azul ao tocar e sem menu de "copiar/abrir link" ao manter premido em botões */
+:root[data-native] { -webkit-tap-highlight-color: transparent; }
+:root[data-native] button, :root[data-native] [role="button"] { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+
+/* Evita o "salto" elástico do fundo no iOS a mostrar outra cor */
+:root[data-native] body { overscroll-behavior-y: none; }
