@@ -165,6 +165,7 @@ tr.drow td{padding:0 8px 14px;border-bottom:1px solid var(--line)}
 .dl.tot{border-top:1px solid var(--line);padding-top:4px;font-weight:600}
 .dl.tax span:last-child{color:var(--warn)}
 .dl.sub{color:var(--muted)}
+.dl span:first-child{text-align:left;hyphens:manual;-webkit-hyphens:manual}
 .reset{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:500 12.5px var(--body);border-radius:6px;padding:7px 12px;cursor:pointer}
 @media (prefers-reduced-motion:no-preference){.bar span{transition:width .25s ease}}
 
@@ -1642,7 +1643,7 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
       const pal=["#1e63c6","#d06800","#7a3fd0","#c2185b","#00808c","#5d4037","#c62828"]; parts.forEach((p,k)=>p.push(pal[k%pal.length]));
       const tot=parts.reduce((a,x)=>a+x[1],0), all=[...parts]; if(s.net>0) all.push(["Líquido",s.net,"#0e8a49"]); const base=all.reduce((a,x)=>a+x[1],0); if(!base) return "";
       return `<div class="comp"><div class="comp-h">Para onde vai o resultado${unit?" no ano":""}</div><div class="comp-body">${donutSVG(all,132,s.net>0?pct(s.net/base):"",s.net>0?"líquido":"")}<div class="comp-leg">${all.map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/base)}</span>`).join("")}<span class="comp-tot">Impostos: <b>${eur(tot)}</b></span></div></div></div>`; })();
-    const det=comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${fmt(x.v)}</span></div>`).join("");
+    const det=comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
       <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
@@ -1777,7 +1778,8 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
   sc.forEach(s=>{ const i=s.lines.findIndex(x=>x.c==="tot"&&/^= (Líquido|Fica)/.test(x.l));
     if(capK>0&&i>-1){ s.lines.splice(i,0,L("− Capital do empréstimo amortizado no ano",-capK)); s.lines[i+1].v-=capK; s.net-=capK; }
     const y=s.lines.find(x=>x.l==="__Y__"); if(y){ const inv=invest(y.imtX), eq=inv-M;
-      y.l=`Rentabilidade líquida: ${pct(s.net/inv)} sobre ${eur(inv)} de investimento total`+(M?`; ${eq>0?pct(s.net/eq):"—"} sobre ${eur(eq)} de capital próprio`:""); y.v=s.net; }
+      y.l=`Rentabilidade sobre o investimento de ${eur(inv)}`; y.v=0; y.t=pct(s.net/inv);
+      if(M) s.lines.splice(s.lines.indexOf(y)+1,0,{l:`Rentabilidade sobre o capital próprio de ${eur(eq)}`,v:0,c:"sub",t:eq>0?pct(s.net/eq):"—"}); }
     if(M){ s.lines.forEach(x=>{ if(/^IMT e Imposto do Selo \(na compra/.test(x.l)){ x.l="IMT, Imposto do Selo e Selo do crédito (na compra, uma vez)"; x.v+=isCred; } }); }
   });
   // Resumo e notas
@@ -2084,8 +2086,8 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
     let r=title(ws,2);
     R.forEach((x,i)=>{ r++; ws.getCell(r,1).value=`${i+1}. ${x.name}`; ws.getCell(r,2).value=x.net; sty(ws.getCell(r,1),{bold:true,size:12,color:C.white,fill:i===0?C.green:"FF3C4655"}); sty(ws.getCell(r,2),{bold:true,size:12,color:C.white,fill:i===0?C.green:"FF3C4655",h:"right",fmt:EUR}); ws.getRow(r).height=24; r++;
       x.lines.forEach(l=>{ if(l.h){ ws.mergeCells(r,1,r,2); const c=ws.getCell(r,1); c.value=txt(l.h).toUpperCase(); sty(c,{bold:true,size:9.5,color:C.muted,fill:C.bg}); r++; return; }
-        const a=ws.getCell(r,1), b=ws.getCell(r,2); a.value=txt(l.l); b.value=l.v; const tot=l.c==="tot", sub=l.c==="sub";
-        sty(a,{bold:tot,italic:sub,color:sub?C.muted:C.ink,wrap:true,indent:tot?0:1}); sty(b,{bold:tot,italic:sub,h:"right",fmt:EUR,color:l.c==="tax"?C.amber:(sub?C.muted:C.ink)});
+        const a=ws.getCell(r,1), b=ws.getCell(r,2); a.value=txt(l.l); b.value=l.t!=null?l.t:l.v; const tot=l.c==="tot", sub=l.c==="sub";
+        sty(a,{bold:tot,italic:sub,color:sub?C.muted:C.ink,wrap:true,indent:tot?0:1}); sty(b,{bold:tot,italic:sub,h:"right",fmt:l.t!=null?undefined:EUR,color:l.c==="tax"?C.amber:(sub?C.muted:C.ink)});
         if(tot){ a.border={top:{style:"thin",color:{argb:C.line}}}; b.border={top:{style:"thin",color:{argb:C.line}}}; } r++; }); });
   }
   // ---------- Notas ----------
@@ -2156,7 +2158,7 @@ async function buildPdf(){ await loadLibs("pdf");
       styles:{fontSize:9.5,cellPadding:5,lineColor:[210,216,224],valign:"middle"},columnStyles:{0:{cellWidth:(W-2*M)*.30},1:{cellWidth:(W-2*M)*.20},2:{cellWidth:(W-2*M)*.30},3:{cellWidth:(W-2*M)*.20}},margin:{left:M,right:M}});
     yy=doc.lastAutoTable.finalY; });
   R.forEach(r=>{ doc.autoTable({startY:doc.lastAutoTable.finalY+18,head:[[pdfTxt(r.name),pdfTxt(eur(r.net)+LAST.unit)]],
-    body:r.lines.map(x=>x.h?[{content:pdfTxt(txt(x.h).toUpperCase()),colSpan:2,styles:{fontStyle:"bold",textColor:[60,70,85],fillColor:[240,243,247]}}]:[pdfTxt(txt(x.l)),{content:pdfTxt((x.v<0?"- ":"")+eur(Math.abs(x.v))),styles:{fontStyle:x.c==="tot"?"bold":"normal"}}]),
+    body:r.lines.map(x=>x.h?[{content:pdfTxt(txt(x.h).toUpperCase()),colSpan:2,styles:{fontStyle:"bold",textColor:[60,70,85],fillColor:[240,243,247]}}]:[pdfTxt(txt(x.l)),{content:pdfTxt(x.t!=null?x.t:(x.v<0?"- ":"")+eur(Math.abs(x.v))),styles:{fontStyle:x.c==="tot"?"bold":"normal"}}]),
     styles:{fontSize:8.8,cellPadding:3.5},headStyles:{fillColor:[60,70,85]},columnStyles:{1:{halign:"right",cellWidth:110}},margin:{left:M,right:M},rowPageBreak:"avoid"}); });
   if(typeof qaPdf==="function") qaPdf(doc,{M,W,blue,amber});
   if(window.C_pdfCal) try{ window.C_pdfCal(doc,{M,W,blue}); }catch(e){ console.error(e); }
