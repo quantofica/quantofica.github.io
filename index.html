@@ -4452,6 +4452,27 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
 </script>
 
 <script>
+// ===== T: datas da operação começam no dia em que se abre a app =====
+// Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
+// (tranches e data da cedência) avançam juntas, para a primeira tranche paga ficar em hoje e os intervalos se manterem.
+// As simulações guardadas, os links partilhados e o exemplo guiado mantêm as suas próprias datas.
+(function(){ try{
+  if(typeof state==="undefined"||typeof fill!=="function") return;
+  if(/^#(s|lead)=/.test(location.hash||"")) return;
+  const iso=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  const pd=x=>{ const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(x||""); return m?new Date(+m[1],m[2]-1,+m[3]):null; };
+  const now=new Date(), T0=new Date(now.getFullYear(),now.getMonth(),now.getDate()), today=iso(T0);
+  let ch=false;
+  ["dcompra","rdcompra"].forEach(k=>{ if(k in state&&state[k]!==today){ state[k]=today; ch=true; } });
+  const pagas=(state.pagas||[]).map(t=>pd(t.d)).filter(Boolean);
+  const first=pagas.length?new Date(Math.min(...pagas)):pd(state.dced);
+  if(first){ const days=Math.round((T0-first)/864e5);
+    if(days){ const mv=x=>{ const d=pd(x); if(!d) return x; d.setDate(d.getDate()+days); return iso(d); };
+      ["pagas","recebidas"].forEach(n=>(state[n]||[]).forEach(t=>{ t.d=mv(t.d); })); if(state.dced) state.dced=mv(state.dced); ch=true; } }
+  if(ch){ save(); fill(); if(typeof calc==="function") calc(); }
+}catch(e){ console.error(e); } })();
+</script>
+<script>
 if("serviceWorker" in navigator){
   // Atualiza a app sozinha: procura versão nova ao abrir e ao voltar à app, e recarrega quando a encontra.
   let reloaded=false;
