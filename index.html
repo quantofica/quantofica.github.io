@@ -1265,7 +1265,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
   </fieldset>
   <fieldset><legend>Arrendamento</legend>
     <div class="f"><label for="renda">Renda mensal (€)</label><input id="renda" type="number" min="0" step="50"></div>
-    <div class="f"><label for="ocup">Meses arrendado por ano</label><input id="ocup" type="number" min="0" max="12" step="1"></div>
+    <div class="f" hidden><label for="ocup">Meses arrendado por ano</label><input id="ocup" type="number" min="0" max="12" step="1"></div>
     <div class="f"><label for="regime">Regime da renda<small><a href="#nota-arr">diferenças</a></small></label><select id="regime"><option value="livre">Livre</option><option value="moderada">Moderada (≤ 2.300 €)</option><option value="acessivel">Acessível (RSAA)</option></select></div>
     <div class="f"><label for="dur">Duração do contrato</label><select id="dur"><option value="0">&lt; 5 anos</option><option value="5">5–10 anos</option><option value="10">10–20 anos</option><option value="20">≥ 20 anos</option></select></div>
     <div class="f"><label for="rano">Ano a simular<small>O 1.º ano inclui o efeito fiscal das obras</small></label><select id="rano"><option value="1">1.º ano</option><option value="t">Ano típico</option></select></div>
@@ -1550,7 +1550,7 @@ const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"
   cpcv:250000,cvpt:0,clausula:"sem",ced30:"nao",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",ssreg:"trim",socio:"A",rel:"conjuge",quota:50,
   casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:dPlus(6),
-  rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:11,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
+  rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:12,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
   pagas:[{d:TODAY,desc:"Sinal",v:25000},{d:dPlus(3),desc:"Reforço do sinal",v:10000},{d:dPlus(9),desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
   recebidas:[{d:dPlus(6),desc:"Assinatura da cedência",v:20000},{d:dPlus(8),desc:"Na escritura",v:45000}]};
 Object.assign(DEF,{ntit:"2"},...["C","D","E"].map((L,i)=>({["n"+L]:"Titular "+(i+3),["res"+L]:"pt",["br"+L]:"nao",["base"+L]:0,["rnh"+L]:"nao",["rel"+L]:"outro",["quota"+L]:0}))); // E: titulares 3 a 5
@@ -1701,7 +1701,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
     return {t,line:L(`Imposto no Brasil de ${p.name}: ${pct(rate)} sobre ${eur(income)} (${what}) − crédito de ${eur(cred)}`,-t,"tax")}; };
   const invest=x=>S.rcompra+S.resc+obrasT+is+isCred+x;
   const yieldL=(net,imtX)=>({l:"__Y__",v:0,c:"sub",imtX});
-  const opexLines=()=>[L("Rendas recebidas ("+S.ocup+" meses × "+eur(S.renda)+")",rendaA),...(S.cond?[L("− Condomínio",-S.cond)]:[]),...(S.seguro?[L("− Seguro",-S.seguro)]:[]),
+  const opexLines=()=>[L("Rendas recebidas (12 meses × "+eur(S.renda)+")",rendaA),...(S.cond?[L("− Condomínio",-S.cond)]:[]),...(S.seguro?[L("− Seguro",-S.seguro)]:[]),
     ...(S.manut?[L("− Manutenção corrente",-S.manut)]:[]),...(gest?[L("− Gestão do arrendamento com IVA",-gest)]:[]),L("− IMI",-imi)];
   // ----- Pessoa singular (categoria F) -----
   const dedF=opex+imi+consY1, netF=rendaA-dedF, nP=Math.max(0,netF);
@@ -2220,7 +2220,7 @@ function enhance(){
 }
 function syncSeg(){ document.querySelectorAll("#form .seg").forEach(box=>{ const sel=box.previousElementSibling; [...box.children].forEach(b=>{ const on=b.dataset.v===sel.value; b.setAttribute("aria-checked",String(on)); b.classList.toggle("on",on); }); }); }
 enhance();
-const _calc=calc; calc=function(){ _calc(); syncSeg(); };
+const _calc=calc; calc=function(){ if(+state.ocup!==12){ state.ocup=12; const e=$("ocup"); if(e) e.value="12"; save(); } _calc(); syncSeg(); };
 fill();
 renderSaves();
 (function(){ let n=1; try{ n=+localStorage.getItem("qf-step")||1; }catch(e){} goStep(n===2?2:1,true); })();
@@ -2511,7 +2511,7 @@ function qaRender(){
   <li><b>Lucro líquido:</b> o líquido do cenário depois de todos os impostos. No arrendamento é o líquido de um ano, já depois da prestação do crédito (juros e capital).</li>
   <li><b>Retorno sobre o capital (ROI):</b> lucro líquido a dividir pelo capital investido.</li>
   <li><b>Retorno anualizado:</b> o ROI convertido numa taxa anual composta, com a duração da operação: os meses entre compra e venda ou, na cedência, o tempo entre a primeira tranche paga e a data da cedência. Em operações curtas, o anualizado amplia muito o ROI. No arrendamento o resultado já é anual; com crédito mostra-se também o retorno somando o capital amortizado, que reduz a dívida e não é custo. O retorno a vários anos multiplica o ano simulado pela duração mínima do contrato, sem venda nem atualização de rendas.</li>
-  <li><b>Cash-flow mensal e rentabilidade:</b> o cash-flow é o líquido do ano a dividir por 12. A rentabilidade bruta é a renda anual (meses ocupados × renda) a dividir pelo investimento total, incluindo a parte financiada; a líquida usa o líquido do ano.</li>
+  <li><b>Cash-flow mensal e rentabilidade:</b> o cash-flow é o líquido do ano a dividir por 12. A rentabilidade bruta é a renda anual (12 × renda mensal) a dividir pelo investimento total, incluindo a parte financiada; a líquida usa o líquido do ano.</li>
   <li><b>Ponto de equilíbrio:</b> o simulador repete o cálculo completo dos impostos com valores diferentes até encontrar o preço de venda, o valor total da cedência (as tranches recebidas variam na mesma proporção) ou a renda mensal que deixa o líquido do melhor cenário a zero. Os impostos acompanham cada variação. O valor é arredondado por excesso.</li>
   <li><b>Não incluídos:</b> custos de financiamento na compra e venda e na cedência, valorização ou venda futura do imóvel arrendado e períodos sem renda além dos indicados.</li></ul></details>
   <details id="nota-sens"><summary>Nota 17 · Análise de sensibilidade</summary>
