@@ -1060,6 +1060,22 @@ html.dg-open,html.dg-open body{overflow:hidden}
   .agb-card b{font:800 16px/1.15 var(--body);color:#18212e;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .agb-card span.agb-cs{display:none}
 }
+/* ===== S: simulação de exemplo guiada (depois do guia de primeira utilização) ===== */
+.qf-tour.qx-pop{width:min(400px,calc(100vw - 24px))}
+.qx-pop .qx-x{position:absolute;top:6px;right:6px;width:44px;height:44px;border:0;background:transparent;color:var(--muted);font-size:24px;line-height:1;border-radius:10px;cursor:pointer}
+.qx-pop .qx-x:hover{background:var(--accent-soft);color:var(--ink)}
+.qx-pop .qt-n{padding-right:40px}
+.qx-pop .qx-card{margin:0 0 14px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:14px}
+.qx-pop .qx-card b{font:600 14px var(--mono);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.qx-pop .qx-card .qx-tot{border-top:1px solid var(--line);padding-top:6px;margin-top:2px;font-weight:600}
+.qx-pop .qx-card .qx-good{color:var(--good)}
+.qx-pop .qx-fine{margin:-6px 0 12px;font-size:13px;color:var(--muted)}
+.qx-pop .qt-f{flex-wrap:wrap}
+.qx-pop .qt-f .qx-alt{margin-right:auto}
+.qf-tour-block.qx-dim{background:rgba(4,9,18,.5)}
+.qx-centre.qx-pop{left:50%!important;top:50%!important;transform:translate(-50%,-50%)}
+@media (max-width:640px){.qx-pop:not(.qx-centre){left:12px!important;right:12px;top:auto!important;bottom:calc(84px + env(safe-area-inset-bottom,0px));width:auto}}
+@media print{.qx-pop{display:none!important}}
 </style>
 
 </head>
@@ -3113,7 +3129,7 @@ qaBox(); if(LAST) qaSchedule();
     const pop=document.createElement("div"); pop.className="qf-tour"; pop.setAttribute("role","dialog"); pop.setAttribute("aria-modal","true"); pop.setAttribute("aria-labelledby","qt-h"); pop.setAttribute("aria-describedby","qt-p"); pop.tabIndex=-1;
     pop.innerHTML='<p class="qt-n"></p><h2 id="qt-h"></h2><p class="qt-p" id="qt-p"></p><div class="qt-f"><button type="button" class="btn-ghost qt-skip">Saltar</button><button type="button" class="btn-primary qt-next">Seguinte</button></div>';
     document.body.append(block,ring,pop);
-    const key=e=>{ if(!T) return; if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); closeTour(); return; }
+    const key=e=>{ if(!T||document.documentElement.classList.contains("dg-open")||document.querySelector("dialog[open]")) return; if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); closeTour(); return; }
       if(e.key==="Tab"){ const f=[...pop.querySelectorAll("button")], a=document.activeElement; if(e.shiftKey&&(a===f[0]||a===pop)){ e.preventDefault(); f[f.length-1].focus(); } else if(!e.shiftKey&&a===f[f.length-1]){ e.preventDefault(); f[0].focus(); } else if(!pop.contains(a)){ e.preventDefault(); f[0].focus(); } } };
     T={i:0,block,ring,pop,key,back:document.activeElement};
     pop.querySelector(".qt-skip").onclick=closeTour;
@@ -3129,7 +3145,9 @@ qaBox(); if(LAST) qaSchedule();
   window.qfTour=openTour;
   // Só na primeira visita, e só se o navegador conseguir lembrar-se disso
   (function(){ let seen=true; try{ seen=!!localStorage.getItem("qf-tour"); }catch(e){} if(seen) return;
-    setTimeout(()=>{ if(!document.hidden&&!matchMedia("print").matches) openTour(); },700); })();
+    // Espera que o ecrã "Experimente grátis" e os diálogos fechem, para não lhes roubar o foco
+    const go=()=>{ if(document.documentElement.classList.contains("dg-open")||document.querySelector("dialog[open]")||document.hidden){ setTimeout(go,400); return; } if(!matchMedia("print").matches) openTour(); };
+    setTimeout(go,700); })();
 })();
 
 // ===== F: separadores (Dados, Resultado, Análise, Pagamentos, Notas, Guardadas) =====
@@ -4322,6 +4340,115 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
     const sub=[AGB.cons,AGB.tel||AGB.email].filter(Boolean).join(" · ");
     c.innerHTML=`${AGB.logo?`<img src="${AGB.logo}" alt="Logótipo de ${esc(AGB.name)}">`:""}<div class="agb-ct"><small>Simulação preparada por</small><b>${esc(AGB.name)}</b>${sub?`<span class="agb-cs">${esc(sub)}</span>`:""}</div>`; };
   try{ agbHeader(); }catch(e){} addEventListener("qf-tier",()=>{ try{ agbHeader(); }catch(e){} }); }
+</script>
+
+<script>
+// ===== S: simulação de exemplo guiada =====
+// Estende o guia de primeira utilização: no fim ("Concluir") propõe carregar um exemplo, mostra o resultado e explica os números.
+// Os valores da pessoa ficam numa cópia e voltam quando sai do exemplo. Também se abre pelas ligações "Ver um exemplo".
+(function(){ try{
+  if(typeof state==="undefined"||typeof fill!=="function"||typeof calc!=="function") return;
+  // Texto e valores do exemplo: altere aqui
+  const EX={label:"Apartamento T2 no Porto",
+    v:{mode:"flip",compra:200000,vpt:0,escritura:1500,obras:30000,ivaobras:"0.23",venda:290000,com:5,meses:14,imi:300,
+       casal:"nao",ntit:"2",nA:"Ana",resA:"pt",brA:"nao",baseA:25000,rnhA:"nao",ssreg:"trim",socio:"A",contab:1800,derrama:1.5,ano:"0.19"}};
+  const BK="qf-ex-back", DONE="qf-ex";
+  const LS={get:k=>{ try{ return localStorage.getItem(k); }catch(e){ return null; } }, set:(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} }, del:k=>{ try{ localStorage.removeItem(k); }catch(e){} }};
+  const root=document.documentElement, narrow=()=>innerWidth<=860;
+  const busy=()=>root.classList.contains("dg-open")||!!document.querySelector("dialog[open]")||!!document.querySelector(".qf-tour:not(.qx-pop)");
+  const lead=()=>typeof window.qfLead==="function"&&!!window.qfLead();
+  const demo=()=>typeof qfHas==="function"&&!qfHas("detalhe");
+  // Recuperação: se a app fechou a meio do exemplo, repõe os valores da pessoa
+  { const b=LS.get(BK); if(b){ try{ const o=JSON.parse(b); if(o&&o.s&&typeof o.s==="object"){ state={...clone(DEF),...o.s}; save(); fill(); } }catch(e){} LS.del(BK); } }
+
+  let X=null;
+  function restore(){ if(!X||!X.back) return; state=X.back.s; save(); fill(); LS.del(BK);
+    try{ if(X.back.qt) qtGo(X.back.qt,true); if(X.back.qt==="dados"&&typeof goStep==="function") goStep(X.back.step||1,true); }catch(e){} X.back=null; }
+  function load(){ X.back={s:clone(state),qt:typeof QT!=="undefined"?QT:"dados",step:typeof STEP!=="undefined"?STEP:1};
+    LS.set(BK,JSON.stringify({s:X.back.s}));
+    state={...clone(DEF),...clone(EX.v),pagas:clone(DEF.pagas),recebidas:clone(DEF.recebidas)}; fill(); // sem save(): o exemplo não fica guardado
+    if(narrow()) qtGo("resultado",true); else { qtGo("dados",true); try{ goStep(2,true); }catch(e){} } }
+
+  const n0=v=>eur(Math.max(0,v||0));
+  const STEPS=[
+    {t:"Experimente com um exemplo", centre:true,
+     p:()=>`Carregamos uma operação típica para ver o simulador a trabalhar. Os seus valores ficam guardados e voltam quando sair do exemplo.`,
+     card:()=>`<span>${EX.label}</span><b></b><span>Compra</span><b>${n0(EX.v.compra)}</b><span>Obras, sem IVA</span><b>${n0(EX.v.obras)}</b><span>Venda, ${EX.v.meses} meses depois</span><b>${n0(EX.v.venda)}</b>`,
+     alt:"Agora não", next:"Carregar exemplo"},
+    {t:"O melhor cenário", els:()=>[document.querySelector("#res .best .win.primary")||document.querySelector("#res .best")],
+     p:()=>{ const b=LAST&&LAST.best1; return b?`De todas as formas de fazer este negócio — em nome próprio, como empresário ou através de sociedade — esta é a que deixa mais dinheiro.`:"O resultado aparece aqui."; },
+     card:()=>{ const L=LAST, b=L&&L.best1; if(!b) return "";
+       const S=state, obrasT=S.obras*(1+parseFloat(S.ivaobras)), com=S.venda*S.com/100*1.23, eff=L.preTax>0?b.taxes/L.preTax:NaN;
+       return `<span>Venda</span><b>${eur(S.venda)}</b><span>− Compra e escritura</span><b>${eur(S.compra+S.escritura)}</b><span>− Obras com IVA</span><b>${eur(obrasT)}</b><span>− Comissão com IVA</span><b>${eur(com)}</b>`+
+         `<span class="qx-tot">Lucro antes de impostos</span><b class="qx-tot">${eur(L.preTax)}</b><span>− Impostos (${pct(eff)} do lucro)</span><b>${eur(b.taxes)}</b>`+
+         `<span class="qx-tot">${b.retido?"Fica na sociedade":"Fica-lhe no bolso"}</span><b class="qx-tot qx-good">${eur(b.net)}</b>`; },
+     fine:()=>{ const b=LAST&&LAST.best1; return b?`Cenário: ${txt(b.name)}. Os impostos incluem IMT, Imposto do Selo e o imposto sobre o lucro.`:""; },
+     alt:"Sair do exemplo", next:"Seguinte"},
+    {t:"Compare as alternativas", els:()=>{ const r=$("rows"); return [r&&r.closest(".panel")]; },
+     p:()=>demo()?`Na tabela estão todos os cenários lado a lado. Na versão grátis vê o melhor; com o plano Cliente (${QF_SHOP.cliente.price}, compra única) vê os valores de todos, o cálculo passo a passo, a análise e o calendário de pagamentos.`
+                  :`Na tabela estão todos os cenários lado a lado. Toque em “Ver cálculo” para ver cada imposto passo a passo.`,
+     alt:()=>demo()?"Ver planos":"", next:"Simular o meu imóvel"}];
+
+  function rectOf(els){ const rs=els.filter(Boolean).map(e=>e.getBoundingClientRect()).filter(r=>r.width||r.height); if(!rs.length) return null;
+    const l=Math.min(...rs.map(r=>r.left)), t=Math.min(...rs.map(r=>r.top)), r=Math.max(...rs.map(r=>r.right)), b=Math.max(...rs.map(r=>r.bottom)); return {left:l,top:t,right:r,bottom:b,width:r-l,height:b-t}; }
+  function place(){ if(!X) return; const s=STEPS[X.i], pop=X.pop, ring=X.ring;
+    if(s.centre){ ring.hidden=true; pop.classList.add("qx-centre"); return; } pop.classList.remove("qx-centre");
+    const r=rectOf(s.els()); if(!r){ ring.hidden=true; pop.classList.add("qx-centre"); return; } ring.hidden=false;
+    const pad=6, vw=innerWidth, vh=innerHeight, m=12, botBar=narrow()?86:0, vis={top:Math.max(r.top,m),bottom:Math.min(r.bottom,vh-botBar-m)};
+    Object.assign(ring.style,{left:(r.left-pad)+"px",top:(vis.top-pad)+"px",width:(r.width+2*pad)+"px",height:Math.max(0,vis.bottom-vis.top+2*pad)+"px"});
+    if(vw<=640) return; // no telemóvel o cartão fica fixo em baixo (CSS)
+    const pw=pop.offsetWidth, ph=pop.offsetHeight; let left, top;
+    if(r.left>pw+2*m){ left=r.left-pw-m; top=Math.max(m,Math.min(r.top,vh-ph-m)); }
+    else if(vw-r.right>pw+2*m){ left=r.right+m; top=Math.max(m,Math.min(r.top,vh-ph-m)); }
+    else { left=Math.min(Math.max(m,r.left+r.width/2-pw/2),vw-pw-m); top=r.bottom+pad+m+ph<=vh-m?r.bottom+pad+m:Math.max(m,vh-ph-m); }
+    Object.assign(pop.style,{left:left+"px",top:top+"px"}); }
+  const _place=place; place=function(){ _place(); if(X) X.block.classList.toggle("qx-dim",X.ring.hidden); };
+  function scrollFor(s){ if(s.centre) return; const els=s.els().filter(Boolean); if(!els.length) return;
+    const r=els[0].getBoundingClientRect(), off=typeof stickOff==="function"?stickOff():16;
+    const room=innerWidth<=640?innerHeight-86-(X.pop.offsetHeight||300)-24:innerHeight-24;
+    if(r.top<off||r.top>room*.5||r.bottom>innerHeight) scrollTo({top:Math.max(0,r.top+scrollY-off-12),behavior:"instant"}); }
+  function show(i){ if(!X) return; X.i=i; const s=STEPS[i], P=X.pop, v=f=>typeof f==="function"?f():(f||"");
+    P.querySelector(".qt-n").textContent=`Exemplo · ${i+1} de ${STEPS.length}`;
+    P.querySelector("h2").textContent=s.t; P.querySelector(".qt-p").textContent=v(s.p);
+    const c=P.querySelector(".qx-card"), ch=v(s.card); c.innerHTML=ch; c.hidden=!ch;
+    const fi=P.querySelector(".qx-fine"), ft=v(s.fine); fi.textContent=ft; fi.hidden=!ft;
+    const a=P.querySelector(".qx-alt"), at=v(s.alt); a.textContent=at; a.hidden=!at;
+    P.querySelector(".qx-next").textContent=s.next;
+    scrollFor(s); place(); requestAnimationFrame(place); P.focus(); }
+  function close(how){ if(!X) return; const back=X.backEl; [X.block,X.ring,X.pop].forEach(e=>e.remove());
+    removeEventListener("scroll",place); removeEventListener("resize",place); document.removeEventListener("keydown",X.key,true);
+    restore(); X=null; LS.set(DONE,"1");
+    if(how==="plans"&&typeof window.qfPlans==="function") window.qfPlans("detalhe");
+    else if(how==="start"){ try{ qtGo("dados",true); goStep(1,true); scrollTo({top:0,behavior:"instant"}); }catch(e){} const f=document.querySelector("#form input:not([hidden])"); f&&f.focus(); }
+    else if(back&&back.isConnected&&back.focus) back.focus(); }
+  function open(){ if(X||lead()||matchMedia("print").matches) return; if(typeof closeMenu==="function") try{ closeMenu(); }catch(e){}
+    const block=document.createElement("div"); block.className="qf-tour-block";
+    const ring=document.createElement("div"); ring.className="qf-tour-ring"; ring.setAttribute("aria-hidden","true"); ring.hidden=true;
+    const pop=document.createElement("div"); pop.className="qf-tour qx-pop"; pop.setAttribute("role","dialog"); pop.setAttribute("aria-modal","true"); pop.setAttribute("aria-labelledby","qx-h"); pop.setAttribute("aria-describedby","qx-p"); pop.tabIndex=-1;
+    pop.innerHTML='<button type="button" class="qx-x" aria-label="Sair do exemplo">×</button><p class="qt-n"></p><h2 id="qx-h"></h2><p class="qt-p" id="qx-p"></p><div class="qx-card"></div><p class="qx-fine"></p><div class="qt-f"><button type="button" class="btn-ghost qx-alt"></button><button type="button" class="btn-primary qx-next"></button></div>';
+    document.body.append(block,ring,pop);
+    const key=e=>{ if(!X||root.classList.contains("dg-open")||document.querySelector("dialog[open]")) return;
+      if(e.key==="Escape"){ e.preventDefault(); e.stopPropagation(); close(); return; }
+      if(e.key==="Tab"){ const f=[...pop.querySelectorAll("button")].filter(b=>!b.hidden), a=document.activeElement;
+        if(e.shiftKey&&(a===f[0]||a===pop)){ e.preventDefault(); f[f.length-1].focus(); } else if(!e.shiftKey&&a===f[f.length-1]){ e.preventDefault(); f[0].focus(); } else if(!pop.contains(a)){ e.preventDefault(); f[0].focus(); } } };
+    X={i:0,block,ring,pop,key,back:null,backEl:document.activeElement};
+    pop.querySelector(".qx-x").onclick=()=>close();
+    pop.querySelector(".qx-alt").onclick=()=>{ if(X.i===STEPS.length-1) close("plans"); else close(); };
+    pop.querySelector(".qx-next").onclick=()=>{ if(X.i===0){ load(); show(1); } else if(X.i<STEPS.length-1) show(X.i+1); else close("start"); };
+    block.addEventListener("click",()=>pop.focus());
+    document.addEventListener("keydown",key,true); addEventListener("scroll",place,{passive:true}); addEventListener("resize",place);
+    show(0); }
+  window.qfExample=open;
+
+  // No fim do guia ("Concluir", não "Saltar"), propõe o exemplo uma vez
+  document.addEventListener("click",e=>{ const b=e.target.closest&&e.target.closest(".qf-tour:not(.qx-pop) .qt-next"); if(!b) return;
+    const sk=b.closest(".qf-tour").querySelector(".qt-skip"); if(!sk||!sk.hidden) return; // só no último passo
+    if(LS.get(DONE)) return; setTimeout(()=>{ if(!busy()) open(); },250); },true);
+
+  // Ligações "Ver um exemplo" ao lado de "Como funciona" (rodapé e menu lateral)
+  const mk=()=>{ const b=document.createElement("button"); b.type="button"; b.className="qf-link qx-link"; b.textContent="Ver um exemplo"; b.addEventListener("click",()=>{ scrollTo({top:0,behavior:"instant"}); open(); }); return b; };
+  document.querySelectorAll(".qf-foot .qf-link, .side button.qf-link").forEach(l=>{ if(l.textContent.trim()==="Como funciona") l.after(mk()); });
+}catch(err){ /* o exemplo nunca deve impedir a app de funcionar */ } })();
 </script>
 
 <script>
