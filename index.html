@@ -1033,8 +1033,11 @@ html:root[data-agc] .wrap>header{background:linear-gradient(135deg,var(--agb-bar
 .dg-btn:disabled{opacity:.6}
 .dg-err{color:#b3261e;font-size:14px;font-weight:600;margin:0}
 .dg-err:empty{display:none}
-.dg-alt{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:center;font-size:14.5px}
-.dg-alt button,.dg-alt a{background:none;border:0;color:#fff;text-decoration:underline;font:600 14.5px var(--body);cursor:pointer;min-height:40px;padding:0 4px}
+.dg-alt{display:flex;flex-wrap:wrap;gap:4px 20px;justify-content:center;align-items:center;font-size:14.5px}
+.dg-alt button,.dg-alt a{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;margin:0;background:none;border:0;color:#fff;text-decoration:underline;text-underline-offset:3px;font:600 14.5px/1.2 var(--body);cursor:pointer;min-height:44px;padding:0 4px;-webkit-appearance:none;appearance:none}
+.dg-soc{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.dg-soc a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid rgba(255,255,255,.45);border-radius:999px;color:#fff;font:600 14px var(--body);text-decoration:none}
+.dg-soc a:hover,.dg-soc a:focus-visible{background:rgba(255,255,255,.12)}
 .dg-priv{font-size:13px;color:var(--muted)}
 .dg-priv summary{cursor:pointer;color:var(--accent);font-weight:600}
 .dg-priv p{margin:6px 0 0;text-align:justify}
@@ -4357,6 +4360,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
         <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail, para quantoficapt@gmail.com.</p></details>
       </form>
       <div class="dg-alt"><button type="button" data-dg="key">${typeof QF_ACCOUNT_URL!=="undefined"&&QF_ACCOUNT_URL?"Já comprei — entrar":"Já tenho uma chave de licença"}</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
+      <div class="dg-soc" aria-label="QuantoFica nas redes sociais"><a href="https://www.instagram.com/quantoficapt/" target="_blank" rel="noopener" aria-label="QuantoFica no Instagram (abre noutra janela)"><span class="qf-si" aria-hidden="true" style="--si:url('https://cdn.jsdelivr.net/npm/simple-icons@16.30.0/icons/instagram.svg')"></span>Instagram</a><a href="https://www.tiktok.com/@quantoficapt" target="_blank" rel="noopener" aria-label="QuantoFica no TikTok (abre noutra janela)"><span class="qf-si" aria-hidden="true" style="--si:url('https://cdn.jsdelivr.net/npm/simple-icons@16.30.0/icons/tiktok.svg')"></span>TikTok</a></div>
     </div>`;
     document.body.appendChild(el);
     const f=el.querySelector("form"), err=el.querySelector(".dg-err");
