@@ -4559,6 +4559,47 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   if(!put()) addEventListener("load",put);
 }catch(e){ console.error(e); } })();
 </script>
+<style>
+dialog.qf-terms{padding:0;border:0;border-radius:16px;width:min(760px,calc(100vw - 32px));max-height:calc(100dvh - 32px);background:var(--bg);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.35)}
+dialog.qf-terms::backdrop{background:rgba(10,15,25,.55)}
+.qt-hd{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 12px 12px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.qt-hd h2{margin:0;font:700 19px var(--display)}
+.qt-x{flex:none;width:44px;height:44px;border:1px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:400 26px/1 var(--body);cursor:pointer}
+.qt-x:hover,.qt-x:focus-visible{border-color:var(--accent);color:var(--accent)}
+.qt-bd{padding:12px 20px 24px;overflow:auto}
+.qt-bd .qt-lead{color:var(--muted);margin:4px 0 10px}
+.qt-bd section{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:10px 0 0}
+.qt-bd h3{margin:0 0 6px;font:700 16px var(--body)}
+.qt-bd p,.qt-bd li{font-size:15px;line-height:1.55;text-align:left;hyphens:manual}
+.qt-bd p{margin:0}.qt-bd ul{margin:0;padding-left:20px;display:grid;gap:6px}
+@media (max-width:640px){dialog.qf-terms{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0;margin:0}.qt-hd{padding-top:max(12px,env(safe-area-inset-top))}}
+</style>
+<script>
+// ===== W: termos numa janela, com X para voltar =====
+(function(){ try{
+  let dlg=null, html="", back=null;
+  async function load(){ if(html) return html;
+    for(const u of ["termos.html","https://quantofica.github.io/termos.html"]){
+      try{ const r=await fetch(u,{cache:"no-cache"}); if(!r.ok) continue; const d=new DOMParser().parseFromString(await r.text(),"text/html");
+        const lead=d.querySelector(".hero p"), secs=[...d.querySelectorAll("section.panel")]; if(!secs.length) continue;
+        html=(lead?`<p class="qt-lead">${lead.innerHTML}</p>`:"")+secs.map(sc=>{ const h=sc.querySelector("h2"), t=h?h.innerHTML:""; if(h) h.remove(); return `<section><h3>${t}</h3>${sc.innerHTML}</section>`; }).join("");
+        return html; }catch(e){} }
+    return ""; }
+  function close(){ if(dlg&&dlg.open) dlg.close(); }
+  async function open(){ if(!dlg){ dlg=document.createElement("dialog"); dlg.className="qf-terms"; dlg.setAttribute("aria-labelledby","qt-t");
+      dlg.innerHTML='<div class="qt-hd"><h2 id="qt-t">Termos de utilização</h2><button type="button" class="qt-x" aria-label="Fechar e voltar">×</button></div><div class="qt-bd"><p class="qt-lead">A carregar…</p></div>';
+      document.body.appendChild(dlg); dlg.querySelector(".qt-x").onclick=close;
+      dlg.addEventListener("click",e=>{ if(e.target===dlg) close(); });
+      dlg.addEventListener("cancel",e=>{ e.preventDefault(); close(); });
+      dlg.addEventListener("close",()=>{ if(back&&back.isConnected&&back.focus) back.focus(); back=null; }); }
+    back=document.activeElement; try{ dlg.showModal(); }catch(e){ dlg.setAttribute("open",""); }
+    const bd=dlg.querySelector(".qt-bd"); bd.scrollTop=0; dlg.querySelector(".qt-x").focus();
+    const h=await load(); bd.innerHTML=h||'<p class="qt-lead">Não foi possível abrir os termos sem internet. Ligue-se e tente de novo.</p>'; }
+  document.addEventListener("click",e=>{ const a=e.target.closest&&e.target.closest('a[href="termos.html"],a[href="./termos.html"],a[href$="/termos.html"]'); if(!a) return;
+    e.preventDefault(); e.stopPropagation(); open(); },true);
+  window.qfTerms=open;
+}catch(e){ console.error(e); } })();
+</script>
 <script>
 // ===== T: datas da operação começam no dia em que se abre a app =====
 // Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
