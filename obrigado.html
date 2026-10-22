@@ -35,6 +35,11 @@ p{text-align:justify}
 @keyframes r{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.spin{animation:none}}
 </style>
+<style>
+/* Texto sempre justificado (com hifenização portuguesa), exceto o que é centrado de propósito */
+:is(p,li,dd,small,blockquote,figcaption,.c-sb,.dl>span:first-child,.dre-l>span:first-child,.qt-bd p,.qt-bd li,.calc,.det):not(.qf-foot):not(.qf-social-h):not(.g-inv-k):not(.exp-msg):not(.qt-n){text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+.g-inv-in p,.g-inv-in li{text-align:justify}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -69,6 +74,7 @@ if(b&&b.referencia) document.getElementById("ref").textContent="Referência da c
 const esc=t=>String(t||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const sid=q.get("session_id"), st=document.getElementById("st"), steps=document.getElementById("steps");
 function loginSteps(email){ steps.innerHTML=`<li>Abra o QuantoFica e toque no <b>ícone da chave</b> no topo.</li><li>Em «Já comprou? Entre com o seu e-mail», escreva <b>${esc(email||"o e-mail que usou no pagamento")}</b>.</li><li>Introduza o código de 6 dígitos que recebe por e-mail. O plano fica ativo.</li>`; }
+if(LOGIN_READY) loginSteps(b&&b.email);
 async function claim(){
   if(!ACCOUNT_URL||!/^cs_(test|live)_/.test(sid||"")) return;
   if(LOGIN_READY) loginSteps(b&&b.email);
