@@ -1660,7 +1660,7 @@ function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=
   cur+=depr+cons-capK; const diff=s.net-cur; if(Math.abs(diff)>=1) adj.push(L("Outros ajustes",diff));
   const fin2=s.retido?(rent?"= Fica na sociedade no ano":"= Fica na sociedade"):rent?"= Dinheiro que sobra no ano":"= Líquido disponível";
   if(adj.length||divT.length){ if(adj.length) rows.push(hd("Do resultado ao dinheiro"),...adj); rows.push(L(fin2,s.net,"tot")); }
-  const yl=s.lines.filter(x=>!x.h&&x.t!=null&&/^Rentabilidade/.test(x.l)); if(yl.length) rows.push(hd("Rentabilidade"),...yl.map(x=>({l:x.l.replace(/^Rentabilidade: /,"").replace(/^resultado ÷ /,"Resultado ÷ "),v:0,c:"",t:x.t})));
+  const yl=s.lines.filter(x=>!x.h&&x.t!=null&&/^Rentabilidade/.test(x.l)); if(yl.length) rows.push(hd("Rentabilidade por ano"),...yl.flatMap(x=>[{l:x.l,v:0,c:"",t:x.t},...(x.why?[{l:x.why,v:0,c:"sub",t:""}]:[])]));
   return {title:"Demonstração de resultados"+(unit?" do ano":""),rows}; }
 function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre}){
   sc.forEach(s=>{ try{ s.dre=dreOf(s,dre,unit); }catch(e){ s.dre=null; } });
@@ -1819,8 +1819,10 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
     if(capK>0&&i>-1){ const fin=s.lines[i]; s.lines.splice(i,0,L(fin.l.replace(/^= Líquido por ano|^= Fica na sociedade por ano/,"= Resultado depois de impostos"),res,"tot"),L("− Capital do crédito amortizado (reduz a dívida, não é custo)",-capK));
       fin.v-=capK; fin.l=fin.l.replace("= Líquido por ano","= Dinheiro que sobra no ano, depois da prestação").replace("= Fica na sociedade por ano","= Fica na sociedade no ano, depois da prestação"); s.net-=capK; }
     const y=s.lines.find(x=>x.l==="__Y__"); if(y){ const inv=invest(y.imtX), eq=inv-M;
-      y.l=`Rentabilidade: resultado ÷ investimento de ${eur(inv)}`; y.v=0; y.t=pct(res/inv);
-      if(M) s.lines.splice(s.lines.indexOf(y)+1,0,{l:`Rentabilidade: resultado ÷ capital próprio de ${eur(eq)}`,v:0,c:"sub",t:eq>0?pct(res/eq):"—"}); }
+      y.l="Rentabilidade do imóvel"; y.v=0; y.t=pct(res/inv);
+      y.why=`O resultado líquido de ${eur(res)} por ano a dividir pelos ${eur(inv)} que o imóvel custou no total (compra, escritura, obras, IMT e Selos)${M?", incluindo a parte paga com o crédito":""}.`;
+      if(M) s.lines.splice(s.lines.indexOf(y)+1,0,{l:"Rentabilidade do seu dinheiro",v:0,c:"sub",t:eq>0?pct(res/eq):"—",
+        why:`O mesmo resultado de ${eur(res)} a dividir só pelos ${eur(eq)} que saíram do seu bolso: o custo total menos o crédito de ${eur(M)}. O crédito aumenta esta percentagem.`}); }
     if(M){ s.lines.forEach(x=>{ if(x.l==="IMT e Imposto do Selo"){ x.l="IMT, Imposto do Selo e Selo do crédito"; x.v+=isCred; } }); }
   });
   // Resumo e notas
