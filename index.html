@@ -170,6 +170,8 @@ tr.drow td{padding:0 8px 14px;border-bottom:1px solid var(--line)}
 .dre-l{display:flex;justify-content:space-between;gap:16px;font:13px var(--mono);padding:2px 0 2px 10px}
 .dre-l span:first-child{font-family:var(--body);text-align:left;min-width:0}
 .dre-l span:last-child{white-space:nowrap}
+.dre-l.sub{color:var(--muted);font-size:12px;padding-left:22px}
+.dre-l.sub span:first-child{font-size:12px}
 .dre-l.tot{border-top:1px solid var(--line);padding:5px 0 3px;margin-top:3px;font-weight:700}
 .dre-sep{font:600 12px var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:4px 0 6px;padding-top:8px;border-top:2px dashed var(--line)}
 .dl span:first-child{text-align:left;hyphens:manual;-webkit-hyphens:manual}
@@ -1647,13 +1649,18 @@ function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=
   const ebit=R-sum(items)-fixed-depr-cons-sum(opT);
   rows.push(L(fin?"= Resultado operacional":"= Resultado antes de impostos",ebit,"tot"));
   const rai=ebit-fin; if(fin) rows.push(L("Juros do crédito",-fin),L("= Resultado antes de impostos",rai,"tot"));
-  incT.forEach(x=>rows.push(L(x[0],-x[1])));
+  const TX=s.lines.filter(x=>!x.h&&x.c==="tax"&&Math.abs(x.v)>=0.5).map(x=>txt(x.l)), used=new Set();
+  const why=(n)=>{ const re=/Brasil/.test(n)?/Imposto no Brasil/:/Segurança/.test(n)?/Segurança Social/:/IRC|derrama/.test(n)?/IRC|[Dd]errama/:/dividendo/i.test(n)?/dividendo|Retenção/i:/^IRS/.test(n)?/^IRS|^− IRS/:null;
+    if(!re) return []; return TX.filter(t=>!used.has(t)&&re.test(t)&&!(re.source!=="Imposto no Brasil"&&/Imposto no Brasil/.test(t))).map(t=>{ used.add(t); return {l:t.replace(/^−\s*/,""),v:0,c:"sub",t:""}; }); };
+  incT.forEach(x=>rows.push(L(x[0],-x[1]),...why(x[0])));
+  if(rent&&!co&&!eni){ const cv=lv(/^− Obras de conservação antes do arrendamento/); if(cv>=1) rows.push({l:`Obras de conservação de ${eur(cv)} deduzidas às rendas no IRS do 1.º ano (já pagas no investimento)`,v:0,c:"sub",t:""}); }
   const rl=rai-sum(incT); rows.push(L(co?"= Resultado líquido da sociedade":"= Resultado líquido",rl,"tot"));
-  let cur=rl; if(divT.length){ divT.forEach(x=>rows.push(L(x[0],-x[1]))); cur-=sum(divT); }
+  let cur=rl; if(divT.length){ divT.forEach(x=>rows.push(L(x[0],-x[1]),...why(x[0]))); cur-=sum(divT); }
   const adj=[]; if(depr+cons) adj.push(L(cons?(depr?"Amortização e obras já pagas (não saem do bolso no ano)":"Obras já pagas no investimento (não saem do bolso no ano)"):"Amortização do imóvel (não sai do bolso)",depr+cons)); if(capK) adj.push(L("Capital do crédito amortizado (reduz a dívida)",-capK));
   cur+=depr+cons-capK; const diff=s.net-cur; if(Math.abs(diff)>=1) adj.push(L("Outros ajustes",diff));
   const fin2=s.retido?(rent?"= Fica na sociedade no ano":"= Fica na sociedade"):rent?"= Dinheiro que sobra no ano":"= Líquido disponível";
   if(adj.length||divT.length){ if(adj.length) rows.push(hd("Do resultado ao dinheiro"),...adj); rows.push(L(fin2,s.net,"tot")); }
+  const yl=s.lines.filter(x=>!x.h&&x.t!=null&&/^Rentabilidade/.test(x.l)); if(yl.length) rows.push(hd("Rentabilidade"),...yl.map(x=>({l:x.l.replace(/^Rentabilidade: /,"").replace(/^resultado ÷ /,"Resultado ÷ "),v:0,c:"",t:x.t})));
   return {title:"Demonstração de resultados"+(unit?" do ano":""),rows}; }
 function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre}){
   sc.forEach(s=>{ try{ s.dre=dreOf(s,dre,unit); }catch(e){ s.dre=null; } });
@@ -1674,8 +1681,8 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre})
       const pal=["#1e63c6","#d06800","#7a3fd0","#c2185b","#00808c","#5d4037","#c62828"]; parts.forEach((p,k)=>p.push(pal[k%pal.length]));
       const tot=parts.reduce((a,x)=>a+x[1],0), all=[...parts]; if(s.net>0) all.push(["Líquido",s.net,"#0e8a49"]); const base=all.reduce((a,x)=>a+x[1],0); if(!base) return "";
       return `<div class="comp"><div class="comp-h">Para onde vai o resultado${unit?" no ano":""}</div><div class="comp-body">${donutSVG(all,132,s.net>0?pct(s.net/base):"",s.net>0?"líquido":"")}<div class="comp-leg">${all.map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/base)}</span>`).join("")}<span class="comp-tot">Impostos: <b>${eur(tot)}</b></span></div></div></div>`; })();
-    const dreH=s.dre?`<div class="dre"><div class="dre-h">${s.dre.title}</div>${s.dre.rows.map(x=>x.h?`<div class="dre-g">${x.h}</div>`:`<div class="dre-l ${x.c}"><span>${x.l}</span><span>${fmt(x.v)}</span></div>`).join("")}</div><div class="dre-sep">Detalhe do cálculo dos impostos</div>`:"";
-    const det=dreH+comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
+    const dreH=s.dre?`<div class="dre"><div class="dre-h">${s.dre.title}</div>${s.dre.rows.map(x=>x.h?`<div class="dre-g">${x.h}</div>`:`<div class="dre-l ${x.c}"><span>${x.l}${x.c==="sub"?"":nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("")}</div>`:"";
+    const det=s.dre?dreH+comp:comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
       <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
@@ -2054,7 +2061,7 @@ function inputsRows(){ const rows=[];
     rows.push(["Tranches recebidas do cessionário","","s"]); state.recebidas.forEach(t=>rows.push([`${t.d||"sem data"} · ${t.desc||"tranche"}`,+t.v||0,""])); }
   return rows; }
 const r2=v=>Math.round(v*100)/100;
-function resultsRows(){ return LAST.order.map(s=>({name:txt(s.name),tag:s===LAST.best1?"Melhor":(s===LAST.best2?"Melhor a levantar":""),det:txt(s.det),taxes:r2(s.taxes),eff:LAST.preTax>0?Math.round(s.taxes/LAST.preTax*10000)/10000:null,net:r2(s.net),retido:!!s.retido,lines:[...(s.dre?[{h:s.dre.title},...s.dre.rows.map(x=>x.h?{h:"· "+x.h}:{...x,v:r2(x.v)}),{h:"Detalhe do cálculo dos impostos"}]:[]),...s.lines.map(x=>x.h?x:{...x,v:r2(x.v)})]})); }
+function resultsRows(){ return LAST.order.map(s=>({name:txt(s.name),tag:s===LAST.best1?"Melhor":(s===LAST.best2?"Melhor a levantar":""),det:txt(s.det),taxes:r2(s.taxes),eff:LAST.preTax>0?Math.round(s.taxes/LAST.preTax*10000)/10000:null,net:r2(s.net),retido:!!s.retido,lines:s.dre?[{h:s.dre.title},...s.dre.rows.map(x=>x.h?{h:"· "+x.h}:{...x,v:r2(x.v)})]:s.lines.map(x=>x.h?x:{...x,v:r2(x.v)})})); }
 const stamp=()=>{const d=new Date(), z=n=>String(n).padStart(2,"0"); return {file:`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`, human:`${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`};};
 async function saveFile(filename,blob){
   const api=window.claude&&typeof window.claude.use==="function"?await window.claude.use("downloads").catch(()=>null):null;
