@@ -29,7 +29,7 @@ self.addEventListener("fetch", e => {
   const sameOrigin = url.origin === location.origin;
   // Lista de chaves desativadas: sempre da rede, nunca da cópia guardada.
   if (sameOrigin && url.pathname.endsWith("/revogadas.json")) return;
-  const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com";
+  const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com" || url.hostname === "cdn.jsdelivr.net";
   if (!sameOrigin && !fonts) return;
   e.respondWith(caches.match(req).then(hit => {
     const net = fetch(req).then(r => { if (r && (r.ok || r.type === "opaque")) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(req, copy)); } return r; }).catch(() => hit);
