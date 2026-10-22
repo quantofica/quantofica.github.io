@@ -4533,6 +4533,26 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   addEventListener("resize",()=>setTimeout(paint,50)); setTimeout(paint,300);
 }catch(e){ console.error(e); } })();
 </script>
+<style>
+.qf-social{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0 0}
+.qf-social a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);font:600 14px var(--body);text-decoration:none}
+.qf-social a:hover,.qf-social a:focus-visible{border-color:var(--accent);color:var(--accent)}
+.qf-social svg{flex:none}
+.qf-social-h{flex-basis:100%;margin:2px 0 0;text-align:center;font:500 13px var(--body);color:var(--muted)}
+@media print{.qf-social{display:none}}
+</style>
+<script>
+// ===== V: redes sociais no rodapé =====
+(function(){ try{
+  const NETS=[["Instagram","https://www.instagram.com/quantoficapt/"],["TikTok","https://www.tiktok.com/@quantoficapt"]];
+  const I='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3h7v7"/><path d="M10 14 21 3"/><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"/></svg>';
+  const put=()=>{ const f=document.querySelector(".wrap .qf-foot"); if(!f||document.querySelector(".qf-social")) return !!f;
+    const d=document.createElement("div"); d.className="qf-social"; d.setAttribute("aria-label","QuantoFica nas redes sociais");
+    d.innerHTML=NETS.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener" aria-label="QuantoFica no ${n} (abre noutra janela)">${I}${n}</a>`).join("")+'<p class="qf-social-h">Siga @quantoficapt</p>';
+    f.after(d); return true; };
+  if(!put()) addEventListener("load",put);
+}catch(e){ console.error(e); } })();
+</script>
 <script>
 // ===== T: datas da operação começam no dia em que se abre a app =====
 // Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
