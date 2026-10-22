@@ -1721,7 +1721,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
       ...(juros?[L("Juros do crédito: não dedutíveis em categoria F",0,"sub")]:[]),...(benef?[L("Obras de beneficiação: não dedutíveis às rendas",0,"sub")]:[]),
       L("= Renda líquida tributável",netF,"tot"),...(netF<0?[L(`Perda de ${eur(-netF)}, dedutível às rendas dos 6 anos seguintes (art. 55.º do CIRS)`,0,"sub")]:[]),hd("Imposto"),...tl,...(aimi?[L("− AIMI",-aimi,"tax")]:[]),
       hd("Dinheiro no ano"),L("Rendas menos despesas, juros e IMI",preTax-imi),L("− IRS"+(brT?" e imposto no Brasil":"")+(aimi?" e AIMI":""),-(irsT+brT+aimi)),L("= Líquido por ano",net,"tot"),yieldL(net,imtX),
-      hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtX+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",irsT),...(brT?[L("Imposto no Brasil",brT)]:[]),L("= Total anual",annual,"tot")];
+      hd("Impostos por ano"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",irsT),...(brT?[L("Imposto no Brasil",brT)]:[]),L("= Total anual",annual,"tot"),hd("Pago uma vez, na compra"),L("IMT e Imposto do Selo",imtX+is)];
     return {key,name,det:`Na compra: IMT + Selo ${eur(imtX+is)} · ${acess?"rendas isentas (RSAA)":"taxa de IRS "+pct(rateF)+" ou englobamento"}`,taxes:annual,net,lines};
   };
   TIT.plan.forEach(x=>sc.push(ps(x.key,x.kind==="casal"?"Pessoa singular, casal (tributação conjunta)":x.kind==="one"?`Pessoa singular, em nome de ${x.p.name}`:(spouse?"Pessoa singular, bem comum 50/50":`Pessoa singular, compropriedade ${qLbl}`),x.owners)));
@@ -1741,7 +1741,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
     ...(rentTax<rendaA?[L(acess?"− Rendas isentas (RSAA)":"− 50% das rendas (renda moderada)",-(rendaA-rentTax))]:[]),L("= Lucro tributável",taxable,"tot"),...(taxable<0?[L(`Prejuízo fiscal de ${eur(-taxable)}, dedutível aos lucros dos anos seguintes (art. 52.º do CIRC)`,0,"sub")]:[]),
     hd("IRC e derrama"),L(`− IRC (15% até 50.000 €, depois ${pct(geral)})`,-ircV,"tax"),L(`− Derrama municipal ${pct(der)}`,-derV,"tax"),...brCoL];
   const cashL=(extra,lbl)=>[hd("Dinheiro no ano"),L("Rendas menos despesas, juros, IMI, AIMI e custos fixos",preTax-imi-aimiCo-fixed),L("− IRC e derrama",-(ircV+derV)),...(brCo?[L("− Imposto no Brasil",-brCo)]:[]),...(extra?[L(lbl,-extra)]:[])];
-  const coTot=(div)=>[hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtCo+is,"sub"),L("IMI",imi),L("AIMI",aimiCo),L("IRC + derrama",ircV+derV),...(div?[L("IRS sobre dividendos",div)]:[]),...(brCo?[L("Imposto no Brasil",brCo)]:[]),L("= Total anual",imi+aimiCo+ircV+derV+div+brCo,"tot")];
+  const coTot=(div)=>[hd("Impostos por ano"),L("IMI",imi),L("AIMI",aimiCo),L("IRC + derrama",ircV+derV),...(div?[L("IRS sobre dividendos",div)]:[]),...(brCo?[L("Imposto no Brasil",brCo)]:[]),L("= Total anual",imi+aimiCo+ircV+derV+div+brCo,"tot"),hd("Pago uma vez, na compra"),L("IMT e Imposto do Selo",imtCo+is)];
   const n1=cashCo-brCo;
   sc.push({key:"c1",name:"Sociedade, lucro retido",det:`Na compra: IMT + Selo ${eur(imtCo+is)} · sócio: ${shName}`,taxes:imi+aimiCo+ircV+derV+brCo,net:n1,retido:true,
     lines:[...coLines,...cashL(0),L("= Fica na sociedade por ano",n1,"tot"),yieldL(n1,imtCo),...coTot(0)]});
@@ -1771,15 +1771,17 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
         L("= Lucro tributável (100% englobado)",tx,"tot"),hd("Imposto"),line,...(b?[b.line]:[]),
         hd("Segurança Social"),...ss.lines,
         hd("Dinheiro no ano"),L("= Líquido por ano",net,"tot"),yieldL(net,imtE),
-        hd("Impostos"),L("IMT e Imposto do Selo (na compra, uma vez)",imtE+is,"sub"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),...(ss.v?[L("Segurança Social",ss.v)]:[]),L("= Total anual",imi+aimi+t+br+ss.v,"tot")]});};
+        hd("Impostos por ano"),L("IMI",imi),...(aimi?[L("AIMI",aimi)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),...(ss.v?[L("Segurança Social",ss.v)]:[]),L("= Total anual",imi+aimi+t+br+ss.v,"tot"),hd("Pago uma vez, na compra"),L("IMT e Imposto do Selo",imtE+is)]});};
   TIT.eni.forEach(x=>eni(x.key,x.p,x.casal?"Empresário em nome individual (casal, tributação conjunta)":`Empresário em nome individual (${x.p.name})`));
   // Capital do empréstimo e rentabilidade
   sc.forEach(s=>{ const i=s.lines.findIndex(x=>x.c==="tot"&&/^= (Líquido|Fica)/.test(x.l));
-    if(capK>0&&i>-1){ s.lines.splice(i,0,L("− Capital do empréstimo amortizado no ano",-capK)); s.lines[i+1].v-=capK; s.net-=capK; }
+    const res=s.net;   // resultado do ano depois de impostos, antes de amortizar o capital do crédito
+    if(capK>0&&i>-1){ const fin=s.lines[i]; s.lines.splice(i,0,L(fin.l.replace(/^= Líquido por ano|^= Fica na sociedade por ano/,"= Resultado depois de impostos"),res,"tot"),L("− Capital do crédito amortizado (reduz a dívida, não é custo)",-capK));
+      fin.v-=capK; fin.l=fin.l.replace("= Líquido por ano","= Dinheiro que sobra no ano, depois da prestação").replace("= Fica na sociedade por ano","= Fica na sociedade no ano, depois da prestação"); s.net-=capK; }
     const y=s.lines.find(x=>x.l==="__Y__"); if(y){ const inv=invest(y.imtX), eq=inv-M;
-      y.l=`Rentabilidade sobre o investimento de ${eur(inv)}`; y.v=0; y.t=pct(s.net/inv);
-      if(M) s.lines.splice(s.lines.indexOf(y)+1,0,{l:`Rentabilidade sobre o capital próprio de ${eur(eq)}`,v:0,c:"sub",t:eq>0?pct(s.net/eq):"—"}); }
-    if(M){ s.lines.forEach(x=>{ if(/^IMT e Imposto do Selo \(na compra/.test(x.l)){ x.l="IMT, Imposto do Selo e Selo do crédito (na compra, uma vez)"; x.v+=isCred; } }); }
+      y.l=`Rentabilidade: resultado ÷ investimento de ${eur(inv)}`; y.v=0; y.t=pct(res/inv);
+      if(M) s.lines.splice(s.lines.indexOf(y)+1,0,{l:`Rentabilidade: resultado ÷ capital próprio de ${eur(eq)}`,v:0,c:"sub",t:eq>0?pct(res/eq):"—"}); }
+    if(M){ s.lines.forEach(x=>{ if(x.l==="IMT e Imposto do Selo"){ x.l="IMT, Imposto do Selo e Selo do crédito"; x.v+=isCred; } }); }
   });
   // Resumo e notas
   $("o-rimt").textContent=eur(imtN)+" + "+eur(is);
@@ -2397,7 +2399,7 @@ function qaMonths(S,mode){
   return 12;
 }
 function qaCap(s,S,mode){
-  if(mode==="rent"){ const one=(s.lines.find(x=>!x.h&&/na compra, uma vez/.test(x.l))||{v:0}).v;
+  if(mode==="rent"){ const one=(s.lines.find(x=>!x.h&&/^IMT(,| e) Imposto do Selo/.test(x.l))||{v:0}).v;
     const ob=S.robras==="sim"?(S.robv||0)*(1+(parseFloat(S.riva)||0)):0, M=S.fin==="cred"?Math.max(0,S.fmont||0):0;
     const inv=(S.rcompra||0)+(S.resc||0)+ob+one; return {inv,eq:inv-M,M}; }
   // Saídas de dinheiro antes da venda/cedência: linhas de custo do próprio cenário (a comissão sai do preço de venda)
@@ -2710,7 +2712,7 @@ qaBox(); if(LAST) qaSchedule();
       sl.push(hd("Impostos da operação"),L(M?"IMT, Imposto do Selo e Selo do crédito (na compra)":"IMT e Imposto do Selo (na compra)",imtX+is+isCred),
         L(`Impostos anuais das rendas (${N} ano${N>1?"s":""})`,rentsTax),L("Impostos sobre a venda",saleTax),L("= Total",taxesTot,"tot"));
       // O cabeçalho anual "Impostos" passa a "Resumo anual de impostos", para o gráfico usar os impostos da operação
-      s.lines.forEach(x=>{ if(x.h==="Impostos") x.h="Resumo anual de impostos"; if(x.h==="Dinheiro no ano") x.h="Dinheiro no ano simulado"; });
+      s.lines.forEach(x=>{ if(x.h==="Impostos por ano") x.h="Resumo anual de impostos"; if(x.h==="Dinheiro no ano") x.h="Dinheiro no ano simulado"; });
       s.lines.push(...sl);
       s.bRents=rentsNet; s.bSale=saleCash; s.bTotal=total;
       s.taxes=taxesTot; s.net=gain; s.det=`${s.det} · venda no ano ${N}: impostos ${eur(saleTax)}`;
@@ -2776,8 +2778,9 @@ qaBox(); if(LAST) qaSchedule();
     else if(m==="rent"){ o.P=pD(S.rdcompra)||today(); o.Y=o.P.getMonth()===0?o.P.getFullYear():o.P.getFullYear()+1; o.end=o.P; }
     else { o.P=pD(S.dcompra)||today(); o.sale=addM(o.P,Math.max(1,Math.round(S.meses||1))); o.Y=o.sale.getFullYear(); o.end=o.sale; }
     return o; }
-  function taxMap(s){ const o={}; const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)); if(i<0) return o;
-    for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c==="tot") continue; o[txt(x.l)]=(o[txt(x.l)]||0)+x.v; } return o; }
+  function taxMap(s){ const o={}; const rd=i=>{ if(i<0) return; for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c==="tot") continue; o[txt(x.l)]=(o[txt(x.l)]||0)+x.v; } };
+    const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)); rd(i);
+    if(i>=0&&!Object.keys(o).some(k=>/^IMT/.test(k))) rd(s.lines.findIndex(x=>x.h&&/^Pago uma vez/.test(x.h))); return o; }
   const lineV=(s,re)=>s.lines.filter(x=>!x.h&&re.test(txt(x.l))).reduce((a,x)=>a+x.v,0);
   // Linhas do imposto brasileiro: pessoa, taxa, rendimento, natureza, imposto
   function brLines(s){ return s.lines.filter(x=>!x.h&&x.c==="tax").map(x=>{ const t=txt(x.l);
