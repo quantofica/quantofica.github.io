@@ -954,7 +954,9 @@ table.qa-t td.qa-w{font-family:var(--body);text-align:left}
 @media print{ .lead-gate,.ld-band{display:none!important} }
 
 /* ===== K: ajustes da junção dos planos ===== */
-@media screen{ body[data-qt="agencia"] #res>[data-tab]:not([data-tab~="agencia"]){display:none} }
+@media screen{ body[data-qt="agencia"] #res>[data-tab]:not([data-tab~="agencia"]){display:none}
+body[data-qt="agencia"] .side>#m-flip,body[data-qt="agencia"] .side>#m-ced,body[data-qt="agencia"] .side>#m-rent,body[data-qt="agencia"] .side>.side-h{display:none}
+@media (max-width:860px){body[data-qt="agencia"] .side{display:none}} }
 :root[data-tier="demo"] #b1d,:root[data-tier="captacao"] #b1d{display:none}
 :root[data-tier="captacao"] #g-plan-btn,:root[data-tier="captacao"] #g-strip,:root[data-tier="captacao"] #g-inv,:root[data-tier="captacao"] [data-act="plans"],:root[data-tier="captacao"] .qf-foot a[href="#planos"],:root[data-tier="captacao"] .qf-foot button{display:none!important}
 
