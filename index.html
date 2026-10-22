@@ -4645,6 +4645,40 @@ dialog.qf-terms::backdrop{background:rgba(10,15,25,.55)}
   sync();
 }catch(e){ console.error(e); } })();
 </script>
+<style>
+.ag-tools{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.ag-tool{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;text-align:left;padding:14px;border:2px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);cursor:pointer;font:inherit;min-height:44px}
+.ag-tool svg{grid-row:1/3;width:28px;height:28px;padding:6px;border-radius:10px;background:var(--accent-soft);color:var(--accent);box-sizing:content-box}
+.ag-tool b{font:700 15px var(--body)}
+.ag-tool span{grid-column:2;font-size:13px;color:var(--muted);line-height:1.35}
+.ag-tool[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.ag-tool[aria-pressed="true"] svg{background:var(--accent);color:var(--on-accent,#fff)}
+.ag-tool:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#agency[data-tool="marca"] #ag-clients,#agency[data-tool="marca"] #ag-proposal,#agency[data-tool="marca"] #ag-leads,
+#agency[data-tool="clientes"] #ag-brand,#agency[data-tool="clientes"] #ag-leads,
+#agency[data-tool="captacao"] #ag-brand,#agency[data-tool="captacao"] #ag-clients,#agency[data-tool="captacao"] #ag-proposal{display:none!important}
+@media (max-width:640px){.ag-tools{grid-template-columns:1fr}.ag-tool{padding:12px}}
+</style>
+<script>
+// ===== Y: ferramentas da agência separadas (uma de cada vez, escolhidas no topo do painel) =====
+(function(){ try{
+  const ag=document.getElementById("agency"), h=ag&&ag.querySelector(".ag-h"); if(!ag||!h) return;
+  const ic=p=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const T=[["marca","1 · Marca própria","Logótipo, contactos e cores nos relatórios e na app",ic('<circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1.3" fill="currentColor"/><circle cx="12" cy="7.5" r="1.3" fill="currentColor"/><circle cx="15.5" cy="10" r="1.3" fill="currentColor"/><path d="M12 21a3 3 0 0 1 0-6h1.5"/>')],
+    ["clientes","2 · Carteira de clientes","Clientes, imóveis guardados e proposta comparativa",ic('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14a6 6 0 0 1 3.5 6"/>')],
+    ["captacao","3 · Página de captação","Link e código QR para receber contactos de clientes",ic('<path d="M6 3v7a6 6 0 0 0 12 0V3"/><path d="M6 7h4M14 7h4"/><path d="M12 16v5"/>')]];
+  let cur="marca"; try{ const v=localStorage.getItem("qf-agtool"); if(T.some(t=>t[0]===v)) cur=v; }catch(e){}
+  const nav=document.createElement("div"); nav.className="ag-tools"; nav.setAttribute("role","group"); nav.setAttribute("aria-label","Escolha a ferramenta da agência");
+  nav.innerHTML=T.map(([k,t,d,i])=>`<button type="button" class="ag-tool" data-agtool="${k}" aria-pressed="false">${i}<b>${t}</b><span>${d}</span></button>`).join("");
+  h.after(nav);
+  function set(k,scroll){ cur=k; ag.dataset.tool=k; nav.querySelectorAll(".ag-tool").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.agtool===k)));
+    try{ localStorage.setItem("qf-agtool",k); }catch(e){} if(scroll){ const r=nav.getBoundingClientRect(); if(r.top<0) nav.scrollIntoView({block:"start"}); } }
+  nav.addEventListener("click",e=>{ const b=e.target.closest("[data-agtool]"); if(b) set(b.dataset.agtool,true); });
+  // A proposta comparativa abre-se a partir da carteira: mostra a ferramenta 2
+  document.addEventListener("click",e=>{ if(e.target.closest&&e.target.closest('[data-ip="prop"]')) set("clientes"); },true);
+  set(cur,false);
+}catch(e){ console.error(e); } })();
+</script>
 <script>
 // ===== T: datas da operação começam no dia em que se abre a app =====
 // Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
