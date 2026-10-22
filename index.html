@@ -1682,14 +1682,14 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre})
       const tot=parts.reduce((a,x)=>a+x[1],0), all=[...parts]; if(s.net>0) all.push(["Líquido",s.net,"#0e8a49"]); const base=all.reduce((a,x)=>a+x[1],0); if(!base) return "";
       return `<div class="comp"><div class="comp-h">Para onde vai o resultado${unit?" no ano":""}</div><div class="comp-body">${donutSVG(all,132,s.net>0?pct(s.net/base):"",s.net>0?"líquido":"")}<div class="comp-leg">${all.map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/base)}</span>`).join("")}<span class="comp-tot">Impostos: <b>${eur(tot)}</b></span></div></div></div>`; })();
     const dreH=s.dre?`<div class="dre"><div class="dre-h">${s.dre.title}</div>${s.dre.rows.map(x=>x.h?`<div class="dre-g">${x.h}</div>`:`<div class="dre-l ${x.c}"><span>${x.l}${x.c==="sub"?"":nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("")}</div>`:"";
-    const det=s.dre?dreH+comp:comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
+    const det=s.dre?dreH:s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
       <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
       <td data-label="Impostos">${eur(s.taxes)}</td><td data-label="Taxa efetiva">${pct(eff)}</td><td data-label="${unit?"Líquido/ano":"Líquido"}">${eur(s.net)}${s.retido?'<div class="det">na sociedade</div>':''}</td></tr>
       <tr class="drow" style="--sc:var(--c-${s.key})" id="d-${s.key}" ${open?"":"hidden"}><td colspan="4"><div class="calcbox">${det}</div></td></tr>`;}).join("");
   const dot=k=>`<span class="dot" style="--sc:var(--c-${k})"></span>`;
-  { const bt=Math.max(0,best1.net)+Math.max(0,best1.taxes); $("b1chart").innerHTML=bt>0&&best1.net>0?donutSVG([["Líquido",best1.net,"#0e8a49"],["Impostos",best1.taxes,"#d06800"]],96,pct(best1.net/bt),"líquido"):""; }
+  { const bt=Math.max(0,best1.net)+Math.max(0,best1.taxes); $("b1chart").innerHTML=""; $("b1chart").hidden=true; }
   $("b1n").innerHTML=dot(best1.key)+best1.name; $("b1v").textContent=eur(best1.net)+unit;
   { const s2=sorted[1], dif=s2?best1.net-s2.net:0; $("b1d").textContent=!s2?"":(dif>=1?`+${eur(dif)}${unit} face ao 2.º melhor cenário`:`Empatado com: ${txt(s2.name)}`); $("b1d").hidden=!s2;
     const same=best1===best2; $("b2n").closest(".win").hidden=same; $("b1d2").hidden=!same; }
