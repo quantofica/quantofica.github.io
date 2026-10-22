@@ -146,8 +146,7 @@ table.mini td:last-child,table.mini th:last-child{text-align:right;padding-right
 .tr input[type="text"],.tr input[type="date"]{text-align:left;font-family:var(--body)}
 .del{border:0;background:transparent;color:var(--muted);font-size:18px;line-height:1;cursor:pointer;border-radius:4px;height:28px}
 .del:hover{color:var(--warn)}
-.tr.excl{opacity:.55;border-style:dashed}
-.tr.excl input[data-num]{text-decoration:line-through}
+.tr.excl{border-style:dashed;border-color:var(--warn)}
 .flag{grid-column:1/-1;font:600 11px var(--body);color:var(--warn)}
 .empty{color:var(--muted);font-size:12px;font-style:italic}
 .f.tot{border-top:1px solid var(--line);padding-top:8px}
@@ -4455,6 +4454,35 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
 }catch(err){ /* o exemplo nunca deve impedir a app de funcionar */ } })();
 </script>
 
+<style>
+#form .qf-next{outline:2px solid var(--accent);outline-offset:3px;border-radius:10px;background:var(--accent-soft);transition:outline-color .2s,background .2s}
+@media (prefers-reduced-motion:reduce){#form .qf-next{transition:none}}
+</style>
+<script>
+// ===== U: destaca o próximo campo a preencher =====
+// Percorre os campos do passo aberto pela ordem em que aparecem; o primeiro que a pessoa ainda não visitou fica destacado.
+// Um campo conta como preenchido quando a pessoa entra nele e sai (mesmo que mantenha o valor proposto).
+(function(){ try{
+  const form=document.getElementById("form"); if(!form||typeof state==="undefined") return;
+  const LSK="qf-filled";
+  const load=()=>{ try{ const o=JSON.parse(localStorage.getItem(LSK)||"{}"); return o&&typeof o==="object"?o:{}; }catch(e){ return {}; } };
+  let F=load();
+  const keep=()=>{ try{ localStorage.setItem(LSK,JSON.stringify(F)); }catch(e){} };
+  const scope=el=>el.closest('.fstep[data-step="1"]')?"pessoas":(state.mode||"flip");
+  const keyOf=box=>box.classList.contains("tr")?(box.id||""):((box.querySelector("input,select")||{}).id||"");
+  const vis=el=>!!(el.offsetParent||el.getClientRects().length)&&!el.closest("[hidden]");
+  function boxes(){ return [...form.querySelectorAll(".fstep:not(.off) .f, .fstep:not(.off) .tr")].filter(b=>vis(b)&&!b.closest(".tr .f")&&b.querySelector("input:not([type=hidden]):not([readonly]),select,.seg")); }
+  function paint(){ form.querySelectorAll(".qf-next").forEach(b=>b.classList.remove("qf-next"));
+    const next=boxes().find(b=>{ const k=keyOf(b); return k&&!(F[scope(b)]||{})[k]; }); if(next) next.classList.add("qf-next"); }
+  form.addEventListener("focusout",e=>{ const b=e.target.closest&&e.target.closest(".tr, .f"); if(!b) return; const box=b.closest(".tr")||b, k=keyOf(box); if(!k) return;
+    const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; keep(); setTimeout(paint,0); });
+  form.addEventListener("click",e=>{ const sg=e.target.closest(".seg button"); if(!sg) return; const box=sg.closest(".f"), k=box&&keyOf(box); if(!k) return; const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; keep(); setTimeout(paint,0); });
+  if(typeof calc==="function"){ const _c=calc; calc=function(){ const r=_c.apply(this,arguments); setTimeout(paint,0); return r; }; }
+  if(typeof goStep==="function"){ const _g=goStep; goStep=function(){ const r=_g.apply(this,arguments); setTimeout(paint,0); return r; }; }
+  const rs=document.getElementById("reset"); if(rs) rs.addEventListener("click",()=>{ if(!rs.classList.contains("armed")){ F={}; keep(); setTimeout(paint,0); } });
+  addEventListener("resize",()=>setTimeout(paint,50)); setTimeout(paint,300);
+}catch(e){ console.error(e); } })();
+</script>
 <script>
 // ===== T: datas da operação começam no dia em que se abre a app =====
 // Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
