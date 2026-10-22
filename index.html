@@ -1494,20 +1494,20 @@ html.dg-open,html.dg-open body{overflow:hidden}
     </details>
     <details id="nota-clausula">
       <summary>Nota 14 · Cedência com ou sem cláusula de livre cedência</summary>
-      <p>Para quem assinou o contrato-promessa, o IMT a pagar é o mesmo nas duas opções: incide sobre o preço do imóvel, ou o VPT se for maior. Muda o momento do pagamento, o risco e a necessidade de autorização do vendedor.</p>
+      <p>Com cláusula, o IMT incide só sobre a parte do preço que vai pagando (sinal e reforços), à taxa que corresponde ao preço total. Sem cláusula, a cedência é um ajuste de revenda e o IMT incide sobre o preço do imóvel, ou o VPT se for maior. Muda também o momento do pagamento, o risco e a necessidade de autorização do vendedor.</p>
       <div class="tbl"><table class="cmp">
         <thead><tr><th></th><th>Com cláusula</th><th>Sem cláusula</th></tr></thead>
         <tbody>
           <tr><td>Quando paga o IMT</td><td data-label="Com cláusula">Antes de assinar o contrato-promessa (art. 2.º, n.º 3, al. b) do CIMT)</td><td data-label="Sem cláusula">Na escritura definitiva entre o vendedor e o novo comprador (art. 2.º, n.º 3, al. e))</td></tr>
           <tr><td>Quem paga</td><td data-label="Com cláusula">O promitente comprador</td><td data-label="Sem cláusula">O promitente comprador, como cedente (art. 4.º, al. g))</td></tr>
-          <tr><td>Base</td><td data-label="Com cláusula">Preço do contrato-promessa ou VPT</td><td data-label="Sem cláusula">Preço do imóvel ou VPT, segundo a AT</td></tr>
-          <tr><td>Liquidez</td><td data-label="Com cláusula">Adianta o IMT desde o início</td><td data-label="Sem cláusula">Paga no fim, quando já recebeu do cessionário</td></tr>
+          <tr><td>Base</td><td data-label="Com cláusula">Só a parte do preço paga (sinal e reforços), à taxa do preço total (art. 12.º, n.º 4, regra 18.ª e art. 17.º, n.º 5)</td><td data-label="Sem cláusula">Preço do imóvel ou VPT, segundo a AT</td></tr>
+          <tr><td>Liquidez</td><td data-label="Com cláusula">Paga IMT antes de cada pagamento ao vendedor</td><td data-label="Sem cláusula">Paga no fim, quando já recebeu do cessionário</td></tr>
           <tr><td>Se o negócio cair</td><td data-label="Com cláusula">Pagou IMT e tem de pedir a anulação</td><td data-label="Sem cláusula">Não pagou nada</td></tr>
           <tr><td>Ceder a posição</td><td data-label="Com cláusula">Livre, sem autorização</td><td data-label="Sem cláusula">Precisa do consentimento do vendedor (art. 424.º do Código Civil)</td></tr>
           <tr><td>Quem compra a posição</td><td data-label="Com cláusula">Paga IMT sobre o valor que entrega ao cedente (art. 12.º, n.º 4, regra 18.ª)</td><td data-label="Sem cláusula">Paga o seu próprio IMT na escritura</td></tr>
         </tbody></table></div>
       <ul>
-        <li><b>Posição comprada a outro cedente:</b> com cláusula, o IMT incide sobre o preço pago ao cedente anterior, normalmente muito mais baixo. Sem cláusula, o simulador usa o preço do imóvel, por prudência, porque a lei não é clara neste caso.</li>
+        <li><b>Posição comprada a outro cedente:</b> com cláusula, o IMT incide sobre o preço pago ao cedente anterior e o que pagar depois ao vendedor, à taxa do preço total. Sem cláusula, o simulador usa o preço do imóvel, por prudência, porque a lei não é clara neste caso.</li>
         <li><b>Exclusão sem cláusula (art. 4.º, al. g) do CIMT):</b> o cedente não paga IMT se declarar às Finanças, nos 30 dias seguintes à cedência, que não houve pagamento nem recebimento além do sinal previsto no contrato-promessa, provando-o com documentos ou autorizando o acesso às contas bancárias. Na prática, só se aplica quando recebe apenas o reembolso do sinal. Use a opção "Só recebe o reembolso do sinal?".</li>
         <li><b>Na prática:</b> sem cláusula tem melhor tesouraria e não perde o IMT se o negócio cair, mas depende de o vendedor aceitar a cedência; se recusar, fica obrigado a comprar o imóvel.</li>
         <li><b>Consentimento antecipado:</b> é habitual o contrato-promessa sem cláusula incluir o consentimento do vendedor para uma futura cedência. Confirme com o advogado se essa redação não leva a AT a tratar o contrato como tendo cláusula.</li>
@@ -1828,12 +1828,14 @@ function calcBase(){
     const pago=sumL(conta), pagoExcl=sumL(excl), recebido=sumL(S.recebidas), custo=pago+(viaCed?S.pant:0);
     S.pagas.forEach((t,i)=>{const r=document.getElementById(`pagas-${i}-row`), f=document.getElementById(`pagas-${i}-flag`);
       if(r&&r.classList) r.classList.toggle("excl",after(t,dc)); if(f) f.hidden=!after(t,dc);});
-    let tNote;
-    if(viaCed && S.clausula==="com"){ imtBase=S.pant; tNote="Como cessionário, sobre o preço pago ao cedente anterior (regra 18.ª)"; }
-    else if(S.clausula==="com"){ imtBase=base; tNote="Pago logo na assinatura do contrato-promessa"; }
+    let tNote, imtRate=null;
+    // Com cláusula: o IMT incide só sobre a parte do preço paga (sinal e reforços até à cedência; e o preço pago ao cedente anterior),
+    // à taxa que corresponde ao preço total do contrato-promessa (art. 12.º, n.º 4, regra 18.ª e art. 17.º, n.º 5 do CIMT)
+    if(S.clausula==="com"){ imtBase=Math.min(base,pago+(viaCed?S.pant:0)); imtRate=base>0?imt(base)/base:0;
+      tNote=viaCed?"Sobre o que pagou ao cedente anterior e ao vendedor até à cedência, à taxa do preço total (regra 18.ª)":"Sobre o sinal e reforços pagos até à cedência, à taxa do preço total (regra 18.ª)"; }
     else if(S.ced30==="sim"){ imtBase=0; tNote="Sem IMT: só o reembolso do sinal, declarado às Finanças nos 30 dias seguintes à cedência (art. 4.º, al. g) do CIMT)"; }
     else { imtBase=base; tNote=viaCed?"Devido por si, como cedente; estimativa prudente sobre o preço do imóvel":"Devido por si, como cedente (ajuste de revenda), sobre o preço do imóvel ou o VPT"; }
-    imtNormal=imt(imtBase); isPS=0; imiPS=0; coExempt=false;
+    imtNormal=imtRate!=null?imtBase*imtRate:imt(imtBase); isPS=0; imiPS=0; coExempt=false;
     real=["Tranches recebidas do cessionário",recebido];
     items=[[dc?"Tranches pagas ao vendedor até à cedência":"Tranches pagas ao vendedor",pago]].concat(viaCed?[["Preço pago ao cedente anterior",S.pant]]:[]).concat([["Outros custos",S.cout]]);
     preTax=recebido-custo-S.cout;
@@ -2824,7 +2826,7 @@ qaBox(); if(LAST) qaSchedule();
       ssEv(sale);
       return {items,name:s.name,intro:`Compra a ${fD(P)} e venda prevista em ${fM(sale)}.`}; }
     if(m==="ced"){ const Y=D.Y, imtV=T["IMT"]||0, com=S.clausula==="com", viaCed=S.origem==="cedente";
-      ev(com?D.cpcv:D.escr,"IMT",imtV,com?(viaCed?"Como cessionário, antes de assinar a cessão da posição (data da primeira tranche paga).":"Antes de assinar o contrato-promessa com cláusula de livre cedência (data da primeira tranche paga)."):(S.ced30==="sim"?"Sem cláusula e só com o reembolso do sinal: sem IMT, desde que o declare às Finanças nos 30 dias seguintes à cedência.":"Sem cláusula: devido por si, como cedente (ajuste de revenda), antes da escritura definitiva entre o vendedor e o novo comprador (data da última tranche recebida)."),"buy");
+      ev(com?D.cpcv:D.escr,"IMT",imtV,com?(viaCed?"Como cessionário, antes de assinar a cessão da posição (data da primeira tranche paga).":"Com cláusula de livre cedência: sobre o sinal e os reforços pagos, liquidado antes de cada pagamento (data da primeira tranche paga)."):(S.ced30==="sim"?"Sem cláusula e só com o reembolso do sinal: sem IMT, desde que o declare às Finanças nos 30 dias seguintes à cedência.":"Sem cláusula: devido por si, como cedente (ajuste de revenda), antes da escritura definitiva entre o vendedor e o novo comprador (data da última tranche recebida)."),"buy");
       ev(D.dc,"Cedência da posição",null,"Data em que o ganho é obtido.","mark",{mark:true});
       if(k!=="co") irsEv(Y,T["IRS"]||0,k==="ps"?"da mais-valia da cedência":"do lucro da atividade (categoria B)");
       else { ircEv(Y,sumL(S.recebidas||[])); divEv(Y); }
