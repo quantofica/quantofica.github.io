@@ -4473,10 +4473,14 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   const vis=el=>!!(el.offsetParent||el.getClientRects().length)&&!el.closest("[hidden]");
   function boxes(){ return [...form.querySelectorAll(".fstep:not(.off) .f, .fstep:not(.off) .tr")].filter(b=>vis(b)&&!b.closest(".tr .f")&&b.querySelector("input:not([type=hidden]):not([readonly]),select,.seg")); }
   function paint(){ form.querySelectorAll(".qf-next").forEach(b=>b.classList.remove("qf-next"));
-    const next=boxes().find(b=>{ const k=keyOf(b); return k&&!(F[scope(b)]||{})[k]; }); if(next) next.classList.add("qf-next"); }
+    // O destaque segue a pessoa: procura o primeiro campo por preencher depois do último em que esteve; se não houver, volta ao início
+    const L=boxes(), todo=b=>{ const k=keyOf(b); return k&&!(F[scope(b)]||{})[k]; };
+    const li=LAST_BOX?L.findIndex(b=>keyOf(b)===LAST_BOX):-1;
+    const next=L.slice(li+1).find(todo)||L.slice(0,li+1).find(todo); if(next) next.classList.add("qf-next"); }
+  let LAST_BOX="";
   form.addEventListener("focusout",e=>{ const b=e.target.closest&&e.target.closest(".tr, .f"); if(!b) return; const box=b.closest(".tr")||b, k=keyOf(box); if(!k) return;
-    const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; keep(); setTimeout(paint,0); });
-  form.addEventListener("click",e=>{ const sg=e.target.closest(".seg button"); if(!sg) return; const box=sg.closest(".f"), k=box&&keyOf(box); if(!k) return; const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; keep(); setTimeout(paint,0); });
+    const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; LAST_BOX=k; keep(); setTimeout(paint,0); });
+  form.addEventListener("click",e=>{ const sg=e.target.closest(".seg button"); if(!sg) return; const box=sg.closest(".f"), k=box&&keyOf(box); if(!k) return; const sc=scope(box); (F[sc]||(F[sc]={}))[k]=1; LAST_BOX=k; keep(); setTimeout(paint,0); });
   if(typeof calc==="function"){ const _c=calc; calc=function(){ const r=_c.apply(this,arguments); setTimeout(paint,0); return r; }; }
   if(typeof goStep==="function"){ const _g=goStep; goStep=function(){ const r=_g.apply(this,arguments); setTimeout(paint,0); return r; }; }
   const rs=document.getElementById("reset"); if(rs) rs.addEventListener("click",()=>{ if(!rs.classList.contains("armed")){ F={}; keep(); setTimeout(paint,0); } });
