@@ -1008,9 +1008,9 @@ html:root[data-agc] .wrap>header{background:linear-gradient(135deg,var(--agb-bar
 .dg-brand{display:flex;align-items:center;gap:12px}
 .dg-brand svg{width:52px;height:52px;flex:none;filter:drop-shadow(0 6px 10px rgba(5,20,50,.45))}
 .dg h2{font-family:var(--display);font-size:28px;line-height:1.15;margin:4px 0 0;color:#fff;text-wrap:balance}
-.dg-lead{margin:6px 0 0;color:rgba(255,255,255,.88);font-size:15.5px;text-align:left}
+.dg-lead{margin:8px 0 0;color:rgba(255,255,255,.88);font-size:15.5px;text-align:left;hyphens:manual;-webkit-hyphens:manual;text-wrap:pretty}
 .dg-pts{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:15px}
-.dg-pts li{display:flex;gap:10px;align-items:flex-start;text-align:left}.dg-pts li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#6ff0aa;color:#0b4a2a;font:800 13px/22px var(--body);text-align:center}
+.dg-pts li{display:flex;gap:10px;align-items:flex-start;text-align:left;hyphens:manual;-webkit-hyphens:manual;text-wrap:pretty}.dg-pts li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#6ff0aa;color:#0b4a2a;font:800 13px/22px var(--body);text-align:center}
 .dg-card{background:var(--panel);color:var(--ink);border-radius:20px;padding:20px;display:grid;gap:12px;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
 .dg-card h3{margin:0;font-family:var(--display);font-size:19px}
 .dg-card label.dg-f{display:grid;gap:6px;font-weight:600;font-size:14.5px}
@@ -4292,9 +4292,9 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   function build(){ el=document.createElement("div"); el.className="dg"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-labelledby","dg-t");
     el.innerHTML=`<div class="dg-in">
       <div class="dg-brand">${LOGO}<span class="wm" style="font-size:28px"><span class="wm-a">Quanto</span><span class="wm-b">Fica</span></span></div>
-      <div><h2 id="dg-t">Quanto lhe fica, depois dos impostos?</h2>
-      <p class="dg-lead">Simule a compra e venda, a cedência de posição ou o arrendamento de um imóvel em Portugal e veja qual é a estrutura que paga menos impostos.</p></div>
-      <ul class="dg-pts"><li>Pessoa singular, empresário individual ou sociedade, lado a lado</li><li>Regras de 2026 em Portugal e efeito no Brasil</li><li>Resultado na hora, enquanto escreve</li></ul>
+      <div><h2 id="dg-t">Quanto fica para si, <br>depois dos impostos?</h2>
+      <p class="dg-lead">Simule a compra e venda, a cedência de&nbsp;posição ou o arrendamento de um imóvel em Portugal e descubra a estrutura que paga menos impostos.</p></div>
+      <ul class="dg-pts"><li>Compare particular, empresário e sociedade</li><li>Regras de 2026 em Portugal e efeito&nbsp;no&nbsp;Brasil</li><li>Resultado na hora, enquanto escreve</li></ul>
       <form class="dg-card" novalidate>
         <h3>Experimente grátis</h3>
         <label class="dg-f">Nome<input type="text" name="nome" autocomplete="name" required></label>
