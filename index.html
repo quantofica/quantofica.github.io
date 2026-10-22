@@ -4602,9 +4602,49 @@ dialog.qf-terms::backdrop{background:rgba(10,15,25,.55)}
 </script>
 <style>
 /* Texto sempre justificado (com hifenização portuguesa), exceto o que é centrado de propósito */
-:is(p,li,dd,small,blockquote,figcaption,.c-sb,.dl>span:first-child,.dre-l>span:first-child,.qt-bd p,.qt-bd li,.calc,.det):not(.qf-foot):not(.qf-social-h):not(.g-inv-k):not(.exp-msg):not(.qt-n){text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+:is(p,li,dd,small,blockquote,figcaption,.c-sb,.dl>span:first-child,.dre-l>span:first-child,.qt-bd p,.qt-bd li):not(.qf-foot):not(.qf-social-h):not(.g-inv-k):not(.exp-msg):not(.qt-n){text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 .g-inv-in p,.g-inv-in li{text-align:justify}
 </style>
+<style>
+.qf-sl{grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin:-2px 0 4px}
+.qf-sl small{font:12px var(--mono);color:var(--muted);white-space:nowrap}
+.qf-sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:32px;min-height:0;background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;margin:0;touch-action:pan-y}
+.qf-sl input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:999px;background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--line) var(--p,0%))}
+.qf-sl input[type=range]::-moz-range-track{height:8px;border-radius:999px;background:var(--line)}
+.qf-sl input[type=range]::-moz-range-progress{height:8px;border-radius:999px;background:var(--accent)}
+.qf-sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-9px;border-radius:50%;background:var(--accent);border:4px solid var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.qf-sl input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);border:4px solid var(--panel);box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.qf-sl input[type=range]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+@media print{.qf-sl{display:none}}
+</style>
+<script>
+// ===== X: barras deslizantes nos valores principais (o campo continua a aceitar valores escritos, mesmo fora da barra) =====
+(function(){ try{
+  if(typeof state==="undefined") return;
+  // id: [mínimo, máximo, passo, unidade]
+  const K=1000, C={
+    baseA:[0,250*K,K,"€"],baseB:[0,250*K,K,"€"],baseC:[0,250*K,K,"€"],baseD:[0,250*K,K,"€"],baseE:[0,250*K,K,"€"],
+    compra:[50*K,2000*K,5*K,"€"],escritura:[0,10*K,100,"€"],obras:[0,300*K,K,"€"],venda:[50*K,2500*K,5*K,"€"],com:[0,10,.5,"%"],meses:[1,48,1,"meses"],imi:[0,5*K,50,"€"],
+    cpcv:[50*K,2000*K,5*K,"€"],pant:[0,500*K,K,"€"],cout:[0,20*K,100,"€"],
+    rcompra:[50*K,2000*K,5*K,"€"],resc:[0,10*K,100,"€"],fmont:[0,1500*K,5*K,"€"],ftaxa:[0,10,.05,"%"],fprazo:[1,40,1,"anos"],robv:[0,300*K,K,"€"],
+    renda:[200,10*K,50,"€"],cond:[0,5*K,50,"€"],seguro:[0,2*K,25,"€"],manut:[0,5*K,50,"€"],gestao:[0,15,.5,"%"],
+    rvval:[50*K,3000*K,5*K,"€"],rvanos:[1,30,1,"anos"],contab:[0,10*K,100,"€"]};
+  const lab=(v,u)=>u==="€"?(v>=1e6?(v/1e6).toLocaleString("pt-PT",{maximumFractionDigits:1})+" M€":v>=K?Math.round(v/K)+" mil €":v+" €"):v.toLocaleString("pt-PT")+(u==="%"?" %":" "+u);
+  const SL=[];
+  function paint(r,v){ const mn=+r.min, mx=+r.max, c=Math.min(mx,Math.max(mn,v)); r.value=c; r.style.setProperty("--p",((c-mn)/(mx-mn)*100)+"%"); }
+  Object.keys(C).forEach(id=>{ const el=document.getElementById(id); if(!el||!el.dataset.num) return; const f=el.closest(".f"); if(!f||f.querySelector(".qf-sl")) return;
+    const [mn,mx,st,u]=C[id], box=document.createElement("div"); box.className="qf-sl";
+    const lb=((f.querySelector("label")||{}).firstChild||{}).textContent||id;
+    box.innerHTML=`<small>${lab(mn,u)}</small><input type="range" min="${mn}" max="${mx}" step="${st}" aria-label="${String(lb).trim()} (barra)"><small>${lab(mx,u)}</small>`;
+    f.appendChild(box); const r=box.querySelector("input");
+    r.addEventListener("input",()=>{ const v=+r.value; el.value=typeof fmtNum==="function"?fmtNum(v):String(v); paint(r,v); el.dispatchEvent(new Event("input",{bubbles:true})); });
+    el.addEventListener("input",()=>paint(r,typeof parseNum==="function"?parseNum(el.value):+el.value||0));
+    SL.push([id,r]); });
+  const sync=()=>SL.forEach(([id,r])=>{ if(document.activeElement!==r) paint(r,+state[id]||0); });
+  if(typeof calc==="function"){ const _c=calc; calc=function(){ const x=_c.apply(this,arguments); try{ sync(); }catch(e){} return x; }; }
+  sync();
+}catch(e){ console.error(e); } })();
+</script>
 <script>
 // ===== T: datas da operação começam no dia em que se abre a app =====
 // Em cada abertura, a data da compra (comprar e vender, arrendar) passa a ser hoje. Na cedência, todas as datas
