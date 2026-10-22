@@ -1660,7 +1660,6 @@ function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=
   cur+=depr+cons-capK; const diff=s.net-cur; if(Math.abs(diff)>=1) adj.push(L("Outros ajustes",diff));
   const fin2=s.retido?(rent?"= Fica na sociedade no ano":"= Fica na sociedade"):rent?"= Dinheiro que sobra no ano":"= Líquido disponível";
   if(adj.length||divT.length){ if(adj.length) rows.push(hd("Do resultado ao dinheiro"),...adj); rows.push(L(fin2,s.net,"tot")); }
-  const yl=s.lines.filter(x=>!x.h&&x.t!=null&&/^Rentabilidade/.test(x.l)); if(yl.length) rows.push(hd("Rentabilidade por ano"),...yl.flatMap(x=>[{l:x.l,v:0,c:"",t:x.t},...(x.why?[{l:x.why,v:0,c:"sub",t:""}]:[])]));
   return {title:"Demonstração de resultados"+(unit?" do ano":""),rows}; }
 function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre}){
   sc.forEach(s=>{ try{ s.dre=dreOf(s,dre,unit); }catch(e){ s.dre=null; } });
