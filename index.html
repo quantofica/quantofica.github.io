@@ -3152,7 +3152,8 @@ qaBox(); if(LAST) qaSchedule();
   let T=null;
   function rectOf(els){ const rs=els.filter(Boolean).map(e=>e.getBoundingClientRect()).filter(r=>r.width||r.height); if(!rs.length) return null;
     const l=Math.min(...rs.map(r=>r.left)), t=Math.min(...rs.map(r=>r.top)), r=Math.max(...rs.map(r=>r.right)), b=Math.max(...rs.map(r=>r.bottom)); return {left:l,top:t,right:r,bottom:b,width:r-l,height:b-t}; }
-  function place(){ if(!T) return; const s=STEPS[T.i], r=rectOf(s.els()); if(!r) return; const pad=6, vw=innerWidth, vh=innerHeight;
+  function place(){ if(!T) return; const s=STEPS[T.i], r=rectOf(s.els());
+    if(!r){ T.ring.style.width=T.ring.style.height="0px"; Object.assign(T.pop.style,{left:Math.max(12,(innerWidth-T.pop.offsetWidth)/2)+"px",top:Math.max(12,(innerHeight-T.pop.offsetHeight)/2)+"px"}); return; } const pad=6, vw=innerWidth, vh=innerHeight;
     Object.assign(T.ring.style,{left:(r.left-pad)+"px",top:(r.top-pad)+"px",width:(r.width+2*pad)+"px",height:(r.height+2*pad)+"px"});
     const pw=T.pop.offsetWidth, ph=T.pop.offsetHeight, m=12;
     let left=Math.min(Math.max(m,r.left+r.width/2-pw/2),vw-pw-m), top;
@@ -3173,6 +3174,8 @@ qaBox(); if(LAST) qaSchedule();
   function closeTour(){ if(!T) return; const back=T.back; [T.block,T.ring,T.pop].forEach(e=>e.remove()); removeEventListener("scroll",place); removeEventListener("resize",place); document.removeEventListener("keydown",T.key,true); T=null;
     try{ localStorage.setItem("qf-tour","1"); }catch(e){} if(back&&back.isConnected&&back.focus) back.focus(); }
   function openTour(){ if(T||matchMedia("print").matches) return; closeMenu();
+    // O guia mostra os botões das operações e os separadores: abre sempre a partir do separador Dados
+    try{ if(typeof QT!=="undefined"&&QT!=="dados"&&typeof qtGo==="function") qtGo("dados",true); }catch(e){}
     const block=document.createElement("div"); block.className="qf-tour-block";
     const ring=document.createElement("div"); ring.className="qf-tour-ring"; ring.setAttribute("aria-hidden","true");
     const pop=document.createElement("div"); pop.className="qf-tour"; pop.setAttribute("role","dialog"); pop.setAttribute("aria-modal","true"); pop.setAttribute("aria-labelledby","qt-h"); pop.setAttribute("aria-describedby","qt-p"); pop.tabIndex=-1;
