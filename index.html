@@ -164,6 +164,14 @@ tr.drow td{padding:0 8px 14px;border-bottom:1px solid var(--line)}
 .dl.tot{border-top:1px solid var(--line);padding-top:4px;font-weight:600}
 .dl.tax span:last-child{color:var(--warn)}
 .dl.sub{color:var(--muted)}
+.dre{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 12px;margin:2px 0 14px}
+.dre-h{font:700 13px var(--body);letter-spacing:.04em;text-transform:uppercase;color:var(--accent);margin:0 0 6px}
+.dre-g{font:600 12px var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:8px 0 2px}
+.dre-l{display:flex;justify-content:space-between;gap:16px;font:13px var(--mono);padding:2px 0 2px 10px}
+.dre-l span:first-child{font-family:var(--body);text-align:left;min-width:0}
+.dre-l span:last-child{white-space:nowrap}
+.dre-l.tot{border-top:1px solid var(--line);padding:5px 0 3px;margin-top:3px;font-weight:700}
+.dre-sep{font:600 12px var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:4px 0 6px;padding-top:8px;border-top:2px dashed var(--line)}
 .dl span:first-child{text-align:left;hyphens:manual;-webkit-hyphens:manual}
 .reset{border:1px solid var(--line);background:var(--panel);color:var(--ink);font:500 12.5px var(--body);border-radius:6px;padding:7px 12px;cursor:pointer}
 @media (prefers-reduced-motion:no-preference){.bar span{transition:width .25s ease}}
@@ -1624,7 +1632,31 @@ function fill(){ ids.forEach(k=>{const el=$(k); el.value=el.dataset.num?fmtNum(s
 function setMode(m,save=true){ state.mode=m; if($("op-title")) $("op-title").textContent="2 · "+({flip:"Comprar e vender",ced:"Cedência de posição",rent:"Comprar para arrendar"}[m]); ["flip","ced","rent"].forEach(k=>{$("m-"+k).setAttribute("aria-pressed",m===k); $(k).hidden=m!==k;}); if(save){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}} calc(); }
 
 let LAST=null;
-function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
+// Demonstração de resultados de um cenário (formato contabilístico), a partir dos dados da operação e dos impostos do cenário.
+// Termina sempre no valor líquido do cenário; se houver diferença de arredondamento, aparece como "Outros ajustes".
+function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=S.mode==="rent"; if(rent&&S.rvend==="sim") return null;
+  const k=s.key, co=/^c/.test(k), eni=/^b/.test(k), L=(l,v,c="")=>({l,v,c}), hd=t=>({h:t}), sum=a=>a.reduce((x,y)=>x+y[1],0);
+  const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)), T=[]; if(i>=0) for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c!=="tot"&&Math.abs(x.v)>=0.5) T.push([txt(x.l),x.v]); }
+  const isOp=n=>/^(IMT|Imposto do Selo|IMI|AIMI)/.test(n), isDiv=n=>/dividendo/i.test(n);
+  const opT=T.filter(t=>isOp(t[0])), incT=T.filter(t=>!isOp(t[0])&&!isDiv(t[0])), divT=T.filter(t=>isDiv(t[0]));
+  const lv=re=>{ const x=s.lines.find(x=>!x.h&&re.test(txt(x.l))); return x?-x.v:0; };
+  const fixed=(co||eni)?(+S.contab||0):0, depr=rent&&(co||eni)?lv(/^− Amortização do imóvel/):0, cons=rent&&(co||eni)?lv(/^− Obras de conservação/):0, capK=rent?lv(/^− Capital do crédito/):0, fin=D.fin||0;
+  const R=D.R[1], items=D.items;
+  const rows=[hd("Rendimentos"),L(D.R[0],R),hd("Gastos"),...items.map(x=>L(x[0],-x[1])),...(fixed?[L("Contabilidade e custos fixos",-fixed)]:[]),
+    ...(depr?[L("Amortização do imóvel (2% ao ano)",-depr)]:[]),...(cons?[L("Obras de conservação (gasto do 1.º ano)",-cons)]:[]),...opT.map(x=>L(x[0],-x[1]))];
+  const ebit=R-sum(items)-fixed-depr-cons-sum(opT);
+  rows.push(L(fin?"= Resultado operacional":"= Resultado antes de impostos",ebit,"tot"));
+  const rai=ebit-fin; if(fin) rows.push(L("Juros do crédito",-fin),L("= Resultado antes de impostos",rai,"tot"));
+  incT.forEach(x=>rows.push(L(x[0],-x[1])));
+  const rl=rai-sum(incT); rows.push(L(co?"= Resultado líquido da sociedade":"= Resultado líquido",rl,"tot"));
+  let cur=rl; if(divT.length){ divT.forEach(x=>rows.push(L(x[0],-x[1]))); cur-=sum(divT); }
+  const adj=[]; if(depr+cons) adj.push(L(cons?(depr?"Amortização e obras já pagas (não saem do bolso no ano)":"Obras já pagas no investimento (não saem do bolso no ano)"):"Amortização do imóvel (não sai do bolso)",depr+cons)); if(capK) adj.push(L("Capital do crédito amortizado (reduz a dívida)",-capK));
+  cur+=depr+cons-capK; const diff=s.net-cur; if(Math.abs(diff)>=1) adj.push(L("Outros ajustes",diff));
+  const fin2=s.retido?(rent?"= Fica na sociedade no ano":"= Fica na sociedade"):rent?"= Dinheiro que sobra no ano":"= Líquido disponível";
+  if(adj.length||divT.length){ if(adj.length) rows.push(hd("Do resultado ao dinheiro"),...adj); rows.push(L(fin2,s.net,"tot")); }
+  return {title:"Demonstração de resultados"+(unit?" do ano":""),rows}; }
+function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume,dre}){
+  sc.forEach(s=>{ try{ s.dre=dreOf(s,dre,unit); }catch(e){ s.dre=null; } });
   const sorted=[...sc].sort((a,b)=>b.net-a.net);
   const best1=sorted[0], best2=sorted.find(s=>!s.retido);
   const max=Math.max(1,...sc.map(s=>s.net));
@@ -1642,7 +1674,8 @@ function renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit,assume}){
       const pal=["#1e63c6","#d06800","#7a3fd0","#c2185b","#00808c","#5d4037","#c62828"]; parts.forEach((p,k)=>p.push(pal[k%pal.length]));
       const tot=parts.reduce((a,x)=>a+x[1],0), all=[...parts]; if(s.net>0) all.push(["Líquido",s.net,"#0e8a49"]); const base=all.reduce((a,x)=>a+x[1],0); if(!base) return "";
       return `<div class="comp"><div class="comp-h">Para onde vai o resultado${unit?" no ano":""}</div><div class="comp-body">${donutSVG(all,132,s.net>0?pct(s.net/base):"",s.net>0?"líquido":"")}<div class="comp-leg">${all.map(x=>`<span><i style="background:${x[2]}"></i>${x[0]} <b>${eur(x[1])}</b> · ${pct(x[1]/base)}</span>`).join("")}<span class="comp-tot">Impostos: <b>${eur(tot)}</b></span></div></div></div>`; })();
-    const det=comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
+    const dreH=s.dre?`<div class="dre"><div class="dre-h">${s.dre.title}</div>${s.dre.rows.map(x=>x.h?`<div class="dre-g">${x.h}</div>`:`<div class="dre-l ${x.c}"><span>${x.l}</span><span>${fmt(x.v)}</span></div>`).join("")}</div><div class="dre-sep">Detalhe do cálculo dos impostos</div>`:"";
+    const det=dreH+comp+s.lines.map(x=>x.h?`<div class="dh">${x.h}${nref(x.h)}</div>`:`<div class="dl ${x.c}"><span>${x.l}${nref(x.l)}</span><span>${x.t!=null?x.t:fmt(x.v)}</span></div>`).join("");
     return `<tr class="sc ${s===best1?'top':''}" style="--sc:var(--c-${s.key})"><td><div class="name"><span class="dot"></span>${s.name}${tag}</div><div class="det">${s.det}</div>
       <div class="bar"><span style="width:${Math.max(0,s.net/max*100)}%"></span></div>
       <button type="button" class="tog" data-tog="${s.key}" aria-expanded="${open}" aria-controls="d-${s.key}">${open?"Ocultar cálculo":"Ver cálculo"}</button></td>
@@ -1794,7 +1827,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
   if(M&&rendaA<pmt*12) notes.push(`<span class="warn"><b>Rendas abaixo das prestações:</b> as rendas do ano (${eur(rendaA)}) não cobrem as prestações (${eur(pmt*12)}).</span>`);
   if(obras) notes.push(cons?(y1?`<b>Obras de conservação:</b> deduzidas às rendas no 1.º ano em nome próprio (feitas nos 24 meses antes do contrato) e gasto do ano na sociedade. Mude para "Ano típico" para ver os anos seguintes.`:`<b>Obras de conservação:</b> já deduzidas no 1.º ano; no ano típico não têm efeito.`):`<b>Obras de beneficiação:</b> não se deduzem às rendas em nome próprio; na sociedade e no empresário somam ao custo do imóvel e são amortizadas a 2% ao ano.`);
   notes.push(`<b>Sociedade:</b> paga AIMI de 0,4% do VPT (${eur(aimiCo)} por ano), que as pessoas singulares só pagam acima de 600.000 € de VPT. A amortização do imóvel (${eur(deprCo)} por ano) reduz o IRC sem sair do bolso.`);
-  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"/ano",assume:"um ano de arrendamento; IMT e Imposto do Selo contados à parte, no investimento; líquido depois de impostos e da prestação do crédito; amortização a 2% ao ano sobre 75% do custo; venda futura não incluída"});
+  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,dre:{R:["Rendas do ano",rendaA],items:[["Condomínio",S.cond],["Seguro",S.seguro],["Manutenção corrente",S.manut],["Gestão do arrendamento, com IVA",gest]].filter(x=>x[1]),fin:juros},unit:"/ano",assume:"um ano de arrendamento; IMT e Imposto do Selo contados à parte, no investimento; líquido depois de impostos e da prestação do crédito; amortização a 2% ao ano sobre 75% do custo; venda futura não incluída"});
 }
 
 function calc(){ return calcBase(); }
@@ -1925,7 +1958,7 @@ function calcBase(){
       hd("Impostos pagos"),L("IMT",imtE),...(isPS?[L("Imposto do Selo",isPS)]:[]),...(imiPS?[L("IMI",imiPS)]:[]),L("IRS",t),...(br?[L("Imposto no Brasil",br)]:[]),...(ss.v?[L("Segurança Social",ss.v)]:[]),L("= Total",imtE+isPS+imiPS+t+br+ss.v,"tot")]});};
   TIT.eni.forEach(x=>eni(x.key,x.p,x.casal?"Empresário em nome individual (casal, tributação conjunta)":`Empresário em nome individual (${x.p.name})`));
 
-  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,unit:"",assume:"sociedade com atividade de compra para revenda (isenção de IMT e de IMI até ao 3.º ano), IRC de 15% nos primeiros 50.000 €"});
+  renderAll({sc,preTax,notes,A,B,casal,joint,canJoint,S,dre:{R:real,items:items.filter(x=>x[0]!=="Imposto do Selo"&&x[1])},unit:"",assume:"sociedade com atividade de compra para revenda (isenção de IMT e de IMI até ao 3.º ano), IRC de 15% nos primeiros 50.000 €"});
 }
 
 document.addEventListener("click",e=>{const a=e.target.closest('a[href^="#nota-"]'); if(!a) return; const d=document.getElementById(a.getAttribute("href").slice(1)); if(d){d.open=true;}});
@@ -2021,7 +2054,7 @@ function inputsRows(){ const rows=[];
     rows.push(["Tranches recebidas do cessionário","","s"]); state.recebidas.forEach(t=>rows.push([`${t.d||"sem data"} · ${t.desc||"tranche"}`,+t.v||0,""])); }
   return rows; }
 const r2=v=>Math.round(v*100)/100;
-function resultsRows(){ return LAST.order.map(s=>({name:txt(s.name),tag:s===LAST.best1?"Melhor":(s===LAST.best2?"Melhor a levantar":""),det:txt(s.det),taxes:r2(s.taxes),eff:LAST.preTax>0?Math.round(s.taxes/LAST.preTax*10000)/10000:null,net:r2(s.net),retido:!!s.retido,lines:s.lines.map(x=>x.h?x:{...x,v:r2(x.v)})})); }
+function resultsRows(){ return LAST.order.map(s=>({name:txt(s.name),tag:s===LAST.best1?"Melhor":(s===LAST.best2?"Melhor a levantar":""),det:txt(s.det),taxes:r2(s.taxes),eff:LAST.preTax>0?Math.round(s.taxes/LAST.preTax*10000)/10000:null,net:r2(s.net),retido:!!s.retido,lines:[...(s.dre?[{h:s.dre.title},...s.dre.rows.map(x=>x.h?{h:"· "+x.h}:{...x,v:r2(x.v)}),{h:"Detalhe do cálculo dos impostos"}]:[]),...s.lines.map(x=>x.h?x:{...x,v:r2(x.v)})]})); }
 const stamp=()=>{const d=new Date(), z=n=>String(n).padStart(2,"0"); return {file:`${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`, human:`${z(d.getDate())}/${z(d.getMonth()+1)}/${d.getFullYear()} ${z(d.getHours())}:${z(d.getMinutes())}`};};
 async function saveFile(filename,blob){
   const api=window.claude&&typeof window.claude.use==="function"?await window.claude.use("downloads").catch(()=>null):null;
