@@ -58,6 +58,10 @@ async function readToken(env, prefix, tok) {
   if (!ok) return null;
   try { return JSON.parse(dec.decode(b64uDec(m[1]))); } catch (e) { return null; } }
 async function sha256(s) { return b64u(await crypto.subtle.digest("SHA-256", enc.encode(s))); }
+// Hash do código de login com o segredo do servidor (HMAC): sem o SESSION_SECRET não é possível
+// testar os 1 000 000 códigos possíveis fora do servidor a partir do "challenge" (que é legível pelo cliente).
+async function codeMac(env, code, email, x) {
+  return b64u(await crypto.subtle.sign("HMAC", await hmacKey(env), enc.encode("code|" + code + "|" + email + "|" + x))); }
 
 /* ---------------- Stripe ---------------- */
 async function stripe(env, path, params) {
@@ -176,7 +180,7 @@ async function route(req, env, path, body) {
     // Só envia o código se houver uma compra com este e-mail; a resposta é igual nos dois casos (não revela quem é cliente)
     const ent = await entitlementByEmail(env, email);
     const code = randomCode(), x = Math.floor(Date.now() / 1000) + CODE_MINUTES * 60;
-    const challenge = await signToken(env, "QC1", { e: email, h: await sha256(code + "|" + email + "|" + x), x });
+    const challenge = await signToken(env, "QC1", { e: email, h: await codeMac(env, code, email, x), x });
     if (ent) await sendCode(env, email, code);
     return [200, { ok: true, challenge }]; }
 
@@ -184,7 +188,7 @@ async function route(req, env, path, body) {
     const c = await readToken(env, "QC1", body.challenge), code = String(body.code || "").replace(/\D/g, "");
     if (!c || !c.e || !c.x) return [400, { ok: false, err: "bad_request" }];
     if (c.x < Date.now() / 1000) return [401, { ok: false, err: "code_expired" }];
-    if (code.length !== 6 || (await sha256(code + "|" + c.e + "|" + c.x)) !== c.h) return [401, { ok: false, err: "bad_code" }];
+    if (code.length !== 6 || (await codeMac(env, code, c.e, c.x)) !== c.h) return [401, { ok: false, err: "bad_code" }];
     const ent = await entitlementByEmail(env, c.e);
     if (!ent) return [404, { ok: false, err: "no_purchase" }];
     return [200, await grant(env, ent)]; }

@@ -1575,6 +1575,8 @@ const ids=Object.keys(DEF).filter(k=>k!=="mode"&&!LISTS.includes(k));
 const clone=o=>JSON.parse(JSON.stringify(o));
 let state=clone(DEF);
 try{const s=JSON.parse(localStorage.getItem(KEY)||"null"); if(s) state={...clone(DEF),...s};}catch(e){}
+// Limpa marcação que possa ter ficado guardada (nomes e descrições nunca têm < ou >)
+["nA","nB","nC","nD","nE"].forEach(k=>{ if(typeof state[k]==="string") state[k]=state[k].replace(/[<>\u0000-\u001f\u007f]/g,""); }); ["pagas","recebidas"].forEach(n=>(state[n]||[]).forEach(t=>{ if(t&&typeof t.desc==="string") t.desc=t.desc.replace(/[<>]/g,""); }));
 // Atualiza as datas do exemplo antigo (fixas em 2026) para as novas, contadas a partir de hoje
 (function(){ const OLD={"2026-03-02":TODAY,"2026-06-15":dPlus(3),"2026-12-15":dPlus(9),"2026-09-01":dPlus(6),"2026-11-30":dPlus(8)};
   if(state.dced in OLD) state.dced=OLD[state.dced]; LISTS.forEach(n=>(state[n]||[]).forEach(t=>{ if(t.d in OLD) t.d=OLD[t.d]; })); })();
@@ -1643,7 +1645,7 @@ let LAST=null;
 // Termina sempre no valor líquido do cenário; se houver diferença de arredondamento, aparece como "Outros ajustes".
 function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=S.mode==="rent"; if(rent&&S.rvend==="sim") return null;
   const k=s.key, co=/^c/.test(k), eni=/^b/.test(k), L=(l,v,c="")=>({l,v,c}), hd=t=>({h:t}), sum=a=>a.reduce((x,y)=>x+y[1],0);
-  const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)), T=[]; if(i>=0) for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c!=="tot"&&Math.abs(x.v)>=0.5) T.push([txt(x.l),x.v]); }
+  const i=s.lines.findIndex(x=>x.h&&/^Impostos/.test(x.h)), T=[]; if(i>=0) for(let j=i+1;j<s.lines.length&&!s.lines[j].h;j++){ const x=s.lines[j]; if(x.c!=="tot"&&Math.abs(x.v)>=0.5) T.push([esc(txt(x.l)),x.v]); }
   const isOp=n=>/^(IMT|Imposto do Selo|IMI|AIMI)/.test(n), isDiv=n=>/dividendo/i.test(n);
   const opT=T.filter(t=>isOp(t[0])), incT=T.filter(t=>!isOp(t[0])&&!isDiv(t[0])), divT=T.filter(t=>isDiv(t[0]));
   const lv=re=>{ const x=s.lines.find(x=>!x.h&&re.test(txt(x.l))); return x?-x.v:0; };
@@ -1656,7 +1658,7 @@ function dreOf(s,D,unit){ if(!D||!s||!s.lines) return null; const S=state, rent=
   const rai=ebit-fin; if(fin) rows.push(L("Juros do crédito",-fin),L("= Resultado antes de impostos",rai,"tot"));
   const TX=s.lines.filter(x=>!x.h&&x.c==="tax"&&Math.abs(x.v)>=0.5).map(x=>txt(x.l)), used=new Set();
   const why=(n)=>{ const re=/Brasil/.test(n)?/Imposto no Brasil/:/Segurança/.test(n)?/Segurança Social/:/IRC|derrama/.test(n)?/IRC|[Dd]errama/:/dividendo/i.test(n)?/dividendo|Retenção/i:/^IRS/.test(n)?/^IRS|^− IRS/:null;
-    if(!re) return []; return TX.filter(t=>!used.has(t)&&re.test(t)&&!(re.source!=="Imposto no Brasil"&&/Imposto no Brasil/.test(t))).map(t=>{ used.add(t); return {l:t.replace(/^−\s*/,""),v:0,c:"sub",t:""}; }); };
+    if(!re) return []; return TX.filter(t=>!used.has(t)&&re.test(t)&&!(re.source!=="Imposto no Brasil"&&/Imposto no Brasil/.test(t))).map(t=>{ used.add(t); return {l:esc(t.replace(/^−\s*/,"")),v:0,c:"sub",t:""}; }); };
   incT.forEach(x=>rows.push(L(x[0],-x[1]),...why(x[0])));
   if(rent&&!co&&!eni){ const cv=lv(/^− Obras de conservação antes do arrendamento/); if(cv>=1) rows.push({l:`Obras de conservação de ${eur(cv)} deduzidas às rendas no IRS do 1.º ano (já pagas no investimento)`,v:0,c:"sub",t:""}); }
   const rl=rai-sum(incT); rows.push(L(co?"= Resultado líquido da sociedade":"= Resultado líquido",rl,"tot"));
@@ -1846,7 +1848,7 @@ function calcRent({S,A,B,casal,joint,canJoint,socio,geral,der,spouse,qA,qB,qLbl}
 function calc(){ return calcBase(); }
 function calcBase(){
   const S=state, geral=parseFloat(S.ano), der=S.derrama/100;
-  const mk=(k,n)=>{const nm=String(S["n"+k]||"").trim()||("Titular "+n); return {k,name:esc(nm),nr:S["res"+k]==="nr",br:S["br"+k]==="sim",base:S["base"+k]||0,rnh:S["rnh"+k]==="sim"};};
+  const mk=(k,n)=>{const nm=String(S["n"+k]||"").replace(/[<>\u0000-\u001f\u007f]/g,"").trim()||("Titular "+n); return {k,name:esc(nm),nr:S["res"+k]==="nr",br:S["br"+k]==="sim",base:S["base"+k]||0,rnh:S["rnh"+k]==="sim"};};
   const A=mk("A",1), B=mk("B",2), casal=S.casal==="sim", TT=titCtx(S,A,B,mk), spouse=TT.spouse;
   const qB=TT.qB, qA=TT.qA, qLbl=TT.qLbl;
   const canJoint=TT.canJoint, joint=TT.joint;
@@ -3073,9 +3075,9 @@ qaBox(); if(LAST) qaSchedule();
   function sanitize(o){ const v={}; if(!o||typeof o!=="object"||Array.isArray(o)) return v;
     Object.keys(o).forEach(k=>{ if(!Object.prototype.hasOwnProperty.call(DEF,k)) return; const d=DEF[k], x=o[k];
       if(k==="mode"){ if(["flip","ced","rent"].includes(x)) v.mode=x; return; }
-      if(LISTS.includes(k)){ if(Array.isArray(x)) v[k]=x.slice(0,60).filter(t=>t&&typeof t==="object").map(t=>({d:/^\d{4}-\d{2}-\d{2}$/.test(t.d)?t.d:"",desc:String(t.desc??"").slice(0,120),v:isFinite(+t.v)?+t.v:0})); return; }
+      if(LISTS.includes(k)){ if(Array.isArray(x)) v[k]=x.slice(0,60).filter(t=>t&&typeof t==="object").map(t=>({d:/^\d{4}-\d{2}-\d{2}$/.test(t.d)?t.d:"",desc:String(t.desc??"").replace(/[<>\u0000-\u001f\u007f]/g,"").slice(0,120),v:isFinite(+t.v)?+t.v:0})); return; }
       if(typeof d==="number"){ if((typeof x==="number"||typeof x==="string")&&x!==""&&isFinite(+x)) v[k]=+x; return; }
-      if(typeof d==="string"){ if(typeof x!=="string"&&typeof x!=="number") return; const s=String(x).slice(0,60), el=$(k);
+      if(typeof d==="string"){ if(typeof x!=="string"&&typeof x!=="number") return; const s=String(x).replace(/[<>\u0000-\u001f\u007f]/g,"").slice(0,60), el=$(k);
         if(el&&el.tagName==="SELECT"&&![...el.options].some(op=>op.value===s)) return;
         if(el&&el.type==="date"&&s&&!/^\d{4}-\d{2}-\d{2}$/.test(s)) return;
         v[k]=s; } });
