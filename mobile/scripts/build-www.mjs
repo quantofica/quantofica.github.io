@@ -14,6 +14,7 @@ const ACCOUNT_URL = process.env.QF_ACCOUNT_URL || "https://quantofica-conta.quan
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 fs.cpSync(path.join(WEB, "icons"), path.join(OUT, "icons"), { recursive: true });
+fs.cpSync(path.join(WEB, "vendor"), path.join(OUT, "vendor"), { recursive: true });
 fs.copyFileSync(path.join(WEB, "manifest.webmanifest"), path.join(OUT, "manifest.webmanifest"));
 fs.copyFileSync(path.join(WEB, "termos.html"), path.join(OUT, "termos.html"));
 

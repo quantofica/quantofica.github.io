@@ -1147,7 +1147,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
 </nav>
 <div class="grid">
 <form class="panel" id="form" autocomplete="off" data-tab="dados">
-  <button type="button" class="qt-live" data-qtab="resultado"><span class="qt-live-k">Resultado ao vivo</span><span class="qt-live-n" id="qt-live-n">—</span><span class="qt-live-v" id="qt-live-v">—</span></button>
+  <button type="button" class="qt-live" data-qtab="resultado"><span class="qt-live-k">Resultado ao vivo</span><span class="qt-live-n" id="qt-live-n">—</span><span class="qt-live-v" id="qt-live-v" aria-live="polite">—</span></button>
   <nav class="stepper" aria-label="Passos da simulação">
     <button type="button" class="st" data-go="1"><span class="st-n">1</span><span class="st-t">Titulares</span></button>
     <button type="button" class="st" data-go="2"><span class="st-n">2</span><span class="st-t">Operação</span></button>
@@ -1309,7 +1309,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
   </section>
 </form>
 
-<section aria-live="polite" id="res">
+<section id="res">
   <div class="best">
     <div class="win primary"><div class="hero-chart" id="b1chart" aria-hidden="true"></div><div class="k">Resultado líquido · melhor cenário</div><div class="n" id="b1n">—</div><div class="v hero" id="b1v">—</div><div class="chips"><span class="chip" id="b1d"></span><span class="chip" id="b1d2" hidden>Também é o melhor para levantar o dinheiro</span></div><div class="s" id="b1s"></div></div>
     <div class="win"><div class="k">Melhor se levantar o dinheiro</div><div class="n" id="b2n">—</div><div class="v" id="b2v">—</div><div class="s" id="b2s"></div></div>
@@ -1356,7 +1356,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
       <summary>Nota 2 · IMT: incidência, taxas e isenções</summary>
       <p>O IMT é pago pelo comprador em cada transmissão onerosa de imóveis, antes da escritura, através da declaração Modelo 1. Desde 25 de maio de 2026 pode ser pago até 30 dias após a liquidação (art. 36.º, n.º 1 do CIMT, na redação do Decreto-Lei 97/2026), mas o notário exige o comprovativo na escritura (art. 49.º do CIMT).</p>
       <ul>
-        <li><b>Incidência e sujeito passivo:</b> arts. 1.º, 2.º e 4.º do CIMT. Inclui o contrato-promessa com cláusula de livre cedência e a cessão de posição contratual (art. 2.º, n.º 3, alíneas b) e e)); na cessão, a base é o valor pago ao cedente (art. 12.º, n.º 4, regra 18.ª).</li>
+        <li><b>Incidência e sujeito passivo:</b> arts. 1.º, 2.º e 4.º do CIMT. Inclui o contrato-promessa com cláusula de livre cedência e a cessão de posição contratual (art. 2.º, n.º 3, alíneas a), b) e e): contrato-promessa com cláusula, cessão da posição e ajuste de revenda); com cláusula, a base é a parte do preço paga e, na cessão, o valor pago ao cedente (art. 12.º, n.º 4, regra 18.ª).</li>
         <li><b>Taxas (art. 17.º do CIMT):</b> habitação própria e permanente, n.º 1, alínea a), isenta até 106.346 € em 2026; outra habitação, alínea c), Tabela III usada neste simulador; outros prédios urbanos, 6,5%; prédios rústicos, 5%; comprador em paraíso fiscal, 10% (n.º 4); comprador não residente, 7,5% fixos desde 25 de maio de 2026 (Decreto-Lei 97/2026), salvo se se tornar residente em 2 anos ou arrendar a renda moderada.</li>
         <li><b>Compra para revenda (art. 7.º do CIMT):</b> isenção para quem declarou a atividade de compra para revenda antes da aquisição. Se a atividade ainda não for habitual, paga e pede a anulação após revender (n.º 4). A isenção caduca se o imóvel não for revendido no prazo de 1 ano ou se lhe for dado outro destino (art. 11.º, n.º 5). O Imposto do Selo de 0,8% é sempre devido.</li>
         <li><b>IMT Jovem (art. 9.º, n.ºs 2 a 5 do CIMT, Decreto-Lei 48-A/2024):</b> até aos 35 anos, primeira habitação própria e permanente; isenção total até 330.539 € e parcial até 660.982 € em 2026.</li>
@@ -1370,7 +1370,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
       <p>Taxa de <b>0,8%</b> sobre o mesmo valor que serve de base ao IMT, ou seja, o maior entre o preço e o VPT (verba 1.1 da Tabela Geral do Imposto do Selo). É encargo do comprador e é devido mesmo quando há isenção de IMT, incluindo na compra para revenda.</p>
       <ul>
         <li>Na mais-valia em nome próprio entra como encargo dedutível (art. 51.º, n.º 1, alínea a) do CIRS); na sociedade e no empresário individual é custo do imóvel.</li>
-        <li>Não incluído: o Imposto do Selo de 0,6% sobre crédito à habitação com prazo superior a 5 anos (verba 17.1.1), se a compra for financiada.</li>
+        <li>Imposto do Selo do crédito: 0,6% do montante em créditos com prazo igual ou superior a 5 anos (verba 17.1.3 da Tabela Geral). Está incluído no arrendamento com crédito; na compra e venda e na cedência não está incluído.</li>
         <li>Na cedência de posição contratual, o simulador não o calcula; pode ser devido conforme o caso.</li>
       </ul>
     </details>
@@ -1398,7 +1398,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
       <ul>
         <li><b>Base legal:</b> art. 68.º do CIRS, com limites atualizados em 3,51% e taxas do 2.º ao 5.º escalão reduzidas em 0,3 pontos pela Lei 73-A/2025 (Orçamento do Estado para 2026).</li>
         <li><b>Taxa adicional de solidariedade</b> (art. 68.º-A do CIRS): 2,5% entre 80.000 € e 250.000 € e 5% acima. Incluída.</li>
-        <li><b>Não incluídos:</b> mínimo de existência (art. 70.º), deduções à coleta (art. 78.º) e o quociente da tributação conjunta. Com rendimentos baixos, o IRS real da esposa pode ser menor.</li>
+        <li><b>Não incluídos:</b> mínimo de existência (art. 70.º) e deduções à coleta (art. 78.º). Com rendimentos baixos, o IRS real pode ser menor. Na tributação conjunta, o simulador aplica o quociente conjugal (divide o rendimento por 2).</li>
         <li><b>RNH:</b> não reduz estes valores. O regime não abrange mais-valias de imóveis portugueses, lucros de atividade em Portugal fora das atividades de elevado valor acrescentado nem dividendos de sociedades portuguesas.</li>
       </ul>
     </details>
@@ -1490,7 +1490,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
         <li><b>AIMI (art. 135.º-A e seguintes do CIMI):</b> a sociedade paga 0,4% do VPT de imóveis habitacionais, sem dedução. Pessoas singulares só pagam acima de 600.000 € de VPT (1.200.000 € em tributação conjunta), considerando apenas este imóvel.</li>
         <li><b>Residente no Brasil:</b> as rendas são tributadas em Portugal e de novo no Brasil, pela tabela progressiva até 27,5%, com crédito do imposto português. Uma sociedade portuguesa de arrendamento tem sobretudo rendimentos passivos; o sócio residente no Brasil é tributado lá todos os anos a 15% sobre o lucro, com crédito do IRC, mesmo sem distribuição (Lei 14.754/2023).</li>
         <li><b>Crédito à habitação:</b> a prestação mensal é calculada pelo método francês (prestação constante). Divide-se em juros, que são custo, e capital, que reduz a dívida mas não é custo em nenhum cenário. Os juros só reduzem o imposto na sociedade e no empresário; em nome próprio não são dedutíveis às rendas (art. 41.º do CIRS). O capital amortizado sai do dinheiro do ano em todos os cenários.</li>
-        <li><b>Imposto do Selo do crédito:</b> 0,6% do montante em empréstimos de 5 ou mais anos (verba 17.1.1 da Tabela Geral), pago uma vez e somado ao investimento, e 4% sobre os juros (verba 17.3.1), incluído nos juros do ano.</li>
+        <li><b>Imposto do Selo do crédito:</b> 0,6% do montante em empréstimos de 5 ou mais anos (verba 17.1.3 da Tabela Geral), pago uma vez e somado ao investimento, e 4% sobre os juros (verba 17.3.1), incluído nos juros do ano.</li>
         <li><b>Rentabilidade:</b> com crédito, o simulador mostra a rentabilidade sobre o investimento total e sobre o capital próprio, isto é, o dinheiro que o investidor pôs do seu bolso.</li>
         <li><b>Não incluídos:</b> a venda futura do imóvel e a respetiva mais-valia, comissões bancárias, seguros de vida do crédito e a dedução de prejuízos de anos anteriores.</li>
       </ul>
@@ -1514,7 +1514,7 @@ html.dg-open,html.dg-open body{overflow:hidden}
       <div class="tbl"><table class="cmp">
         <thead><tr><th></th><th>Com cláusula</th><th>Sem cláusula</th></tr></thead>
         <tbody>
-          <tr><td>Quando paga o IMT</td><td data-label="Com cláusula">Antes de assinar o contrato-promessa (art. 2.º, n.º 3, al. b) do CIMT)</td><td data-label="Sem cláusula">Na escritura definitiva entre o vendedor e o novo comprador (art. 2.º, n.º 3, al. e))</td></tr>
+          <tr><td>Quando paga o IMT</td><td data-label="Com cláusula">Antes de assinar o contrato-promessa (art. 2.º, n.º 3, al. a) e art. 22.º, n.º 2 do CIMT)</td><td data-label="Sem cláusula">Nos 30 dias a contar da escritura definitiva entre o vendedor e o novo comprador (art. 2.º, n.º 3, al. e) e art. 36.º, n.º 9, al. a) do CIMT)</td></tr>
           <tr><td>Quem paga</td><td data-label="Com cláusula">O promitente comprador</td><td data-label="Sem cláusula">O promitente comprador, como cedente (art. 4.º, al. g))</td></tr>
           <tr><td>Base</td><td data-label="Com cláusula">Só a parte do preço paga (sinal e reforços), à taxa do preço total (art. 12.º, n.º 4, regra 18.ª e art. 17.º, n.º 5)</td><td data-label="Sem cláusula">Preço do imóvel ou VPT, segundo a AT</td></tr>
           <tr><td>Liquidez</td><td data-label="Com cláusula">Paga IMT antes de cada pagamento ao vendedor</td><td data-label="Sem cláusula">Paga no fim, quando já recebeu do cessionário</td></tr>
@@ -1565,7 +1565,7 @@ const dPlus=m=>{ const t=new Date(); const d=new Date(t.getFullYear(),t.getMonth
 const TODAY=dPlus(0);
 const DEF={mode:"flip",compra:250000,vpt:0,escritura:1200,obras:32520,ivaobras:"0.23",venda:360000,com:4,meses:10,imi:400,
   cpcv:250000,cvpt:0,clausula:"sem",ced30:"nao",origem:"proprio",pant:0,cout:0,contab:1800,derrama:1.5,ano:"0.19",ssreg:"trim",socio:"A",rel:"conjuge",quota:50,
-  casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"sim",baseA:60000,rnhA:"sim",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
+  casal:"nao",tribut:"separada",nA:"Titular 1",resA:"pt",brA:"nao",baseA:30000,rnhA:"nao",nB:"Titular 2",resB:"pt",brB:"nao",baseB:0,rnhB:"nao",
   dced:dPlus(6),
   rcompra:200000,rvpt:110000,resc:1200,robras:"sim",robv:15000,riva:"0.23",rtipo:"cons",renda:1100,ocup:12,regime:"livre",dur:"0",rano:"1",cond:600,seguro:250,manut:400,gestao:0,imitx:0.3,fin:"cred",fmont:150000,ftaxa:3.5,fprazo:30,
   pagas:[{d:TODAY,desc:"Sinal",v:25000},{d:dPlus(3),desc:"Reforço do sinal",v:10000},{d:dPlus(9),desc:"Reforço previsto (assumido pelo cessionário)",v:50000}],
@@ -2028,7 +2028,8 @@ function renderSaves(){ const a=getSaves(), box=$("saves-list"); $("saves-count"
   renderCompare(a); }
 function renderCompare(a){ const sel=a.filter(x=>CMP.has(x.id)), box=$("saves-cmp"); if(sel.length<2){ box.innerHTML=""; return; }
   const names=[...new Set(sel.flatMap(x=>x.rows.map(r=>r[0])))];
-  const best=(vals)=>{ const m=Math.max(...vals.filter(v=>v!=null)); return vals.map(v=>v!=null&&v===m); };
+  const sameU=new Set(sel.map(x=>x.unit||"")).size===1;
+  const best=(vals)=>{ if(!sameU) return vals.map(()=>false); const m=Math.max(...vals.filter(v=>v!=null)); return vals.map(v=>v!=null&&v===m); };
   const bn=best(sel.map(x=>x.bestNet));
   const row=(lab,cells,cls="")=>`<tr class="${cls}"><th scope="row">${lab}</th>${cells.join("")}</tr>`;
   box.innerHTML=`<h3 class="cmp-h">Comparação</h3><div class="tbl"><table class="qcmp"><thead><tr><th></th>${sel.map(x=>`<th scope="col">${esc(x.name)}</th>`).join("")}</tr></thead><tbody>
@@ -2037,7 +2038,7 @@ function renderCompare(a){ const sel=a.filter(x=>CMP.has(x.id)), box=$("saves-cm
     ${row("Líquido do melhor",sel.map((x,i)=>`<td class="num ${bn[i]?"win-c":""}">${eur(x.bestNet)}${x.unit||""}</td>`),"strong")}
     ${row("Impostos do melhor",sel.map(x=>`<td class="num">${eur(x.bestTaxes)}</td>`))}
     ${names.map(n=>{ const vals=sel.map(x=>{const r=x.rows.find(r=>r[0]===n); return r?r[1]:null;}), w=best(vals); return row(esc(n),vals.map((v,i)=>`<td class="num ${w[i]?"win-c":""}">${v==null?"—":eur(v)+(sel[i].unit||"")}</td>`)); }).join("")}
-  </tbody></table></div><p class="sv-hint">O valor mais alto de cada linha está destacado a verde.</p>`; }
+  </tbody></table></div><p class="sv-hint">${sameU?"O valor mais alto de cada linha está destacado a verde.":"Atenção: está a comparar valores por ano (arrendamento) com valores totais (compra e venda ou cedência), por isso não há destaque."}</p>`; }
 $("save-form").addEventListener("submit",e=>{ e.preventDefault(); if(!LAST) return; const name=$("save-name").value.trim()||`Simulação ${OPN[state.mode]}`;
   const a=getSaves(); const x={id:Date.now().toString(36),name,mode:state.mode,date:stamp().human,state:clone(state),best:txt(LAST.best1.name),bestNet:Math.round(LAST.best1.net),bestTaxes:Math.round(LAST.best1.taxes),unit:LAST.unit,
     rows:LAST.order.map(s=>[txt(s.name),Math.round(s.net)])};
@@ -2057,8 +2058,8 @@ $("reset").addEventListener("click",()=>{ const b=$("reset");
   $("exp-msg").textContent="Valores repostos a zero.";
 });
 // ======== Exportação ========
-const LIBS={xlsx:["https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"],
-  pdf:["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js","https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"]};
+// Bibliotecas servidas pelo próprio site (pasta vendor/, versões fixas): não dependem de terceiros e funcionam sem internet
+const LIBS={xlsx:["vendor/exceljs.min.js"],pdf:["vendor/jspdf.umd.min.js","vendor/jspdf.plugin.autotable.min.js"]};
 const loaded={};
 function loadScript(u){ return loaded[u]||(loaded[u]=new Promise((res,rej)=>{const sc=document.createElement("script"); sc.src=u; sc.onload=res; sc.onerror=()=>{delete loaded[u]; rej(new Error("load"));}; document.head.appendChild(sc);})); }
 async function loadLibs(k){ for(const u of LIBS[k]) await loadScript(u); }
@@ -2163,7 +2164,7 @@ async function exportXlsx(){ const msg=$("exp-msg"); if(!LAST) return; msg.textC
   const buf=await wb.xlsx.writeBuffer();
   msg.textContent=await saveFile(`quantofica-${state.mode}-${st.file}.xlsx`,new Blob([buf],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}));
 }
-const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"->").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
+const pdfTxt=v=>String(v).replace(/[\u202F\u00A0]/g," ").replace(/€(?=[·])/g,"€ ").replace(/\u2212/g,"-").replace(/[\u2013\u2014]/g,"-").replace(/\u2192/g,"para").replace(/\u00B7/g,"-").replace(/\u2264/g,"<=").replace(/\u2265/g,">=").replace(/\u2026/g,"...");
 async function buildPdf(){ await loadLibs("pdf");
   const doc=new window.jspdf.jsPDF({unit:"pt",format:"a4"}), st=stamp(), R=resultsRows(), W=doc.internal.pageSize.getWidth(), M=40;
   const blue=[22,74,143], amber=[154,91,0];
@@ -2732,12 +2733,14 @@ qaBox(); if(LAST) qaSchedule();
       } else if(/^c/.test(k)){ // ----- Sociedade -----
         const custo=S.rcompra+S.resc+imtX+is+val, acc=deprOf(imtX)*N, vc=custo-acc, g=V-comm-vc;
         const taxT=lineV(st,/^= Lucro tributável/), t0=Math.max(0,taxT), t1=Math.max(0,taxT+g);
-        const ircD=irc(t1,geral)-irc(t0,geral), derD=(t1-t0)*der;
+        // Taxa geral de IRC do ano da venda: 19% em 2026, 18% em 2027 e 17% a partir de 2028 (Lei 64/2025)
+        const yS=((/^(\d{4})/.exec(S.rdcompra||"")||[])[1]|0||new Date().getFullYear())+N, gS=yS<=2026?.19:yS===2027?.18:.17;
+        const ircD=irc(t1,gS)-irc(t0,gS), derD=(t1-t0)*der;
         let brC=0; const brL=[]; sh.forEach(x=>{ if(!x.p.br||g<=0) return; const t=Math.max(0,.15*g*x.share-(ircD+derD)*x.share); brC+=t; brL.push(L(`Imposto no Brasil de ${x.p.name}: 15% sobre ${eur(g*x.share)} de mais-valia (Lei 14.754/2023) − crédito do IRC`,-t,"tax")); });
         const coCash=V-comm-ircD-derD-brC-balN;
         sl=[hd(vendaHd+": mais-valia na sociedade (IRC)"),L("Valor de venda",V),L("− Comissão de venda com IVA",-comm),
           L(`− Custo do imóvel (compra, escritura, IMT e Selo${val?", obras":""})`,-custo),L(`+ Amortizações acumuladas (${N} anos × ${eur(deprOf(imtX))})`,acc),
-          L("= Mais-valia contabilística",g,"tot"),L(`IRC sobre a mais-valia, somada ao lucro tributável do ano (${eur(taxT)})`,-ircD,"tax"),L(`Derrama municipal ${pct(der)}`,-derD,"tax"),...brL];
+          L("= Mais-valia contabilística",g,"tot"),L(`IRC sobre a mais-valia (taxa geral de ${pct(gS)} em ${yS}), somada ao lucro tributável do ano (${eur(taxT)})`,-ircD,"tax"),L(`Derrama municipal ${pct(der)}`,-derD,"tax"),...brL];
         saleTax=ircD+derD+brC;
         if(k==="c1"){ saleCash=coCash; saleLbl="IRC e derrama"+(brC?" e imposto no Brasil":""); }
         else { const Ds=Math.max(0,g-ircD-derD); let t=0; const tl=[];
@@ -2887,7 +2890,7 @@ qaBox(); if(LAST) qaSchedule();
       ssEv(sale);
       return {items,name:s.name,intro:`Compra a ${fD(P)} e venda prevista em ${fM(sale)}.`}; }
     if(m==="ced"){ const Y=D.Y, imtV=T["IMT"]||0, com=S.clausula==="com", viaCed=S.origem==="cedente";
-      ev(com?D.cpcv:D.escr,"IMT",imtV,com?(viaCed?"Como cessionário, antes de assinar a cessão da posição (data da primeira tranche paga).":"Com cláusula de livre cedência: sobre o sinal e os reforços pagos, liquidado antes de cada pagamento (data da primeira tranche paga)."):(S.ced30==="sim"?"Sem cláusula e só com o reembolso do sinal: sem IMT, desde que o declare às Finanças nos 30 dias seguintes à cedência.":"Sem cláusula: devido por si, como cedente (ajuste de revenda), antes da escritura definitiva entre o vendedor e o novo comprador (data da última tranche recebida)."),"buy");
+      ev(com?D.cpcv:(S.ced30==="sim"?D.escr:new Date(D.escr.getFullYear(),D.escr.getMonth(),D.escr.getDate()+30)),"IMT",imtV,com?(viaCed?"Como cessionário, antes de assinar a cessão da posição (data da primeira tranche paga).":"Com cláusula de livre cedência: sobre o sinal e os reforços pagos, liquidado antes de cada pagamento (data da primeira tranche paga)."):(S.ced30==="sim"?"Sem cláusula e só com o reembolso do sinal: sem IMT, desde que o declare às Finanças nos 30 dias seguintes à cedência.":"Sem cláusula: devido por si, como cedente (ajuste de revenda), nos 30 dias a contar da escritura definitiva entre o vendedor e o novo comprador (art. 36.º, n.º 9, al. a) do CIMT; data estimada a partir da última tranche recebida)."),"buy");
       ev(D.dc,"Cedência da posição",null,"Data em que o ganho é obtido.","mark",{mark:true});
       if(k!=="co") irsEv(Y,T["IRS"]||0,k==="ps"?"da mais-valia da cedência":"do lucro da atividade (categoria B)");
       else { ircEv(Y,sumL(S.recebidas||[])); divEv(Y); }
@@ -4370,7 +4373,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
         <label class="dg-chk"><input type="checkbox" name="mkt"><span>Quero receber novidades e dicas sobre impostos no imobiliário (opcional).</span></label>
         <p class="dg-err" role="alert"></p>
         <button class="dg-btn" type="submit">Começar a simular</button>
-        <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>Guardamos o nome, o e-mail, o telemóvel e o perfil apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail, para quantoficapt@gmail.com.</p></details>
+        <details class="dg-priv"><summary>Como usamos os seus dados</summary><p>O nome, o e-mail, o telemóvel e o perfil são enviados para uma folha de cálculo Google do QuantoFica, apenas para lhe dar acesso à demonstração e, se o autorizar, enviar novidades. Não vendemos nem cedemos os seus dados. As simulações ficam só no seu dispositivo. Pode pedir a eliminação a qualquer momento por e-mail, para quantoficapt@gmail.com. Mais pormenores no ponto 9 dos <a href="termos.html">Termos</a>.</p></details>
       </form>
       <div class="dg-alt"><button type="button" data-dg="key">${typeof QF_ACCOUNT_URL!=="undefined"&&QF_ACCOUNT_URL?"Já comprei — entrar":"Já tenho uma chave de licença"}</button><a href="https://quantofica.github.io/comprar.html" data-dg="buy">Ver planos e preços</a></div>
       <div class="dg-soc" aria-label="QuantoFica nas redes sociais"><a href="https://www.instagram.com/quantoficapt/" target="_blank" rel="noopener" aria-label="QuantoFica no Instagram (abre noutra janela)"><span class="qf-si" aria-hidden="true" style="--si:url('https://cdn.jsdelivr.net/npm/simple-icons@16.30.0/icons/instagram.svg')"></span>Instagram</a><a href="https://www.tiktok.com/@quantoficapt" target="_blank" rel="noopener" aria-label="QuantoFica no TikTok (abre noutra janela)"><span class="qf-si" aria-hidden="true" style="--si:url('https://cdn.jsdelivr.net/npm/simple-icons@16.30.0/icons/tiktok.svg')"></span>TikTok</a></div>
@@ -4694,6 +4697,42 @@ dialog.qf-terms::backdrop{background:rgba(10,15,25,.55)}
   // A proposta comparativa abre-se a partir da carteira: mostra a ferramenta 2
   document.addEventListener("click",e=>{ if(e.target.closest&&e.target.closest('[data-ip="prop"]')) set("clientes"); },true);
   set(cur,false);
+}catch(e){ console.error(e); } })();
+</script>
+<style>
+.win .v,.win .v.hero{overflow-wrap:anywhere}
+.win .v.hero.qf-long{font-size:clamp(20px,6.5vw,30px)}
+.qf-lim{grid-column:1/-1;margin:-2px 0 2px;font:600 12.5px var(--body);color:var(--warn)}
+</style>
+<script>
+// ===== Z: limites dos campos numéricos (valor fora do intervalo é ajustado, com aviso junto ao campo) =====
+(function(){ try{
+  const M=1e8, LIM={com:[0,20,"%"],meses:[1,120,"meses"],ftaxa:[0,20,"%"],fprazo:[1,50,"anos"],gestao:[0,30,"%"],derrama:[0,1.5,"%"],imitx:[0.3,0.45,"%"],
+    rvanos:[1,50,"anos"],rvcom:[0,20,"%"],quota:[0,100,"%"],quotaC:[0,100,"%"],quotaD:[0,100,"%"],quotaE:[0,100,"%"]};
+  const MONEY=["baseA","baseB","baseC","baseD","baseE","compra","vpt","escritura","obras","venda","imi","cpcv","cvpt","pant","cout","rcompra","rvpt","resc","fmont","robv","renda","cond","seguro","manut","contab","rvval"];
+  MONEY.forEach(k=>{ LIM[k]=[0,M,"€"]; });
+  const show=(el,msg)=>{ const f=el.closest(".f"); if(!f) return; let m=f.querySelector(".qf-lim"); if(!m){ m=document.createElement("p"); m.className="qf-lim"; m.setAttribute("role","status"); f.appendChild(m); }
+    m.textContent=msg; clearTimeout(m._t); m._t=setTimeout(()=>m.remove(),5000); };
+  const fmt=(v,u)=>u==="€"?eur(v):v.toLocaleString("pt-PT")+(u==="%"?" %":" "+(v===1?(u==="meses"?"mês":"ano"):u));
+  document.getElementById("form")&&document.getElementById("form").addEventListener("change",e=>{ const el=e.target, L=LIM[el.id]; if(!L||!el.dataset||!el.dataset.num) return;
+    const v=parseNum(el.value); let c=v; if(v<L[0]) c=L[0]; if(v>L[1]) c=L[1]; if(c===v) return;
+    el.value=fmtNum(c); el.dispatchEvent(new Event("input",{bubbles:true}));
+    show(el,`Valor ajustado para ${fmt(c,L[2])}: o mínimo é ${fmt(L[0],L[2])} e o máximo é ${fmt(L[1],L[2])}.`); },true);
+  // Números muito grandes cabem no cartão do melhor cenário
+  if(typeof calc==="function"){ const _c=calc; calc=function(){ const r=_c.apply(this,arguments); try{ const v=document.getElementById("b1v"); if(v) v.classList.toggle("qf-long",v.textContent.length>13); }catch(e){} return r; }; }
+}catch(e){ console.error(e); } })();
+</script>
+<style>
+.legal summary{min-height:44px;display:flex;align-items:center;padding:6px 0}
+@media (max-height:500px) and (orientation:landscape){.side{position:static!important}}
+</style>
+<script>
+// ===== AA: notas legais pela ordem do número =====
+(function(){ try{ const lg=document.getElementById("legal"); if(!lg) return;
+  const num=d=>{ const m=/Nota\s+(\d+)/.exec((d.querySelector("summary")||{}).textContent||""); return m?+m[1]:999; };
+  const ds=[...lg.querySelectorAll(":scope > details")]; if(ds.length<2) return;
+  const anchorNode=document.createComment("notas"); ds[0].before(anchorNode);
+  ds.sort((a,b)=>num(a)-num(b)).forEach(d=>anchorNode.before(d)); anchorNode.remove();
 }catch(e){ console.error(e); } })();
 </script>
 <script>

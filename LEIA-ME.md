@@ -28,6 +28,6 @@ A app abre em ecrã inteiro, com ícone próprio, e funciona sem internet depois
 3. Os telemóveis recebem a versão nova na abertura seguinte com internet.
 
 ## Notas
-- Os valores inseridos ficam guardados só no dispositivo de cada pessoa; nada é enviado para servidores.
+- As simulações ficam guardadas só no dispositivo de cada pessoa. Os contactos do ecrã "Experimente grátis" e da compra são enviados para a folha Google (ver ponto 9 dos termos).
 - As taxas e escalões são os de 2026. Reveja-os todos os anos após o Orçamento do Estado.
 - Se tornar o repositório público, qualquer pessoa com o endereço pode usar a app.
