@@ -1021,6 +1021,8 @@ html:root[data-agc] .wrap>header{background:linear-gradient(135deg,var(--agb-bar
 .dg-brand{display:flex;align-items:center;gap:12px}
 .dg-brand svg{width:52px;height:52px;flex:none;filter:drop-shadow(0 6px 10px rgba(5,20,50,.45))}
 .dg h2{font-family:var(--display);font-size:28px;line-height:1.15;margin:4px 0 0;color:#fff;text-wrap:balance}
+#dg-t{hyphens:manual;-webkit-hyphens:manual;text-wrap:wrap}
+#dg-t .dg-l{display:block;white-space:nowrap;text-align:justify;text-align-last:justify}
 .dg-lead{margin:8px 0 0;color:rgba(255,255,255,.88);font-size:15.5px;text-align:justify;hyphens:manual;-webkit-hyphens:manual}
 .dg-pts{margin:0;padding:0;list-style:none;display:grid;gap:8px;font-size:15px}
 .dg-pts li{display:flex;gap:10px;align-items:flex-start;text-align:left;hyphens:manual;-webkit-hyphens:manual;text-wrap:pretty}.dg-pts li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#6ff0aa;color:#0b4a2a;font:800 13px/22px var(--body);text-align:center}
@@ -4349,6 +4351,13 @@ agbRefresh();
   new MutationObserver(()=>{ clearTimeout(t); const v=m.textContent.trim(); if(!v||/^A preparar/.test(v)) return; t=setTimeout(()=>{ if(m.textContent.trim()===v) m.textContent=""; },3500); }).observe(m,{childList:true,characterData:true,subtree:true}); })();
 
 // ===== P: página de captura da demo =====
+// Título da captura justificado: ajusta o tamanho da letra para a linha mais comprida ocupar a largura toda
+function qfFitDgTitle(){ const h=document.getElementById("dg-t"); if(!h||!h.offsetWidth) return; const L=[...h.querySelectorAll(".dg-l")]; if(!L.length) return;
+  h.style.fontSize=""; L.forEach(l=>{ l.style.display="inline-block"; l.style.textAlignLast="auto"; });
+  const base=parseFloat(getComputedStyle(h).fontSize), wmax=Math.max(...L.map(l=>l.getBoundingClientRect().width)), W=h.clientWidth;
+  L.forEach(l=>{ l.style.display=""; l.style.textAlignLast=""; });
+  if(wmax>0) h.style.fontSize=Math.max(20,Math.min(40,base*W/wmax*0.995))+"px"; }
+addEventListener("resize",()=>qfFitDgTitle()); if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>qfFitDgTitle());
 // URL da aplicação Web do Google Apps Script que grava os contactos numa folha Google. Vazio = só guarda neste dispositivo.
 const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRkjHV0Xs4aEvilTTz6B1-3yDK2YWh4OxLMNph8AwcD_pM8VHe/exec";
 (function(){
@@ -4359,7 +4368,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
   function build(){ el=document.createElement("div"); el.className="dg"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-labelledby","dg-t");
     el.innerHTML=`<div class="dg-in">
       <div class="dg-brand">${LOGO}<span class="wm" style="font-size:28px"><span class="wm-a">Quanto</span><span class="wm-b">Fica</span></span></div>
-      <div><h2 id="dg-t">Quanto fica para si, <br>depois dos impostos?</h2>
+      <div><h2 id="dg-t"><span class="dg-l">Quanto fica para si,</span> <span class="dg-l">depois dos impostos?</span></h2>
       <p class="dg-lead">Simule a compra e venda, a cedência de posição ou&nbsp;o arrendamento de um imóvel em Portugal e&nbsp;descubra a estrutura que paga menos impostos.</p></div>
       <ul class="dg-pts"><li>Compare particular, empresário e sociedade</li><li>Regras de 2026 em Portugal e efeito&nbsp;no&nbsp;Brasil</li><li>Resultado na hora, enquanto escreve</li></ul>
       <form class="dg-card" novalidate>
@@ -4394,7 +4403,7 @@ const QF_SHEET_URL="https://script.google.com/macros/s/AKfycbxJidjj12C5vMdicAdRk
       if(b.dataset.dg==="key"){ e.preventDefault(); hide(true); if(typeof window.qfPlans==="function") window.qfPlans({reason:"key"}); else { const pb=$("g-plan-btn"); pb&&pb.click(); } } });
     el.addEventListener("keydown",e=>{ if(e.key!=="Tab") return; const fs=[...el.querySelectorAll("input:not([tabindex='-1']),select,button,a,summary")].filter(x=>x.offsetParent); if(!fs.length) return;
       const a=fs[0], z=fs[fs.length-1]; if(e.shiftKey&&document.activeElement===a){ e.preventDefault(); z.focus(); } else if(!e.shiftKey&&document.activeElement===z){ e.preventDefault(); a.focus(); } }); }
-  function show(){ if(shown||has()||invited) return; if(typeof qfTier==="function"&&qfTier()!=="demo") return; if(!el) build(); shown=true; last=document.activeElement; el.hidden=false; document.documentElement.classList.add("dg-open"); setTimeout(()=>{ const i=el.querySelector("input[name=nome]"); i&&i.focus(); },60); }
+  function show(){ if(shown||has()||invited) return; if(typeof qfTier==="function"&&qfTier()!=="demo") return; if(!el) build(); shown=true; last=document.activeElement; el.hidden=false; document.documentElement.classList.add("dg-open"); qfFitDgTitle(); requestAnimationFrame(qfFitDgTitle); setTimeout(()=>{ const i=el.querySelector("input[name=nome]"); i&&i.focus(); },60); }
   function hide(temp){ if(!el) return; el.hidden=true; document.documentElement.classList.remove("dg-open"); shown=false; if(temp) window.__dgAfterKey=true; else if(last&&last.focus) last.focus(); }
   addEventListener("qf-tier",e=>{ const t=e.detail&&e.detail.tier; if(t&&t!=="demo"){ if(el&&!el.hidden) hide(); } else if(t==="demo"&&!window.__dgAfterKey) setTimeout(show,50); });
   // Se o diálogo da chave fechar sem ativar uma licença, a captura volta a aparecer
