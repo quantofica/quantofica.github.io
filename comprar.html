@@ -45,6 +45,7 @@ h2{font-family:var(--display);font-size:21px;margin:0 0 14px}
 .plan .sub{font-size:14px;color:var(--muted);margin-top:2px}
 form{display:grid;gap:14px}
 label.f{display:grid;gap:6px;font-weight:600;font-size:14.5px}
+[hidden]{display:none!important}
 label.f small{font-weight:400;color:var(--muted)}
 input[type=text],input[type=email],input[type=tel]{width:100%;min-height:48px;border:1px solid #c9d2de;border-radius:12px;padding:0 14px;font:500 16px var(--body);color:var(--ink);background:var(--bg)}
 input:focus{outline:2px solid var(--accent);outline-offset:1px}
@@ -125,7 +126,7 @@ footer a{color:var(--accent)}
       <h2 id="h-dados">2 · Os seus dados</h2>
       <form id="buy" novalidate>
         <label class="f">Nome<input type="text" id="nome" autocomplete="name" required></label>
-        <label class="f">E-mail <small>— é para aqui que enviamos a chave de licença</small><input type="email" id="email" autocomplete="email" inputmode="email" required></label>
+        <label class="f">E-mail <small>— é com ele que entra no QuantoFica noutros dispositivos</small><input type="email" id="email" autocomplete="email" inputmode="email" required></label>
         <label class="f" id="f-ag" hidden>Nome da agência<input type="text" id="agencia" autocomplete="organization"></label>
         <label class="f">Telemóvel <small>(opcional)</small><input type="tel" id="tel" autocomplete="tel" inputmode="tel"></label>
         <details class="fat">
@@ -152,19 +153,19 @@ footer a{color:var(--accent)}
   <section class="panel" style="margin-top:20px" aria-labelledby="h-depois">
     <h2 id="h-depois">Depois de pagar</h2>
     <ol class="steps">
-      <li>Recebe por e-mail a sua <b>chave de licença</b> (normalmente em minutos, no máximo em 24 horas úteis).</li>
-      <li>Abra o QuantoFica, toque no <b>ícone da chave</b> no topo e cole a chave.</li>
-      <li>Toque em <b>Ativar</b>. Pronto: o plano fica ativo neste dispositivo.</li>
+      <li>No fim do pagamento volta ao QuantoFica e o plano fica <b>ativo de imediato</b> nesse navegador.</li>
+      <li>Noutro dispositivo, ou na app instalada, toque no <b>ícone da chave</b> no topo e escreva o <b>e-mail da compra</b>.</li>
+      <li>Introduza o <b>código de 6 dígitos</b> que recebe por e-mail. Pronto: o plano fica ativo também aí.</li>
     </ol>
   </section>
 
   <section class="panel faq" style="margin-top:20px" aria-labelledby="h-faq">
     <h2 id="h-faq">Perguntas frequentes</h2>
-    <details><summary>Posso usar em mais de um dispositivo?</summary><p>Sim. A chave pode ser ativada nos seus dispositivos pessoais (por exemplo, telemóvel e computador). Não a partilhe com terceiros: cada chave identifica o comprador e uma chave partilhada pode ser desativada.</p></details>
-    <details><summary>Como cancelo a mensalidade da Agência?</summary><p>Em <a href="https://billing.stripe.com/p/login/8x2eVcfpk5zf5TueKVcIE00">billing.stripe.com</a> (entra com o e-mail da compra), pelo link que o Stripe envia por e-mail, ou respondendo ao e-mail da chave. O plano mantém-se até ao fim do mês já pago.</p></details>
+    <details><summary>Posso usar em mais de um dispositivo?</summary><p>Sim. Entre com o e-mail da compra em todos os seus dispositivos pessoais (por exemplo, telemóvel e computador). Não partilhe o acesso com terceiros: cada licença identifica o comprador e pode ser desativada se for partilhada.</p></details>
+    <details><summary>Como cancelo a mensalidade da Agência?</summary><p>Em <a href="https://billing.stripe.com/p/login/8x2eVcfpk5zf5TueKVcIE00">billing.stripe.com</a> (entra com o e-mail da compra), pelo link que o Stripe envia por e-mail, ou escrevendo para quantoficapt@gmail.com. O plano mantém-se até ao fim do mês já pago.</p></details>
     <details><summary>O QuantoFica substitui um contabilista?</summary><p>Não. O QuantoFica produz estimativas indicativas. Antes de qualquer decisão, consulte um contabilista certificado, advogado, consultor fiscal, consultor imobiliário e mediador de crédito.</p></details>
     <details id="termos-txt"><summary>Termos de utilização</summary><p>A licença é pessoal e intransmissível. A chave do plano Cliente é só para os seus dispositivos; a do plano Agência, só para a equipa da agência que a comprou. Partilhar a chave ou copiar a aplicação não é permitido, e a chave pode ser desativada. O plano Cliente pode ser reembolsado nos 14 dias seguintes à compra; o plano Agência pode ser cancelado a qualquer momento, sem reembolso do mês em curso. Os resultados são estimativas e não constituem aconselhamento fiscal, jurídico ou financeiro. <a href="termos.html">Ler os termos completos</a>.</p></details>
-    <details id="privacidade"><summary>Política de privacidade</summary><p>Usamos o nome, o e-mail, o telemóvel e os dados de faturação apenas para processar a compra, enviar a chave de licença, emitir a fatura e prestar apoio. O pagamento é tratado pelo Stripe; não recebemos os dados do seu cartão. As simulações ficam guardadas apenas no seu dispositivo. Pode pedir o acesso, a correção ou a eliminação dos seus dados a qualquer momento, por e-mail.</p></details>
+    <details id="privacidade"><summary>Política de privacidade</summary><p>Usamos o nome, o e-mail, o telemóvel e os dados de faturação apenas para processar a compra, dar-lhe acesso ao plano, emitir a fatura e prestar apoio. O pagamento é tratado pelo Stripe; não recebemos os dados do seu cartão. As simulações ficam guardadas apenas no seu dispositivo. Pode pedir o acesso, a correção ou a eliminação dos seus dados a qualquer momento, por e-mail.</p></details>
   </section>
 
   <footer><a href="./">← Voltar ao QuantoFica</a> · <a href="termos.html">Termos</a> · <a id="contact-l" href="#">Contacto</a></footer>
@@ -197,7 +198,7 @@ $("buy").addEventListener("submit",async e=>{ e.preventDefault(); const err=$("e
   const p=plano(), nome=$("nome").value.trim(), email=$("email").value.trim();
   const fail=(m,el)=>{ err.textContent=m; err.classList.add("on"); el&&el.focus(); };
   if(nome.length<2) return fail("Indique o seu nome.",$("nome"));
-  if(!okMail(email)) return fail("Indique um e-mail válido — é para lá que enviamos a chave.",$("email"));
+  if(!okMail(email)) return fail("Indique um e-mail válido — é com ele que entra no QuantoFica.",$("email"));
   if(p==="agencia"&&$("agencia").value.trim().length<2) return fail("Indique o nome da agência.",$("agencia"));
   const nif=$("nif").value.replace(/\s/g,""); if(nif&&!/^\d{9}$/.test(nif)) return fail("O NIF português tem 9 algarismos.",$("nif"));
   if(!$("termos").checked) return fail("Para continuar, aceite os termos e a política de privacidade.",$("termos"));
