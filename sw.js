@@ -1,6 +1,6 @@
 // QuantoFica: funcionamento sem internet.
 // Ao publicar uma nova versão, altere VERSION para que os telemóveis recebam a atualização.
-const VERSION = "2026-10-25-youtube";
+const VERSION = "2026-10-26-guia";
 const CORE = ["./", "./index.html", "./termos.html", "./manifest.webmanifest",
   "./icons/icon-192.png?v=2", "./icons/icon-512.png?v=2", "./icons/maskable-512.png?v=2",
   "./icons/apple-touch-icon.png?v=2", "./icons/favicon-32.png?v=2"];
@@ -21,14 +21,17 @@ self.addEventListener("fetch", e => {
   const url = new URL(req.url);
   // Página: tenta a rede primeiro (para receber atualizações) e usa a cópia guardada sem internet.
   if (req.mode === "navigate") {
-    e.respondWith(fetch(req.url, { cache: "no-store" }).then(r => { const copy = r.clone(); caches.open(VERSION).then(c => c.put("./index.html", copy)); return r; })
-      .catch(() => caches.match("./index.html")));
+    const isApp = /\/(index\.html)?$/.test(url.pathname);
+    e.respondWith(fetch(req.url, { cache: "no-store" }).then(r => { if (r && r.ok) { const copy = r.clone(); caches.open(VERSION).then(c => c.put(isApp ? "./index.html" : url.pathname, copy)); } return r; })
+      .catch(() => (isApp ? caches.match("./index.html") : caches.match(url.pathname).then(h => h || caches.match("./index.html")))));
     return;
   }
   // Ficheiros da app e tipos de letra: usa a cópia guardada e atualiza em segundo plano.
   const sameOrigin = url.origin === location.origin;
   // Lista de chaves desativadas: sempre da rede, nunca da cópia guardada.
   if (sameOrigin && url.pathname.endsWith("/revogadas.json")) return;
+  // Vídeos do guia: sempre da rede (pedidos parciais não se guardam na cópia).
+  if (sameOrigin && /\.(mp4|webm)$/.test(url.pathname)) return;
   const fonts = url.hostname === "fonts.googleapis.com" || url.hostname === "fonts.gstatic.com" || url.hostname === "cdnjs.cloudflare.com" || url.hostname === "cdn.jsdelivr.net";
   if (!sameOrigin && !fonts) return;
   e.respondWith(caches.match(req).then(hit => {

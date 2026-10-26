@@ -3406,6 +3406,7 @@ const QF_SHOP={cliente:{price:"9,90 €",url:"https://quantofica.github.io/compr
   // Rodapé
   (function(){ let p=document.querySelector(".wrap .qf-foot"); if(!p){ const w=document.querySelector(".wrap"); if(!w) return; p=document.createElement("p"); p.className="qf-foot"; w.appendChild(p); }
     const b=document.createElement("button"); b.type="button"; b.className="qf-link"; b.textContent="Planos e licença"; b.addEventListener("click",()=>gOpen(null)); p.appendChild(b);
+    const g=document.createElement("a"); g.className="qf-link"; g.href="https://quantofica.github.io/guia.html"; g.textContent="Guia dos impostos"; p.appendChild(g);
     const t=document.createElement("a"); t.className="qf-link"; t.href="termos.html"; t.textContent="Termos"; p.appendChild(t); })();
 
   function paintStrip(){ let cls="", html="", btn="";
